@@ -129,7 +129,7 @@ Three paths: **Executive Opportunities** / **Advisory & Consulting** / **Speakin
 **Sections (final)**:
 1. Hero/intro — drops the "creative CV" framing.
 2. Career-arc narrative prose — the broader six-stage arc (Business/Sales → Technology → Data & Marketing Science → Product/Startups → International Consulting → Business & Technology Transformation) as a few paragraphs, not CV entries.
-3. **Career Timeline** (visual component) — exactly the 4 curated recent entries below. Earlier roles are deliberately excluded from this component (not deleted from her real history — just not part of the site's visual narrative).
+3. **Career Timeline** (visual component) — exactly the 5 curated recent entries below. Earlier roles are deliberately excluded from this component (not deleted from her real history — just not part of the site's visual narrative).
 4. Communities & Leadership.
 5. Speaking & Knowledge Sharing.
 6. Selected Executive Education.

@@ -71,7 +71,7 @@ ADR-style record of every strategic or technical decision made for this project.
 
 ### DEC-010
 **Date**: 2026-08-24
-**Decision**: The About page's visual Career Timeline component uses only 4 curated recent entries (Hearts & Science ×2, Razzo, Brainlabs/Mars Petcare Mexico ×2), explicitly excluding older roles (Capital Digital, RBN Trade MX, Diageo, Massimo Dutti, Serpa AI, IMEF) from that component. The broader six-stage career-arc narrative (Business/Sales → ... → Business & Technology Transformation) still appears as prose, lightly touching earlier stages without CV-style entries for them.
+**Decision**: The About page's visual Career Timeline component uses only 5 curated recent entries (Hearts & Science ×2, Razzo, Brainlabs/Mars Petcare Mexico ×2), explicitly excluding older roles (Capital Digital, RBN Trade MX, Diageo, Massimo Dutti, Serpa AI, IMEF) from that component. The broader six-stage career-arc narrative (Business/Sales → ... → Business & Technology Transformation) still appears as prose, lightly touching earlier stages without CV-style entries for them.
 **Reason**: The timeline should communicate current level and career progression, not function as a complete résumé. Jaqueline's own instruction: "I'd end the employment timeline there."
 **Alternatives considered**: Including the full employment history in the visual timeline — explicitly rejected by Jaqueline.
 **Status**: Approved.
@@ -83,12 +83,26 @@ ADR-style record of every strategic or technical decision made for this project.
 **Alternatives considered**: Relying solely on the plan file at `/Users/jaqueline.razo/.claude/plans/i-want-you-to-sequential-swan.md` — rejected as insufficient for long-term project continuity since plan files are not part of the repository and are not designed to be updated incrementally as implementation proceeds.
 **Status**: Approved.
 
-### DEC-012 (open, unresolved — track until closed)
-**Date**: 2026-08-24
-**Decision**: Not yet made. Home's Speaking section (approved copy) lists 4 topics; About's Speaking & Knowledge Sharing section (approved copy) lists 5 topics, adding "Career Ownership & Technology."
-**Reason for tracking**: Both blocks of copy were independently approved as verbatim source-of-truth text; the mismatch was only surfaced during documentation cross-check, not resolved.
-**Alternatives**: (a) Add the 5th topic to Home for consistency; (b) keep Home at 4 intentionally for space/tightness; (c) some other resolution.
-**Status**: Deferred — resolve during Sprint 1 content review, then update this entry and `CONTENT_ARCHITECTURE.md`.
+### DEC-012 (resolved)
+**Date**: 2026-08-24 (opened) → 2026-08-25 (resolved during Sprint 1 build)
+**Decision**: Home's Speaking section keeps 4 topics (AI & Business Transformation, Building With AI, Turning Ideas Into Products, Women, Technology & Ambition); About's Speaking & Knowledge Sharing section keeps all 5 (adds Career Ownership & Technology).
+**Reason**: Home is a tight teaser — 4 topics fits its 2-column card layout cleanly. About is the fuller biographical treatment, where the 5th topic belongs. No content is lost; it's just not repeated identically on both pages.
+**Alternatives considered**: Making both lists match (either 4 or 5 everywhere) — rejected, the asymmetry is intentional register variation, not an inconsistency to fix.
+**Status**: Approved. Implemented in `index.html` (Speaking section) and `about.html` (Speaking & Knowledge Sharing section).
+
+### DEC-015
+**Date**: 2026-08-25
+**Decision**: Exclude the Home hero `<h1>` from the shared per-letter shred+shuffle reveal animation (`generateSpans()` in `js/scripts.js`) via a new `.no-letter-split` class, rather than modifying the shared animation logic or removing `.height-title` from the hero container.
+**Reason**: `generateSpans()` splits hero-title text into one `<span>` per letter, then a shuffle animation staggers each letter in at 0.05s intervals in random order. This looks great for a 1-3 word title ("CONTACT", "ABOUT ME" — confirmed via screenshot) but for the new ~85-character sentence-length headline it produced a 4+ second, visually chaotic reveal — scattered letters appearing out of order across multiple wrapped lines. Confirmed via Playwright screenshot before and after the fix.
+**Alternatives considered**: Removing `.height-title` from `#hero-caption` entirely — rejected, that class also controls `height:100vh` positioning and several other CSS/JS branches used consistently across every other page's hero; changing it risked side effects I couldn't fully trace across a 2,247-line shared script. The `.no-letter-split` exclusion is a single additive class + a one-line `:not()` selector change, with zero effect on any other page (nothing else uses that class).
+**Status**: Approved. Verified via headless-browser screenshot: clean two-line wrap, single fade+scale-in reveal, no console errors.
+
+### DEC-016
+**Date**: 2026-08-25
+**Decision**: About's old "My Services" accordion is reused (not replaced with a bare cross-reference link as originally planned in `CONTENT_ARCHITECTURE.md`) — repopulated with the same 5-capability model, retitled "My Capabilities," in the same light-background pinned-accordion layout.
+**Reason**: On reflection while implementing, a full second presentation of the 5 capabilities — in a different visual register (light-background accordion vs. Home's dark-background card grid) — gives About real substance for a visitor who lands there first without visiting Home, and reinforces DEC-008's "different layouts, same info hierarchy" principle rather than under-serving About with just a link.
+**Alternatives considered**: The original plan's "short cross-reference is enough" — superseded by this decision once the accordion component was in front of me and clearly had room for real content.
+**Status**: Approved. Implemented in `about.html`.
 
 ### DEC-014
 **Date**: 2026-08-24

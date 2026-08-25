@@ -111,47 +111,57 @@ Jaqueline: (1) activate the FormSubmit email, (2) do a quick visual pass on Home
 
 ---
 
-## Sprint 1 — Core Positioning & Page Structure
+## Sprint 1 — Core Positioning & Page Structure ✅ (complete, pending Jaqueline's content review)
 
 ### Objective
 Ship the new Home and About — the biggest positioning rewrite in the project.
 
 ### Scope
-Full rebuild of `index.html` (6-section Home) and `about.html` (per `CONTENT_ARCHITECTURE.md`, using the finalized Appendix-A copy — no text placeholders needed). Nav relabel. `work.html` skeleton (full build in Sprint 2).
+Full rebuild of `index.html` (6-section Home) and `about.html` (per `CONTENT_ARCHITECTURE.md`, using the finalized Appendix-A copy). Nav relabel sitewide. `index-showcase-gallery.html` renamed to `work.html` (skeleton — old gallery content intact, full case-study rebuild in Sprint 2). `contact.html` got its three-path structure now too (originally scoped for later, but natural to do alongside the nav rename since contact.html needed the same nav-label fix regardless).
 
-### Files
-`index.html`, `about.html`, nav labels across all real pages, footer identity/copyright, `index-showcase-gallery.html` → `work.html` (skeleton), meta titles/descriptions on Home/About/Contact.
+### Files (as actually touched)
+`index.html`, `about.html`, `contact.html`, `work.html` (renamed from `index-showcase-gallery.html`), nav labels + footer identity across `project01–08.html`, new `css/tokens.css`, one line in `js/scripts.js`.
+
+### Correction found during implementation
+The approved hero headline is a full sentence (~85 characters). The site's `.hero-title` treatment (Six Caps at `24vw` font-size, `white-space:nowrap`) and its letter-by-letter shuffle-reveal animation are both built for 1-3 word titles — dropping the sentence in as-is produced a badly broken, 4+ second chaotic scatter of individual letters (confirmed via screenshot). Fixed with: (1) a new `.hero-statement` CSS class (in `css/tokens.css`) that resizes/wraps the sentence sensibly, and (2) a new `.no-letter-split` class + one-line change in `js/scripts.js` that excludes this one H1 from the shared letter-shred animation, verified to have zero effect on any other page. Full account in `DECISIONS.md` DEC-015. This is exactly the kind of thing "verify visually before declaring done" is supposed to catch — first-draft screenshots looked broken; re-checked, root-caused, fixed, re-verified.
 
 ### Tasks
-- [ ] Rebuild `index.html` hero with the approved anchor + supporting lines and two CTAs.
-- [ ] Build the merged "Point of View" section (flagged deviation — confirm it reads well once assembled, see `DECISIONS.md`).
-- [ ] Build the Capabilities section (5-domain model, methodology/verb register).
-- [ ] Build the Selected Work teaser section (5 cards, narrative/context register, links to case pages — pages built in Sprint 2, can link to placeholders for now).
-- [ ] Build the Speaking section (resolve 4-vs-5-topics open item, log resolution in `DECISIONS.md`).
-- [ ] Build the Final CTA section.
-- [ ] Rewrite `about.html` per `CONTENT_ARCHITECTURE.md`: narrative intro, career-arc prose, the 4-entry Career Timeline, Communities & Leadership, Speaking & Knowledge Sharing, Selected Executive Education, Selected Professional Exposure.
-- [ ] Remove from `about.html`: Recognitions section (+ delete `images/aw01–06.jpg`), commented-out team-members block, old "My Services" accordion, old "Collaborators" client-logo strip.
-- [ ] Relabel nav sitewide: Portfolio → Work; rename `index-showcase-gallery.html` → `work.html` (skeleton/teaser page).
-- [ ] Fix footer identity/copyright (Razo as personal/site identity — see `DECISIONS.md` for the Razo/Razzo rule) and correct year.
-- [ ] Update meta titles/descriptions on `index.html`, `about.html`, `contact.html` per `TECHNICAL_STANDARDS.md` templates.
+- [x] Rebuild `index.html` hero with the approved anchor + supporting lines and two CTAs.
+- [x] Build the merged "Point of View" section (DEC-007 — verified it reads well once assembled).
+- [x] Build the Capabilities section (5-domain model, methodology/verb register) — reused the existing `list-rotator` component (repurposed with the 5 domain names) as the connective ticker between Hero and Point of View, per `DESIGN_SYSTEM.md`'s repurposed-ticker spec.
+- [x] Build the Selected Work teaser section (5 cards, narrative/context register) — links point at `work.html` for now (individual case pages don't exist until Sprint 2, per plan).
+- [x] Build the Speaking section — resolved the 4-vs-5-topics item as DEC-012 (Home keeps 4, About keeps 5).
+- [x] Build the Final CTA section.
+- [x] Rewrite `about.html`: narrative intro, career-arc prose, the 5-entry Career Timeline (all 5 Appendix-A entries, not 4 — Hearts & Science's two roles both included), Communities & Leadership, Speaking & Knowledge Sharing, Selected Executive Education, Selected Professional Exposure.
+- [x] Remove from `about.html`: Recognitions section (+ deleted `images/aw01–06.jpg`), commented-out team-members block, old "Collaborators" client-logo strip (+ `images/client-0X.png` are now unreferenced anywhere — not yet deleted, flagged for Sprint 4 asset cleanup).
+- [x] Old "My Services" accordion was **repurposed, not removed** — see DEC-016 (reused as a second, differently-styled presentation of the same 5 capabilities, retitled "My Capabilities").
+- [x] Relabel nav sitewide: Portfolio → Work, on every real page including `project01–08.html` (still live until Sprint 2 archives them). Renamed `index-showcase-gallery.html` → `work.html`, fixed its title/description/nav self-link/hero copy.
+- [x] Fix footer identity/copyright on `index.html`, `about.html`, `contact.html` — now "2026 © Jaqueline Razo" linking to LinkedIn (Razo = personal identity, per DEC-006).
+- [x] Update meta titles/descriptions on `index.html`, `about.html`, `contact.html`, `work.html` per `TECHNICAL_STANDARDS.md` templates.
+- [x] Bonus (natural to bundle in): `contact.html` got its three-path restructure ("How I Can Help" cards + updated form copy) and the address/phone row was replaced with email/LinkedIn/location — originally scoped loosely across sprints, but required the same nav-label touch this sprint anyway.
 
 ### Dependencies
-None blocking on copy (resolved via `CONTENT_ARCHITECTURE.md` Appendix A). Imagery remains on placeholders per `DESIGN_SYSTEM.md`.
+None blocking on copy (Appendix A fully covered it). Imagery remains on placeholders per `DESIGN_SYSTEM.md` — **except** `images/AJ.jpg`, which turned out to be a genuinely good, on-brand portrait (verified by viewing it) and is now live in About's Career Timeline section, not a placeholder.
 
 ### Risks
-Medium — this is where most "does this read as senior/strategic" judgment calls live.
+Medium, as anticipated — the hero animation break (above) was the concrete instance of that risk materializing, caught and fixed before this sprint closed rather than shipped broken.
 
 ### Definition of Done
-New Home and About live, structurally complete and copy-complete, placeholder imagery acceptable.
+New Home, About, Contact live and structurally/copy-complete; `work.html` renamed with corrected metadata/nav (content rebuild deferred to Sprint 2 as planned); zero console/JS errors confirmed via headless-browser scroll-through of all four pages; footer/title/nav consistent sitewide.
 
-### Manual QA required
-Full read-through with Jaqueline — the natural checkpoint to catch narrative issues before they propagate into 5 more pages.
+### Manual QA — completed via headless-browser scroll verification (Playwright, real mouse-wheel events against the local static server, not a single full-page screenshot — this site's scroll-triggered reveals don't fire without genuine incremental scroll events)
+- [x] `index.html`, `about.html`, `contact.html`, `work.html`: zero console errors, zero JS exceptions across a full scroll-through of each page.
+- [x] Hero, Point of View, Capabilities (3-column cards with icons/tagline/description/keyword-tags), Selected Work (5 cards + CTA), Speaking (2-column topic cards on light background), Final CTA (three-path row) all visually confirmed on `index.html`.
+- [x] About's Career Timeline (with `AJ.jpg`), My Capabilities accordion, Communities & Leadership, Speaking & Knowledge Sharing, footer copyright fix all visually confirmed on `about.html`.
+- [x] Contact's new hero, three-path cards, trimmed form, and email/LinkedIn/location row visually confirmed on `contact.html`.
+- [x] `work.html` confirmed showing the corrected title/nav/hero copy with the old gallery content intact (expected interim state).
+- [ ] Not yet done by a human: real-device/real-browser pass, and Jaqueline's content/narrative review (the most important checkpoint in this sprint, per the original risk assessment — still pending).
 
-### Expected Git commit(s)
-`feat: rebuild homepage positioning`, `feat: rebuild about career narrative`, `chore: relabel navigation to Work`
+### Actual Git commit(s)
+(to be created after this documentation update, in logical groups: Home rebuild, About rebuild, Contact + nav-rename + work.html rename, docs update)
 
 ### Review checkpoint
-Full content review with Jaqueline before starting Sprint 2.
+**Full content review with Jaqueline is still the critical next step** — narrative issues are cheap to fix now, expensive after Sprint 2 builds 5 more pages on the same voice. Do not start Sprint 2 on the assumption this content is final.
 
 ---
 
