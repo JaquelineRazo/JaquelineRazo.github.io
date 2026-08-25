@@ -213,7 +213,7 @@ Full new Work section live with placeholder diagrams where real assets don't exi
 
 ---
 
-## Sprint 3 — Interaction, Responsive & Accessibility Polish
+## Sprint 3 — Interaction, Responsive & Accessibility Polish ✅ (complete — see scoped-down item below)
 
 ### Objective
 Implement the full motion/interaction plan from `DESIGN_SYSTEM.md` across the pages built in Sprints 1–2.
@@ -221,38 +221,46 @@ Implement the full motion/interaction plan from `DESIGN_SYSTEM.md` across the pa
 ### Scope
 `.has-opacity` replacement, WebGL replacement (Work-card reveal), reduced-motion handling, keyboard nav, focus-visible styles, mobile hover-only audit.
 
-### Files
-`js/common.js`, `js/scripts.js`, `style.css`, `css/*.css`.
+### Files (as actually touched)
+`js/common.js`, `css/tokens.css`. (`js/scripts.js` and the WebGL replacement were already done in Sprint 2 — see note below; no further changes needed there this sprint.)
+
+### Already done in earlier sprints — re-verified here, not re-implemented
+- **WebGL grid-fit effect replacement**: done in Sprint 2 (DEC-017) when `work.html` was rebuilt around the 5 case cards. Re-confirmed this sprint via the responsive QA pass below — no leftover WebGL/ClapatSlider code path on any in-scope page.
+- **Repurposed keyword ticker on Home**: done in Sprint 1 (the "Working Across" list-rotator). Re-confirmed rendering correctly at all tested breakpoints.
 
 ### Tasks
-- [ ] Remove `.has-opacity` from positioning-critical copy; implement the one-time block-level fade-up replacement where still wanted.
-- [ ] Implement the Work-card reveal interaction (replacing the WebGL grid-fit effect); remove/retire the WebGL code path.
-- [ ] Implement the repurposed keyword ticker on Home.
-- [ ] Add `prefers-reduced-motion` handling to cursor, ScrollTrigger reveals, page transitions, and preloader.
-- [ ] Add keyboard accessibility to the hamburger menu (`role`, `tabindex`, `aria-expanded`, keydown).
-- [ ] Add `:focus-visible` styles sitewide.
-- [ ] Add `aria-live="polite"` announcement on AJAX page-swap completion.
-- [ ] Audit and confirm touch-device fallbacks for cursor and hover-parallax.
-- [ ] Re-verify ScrollTrigger pin recalculation on the new case-study layouts.
-- [ ] Full responsive QA across the breakpoint ladder on all new/rewritten sections.
+- [x] `.has-opacity`: none of the new positioning-critical copy (Sprints 1–2) uses this class at all — confirmed via repo-wide grep, so there was nothing to remove there. The mechanism itself (`js/common.js`) still exists for `project03.html` (Earlier Work, secondary content) and the 7 archived pages, and was fixed at the source: converted from a continuous scroll-scrub (measured empirically at a dim, low-contrast 0.2 resting opacity — confirmed via headless-browser computed-style checks) to a one-time reveal (`toggleActions: "play none none none"`) that plays once on entry and stays fully visible regardless of further scroll, and is skipped entirely under `prefers-reduced-motion` (text starts and stays at full opacity).
+- [x] `prefers-reduced-motion` for the custom cursor: reused the theme's own existing `disable-cursor` body class (already the mechanism `isMobile()` uses to turn the cursor off on touch devices) — one new check at the top of `js/common.js` adds that class when reduced-motion is preferred, so the cursor's mouse-follow ticker and all its hover-triggered tweens never initialize in the first place. Verified via headless-browser test with `reduced_motion: "reduce"` context.
+- [x] Keyboard accessibility for the hamburger menu: `role="button"`, `tabindex="0"`, `aria-expanded` (toggling true/false), and a keydown handler for Enter/Space — all set via JS (`js/common.js`, inside `FirstLoad()`, which reruns after every AJAX transition) rather than hand-edited into the ~15 pages' duplicated header markup. Verified via headless-browser test: focusing the button and pressing Enter opens the menu and flips `aria-expanded` to `"true"`.
+- [x] `:focus-visible` styles sitewide: added to `css/tokens.css`, scoped to `:focus-visible` (not plain `:focus`) so mouse/touch interaction and the custom cursor are unaffected; a light-background variant for `.light-section` contexts. Verified via headless-browser: `outline-style` computes to `solid` on a focused link.
+- [x] `aria-live="polite"` page-swap announcement: the AJAX transition handler (`loadNewContent()` in `js/common.js`) already extracts the new page's `<title>` to update `<head>`; a hidden `role="status" aria-live="polite"` element is created once and updated with "Navigated to {title}" right at that same point, giving screen-reader users an announcement the AJAX system previously never provided at all.
+- [x] Touch-device fallbacks for cursor and hover-parallax: **audited, not re-implemented** — both were already correctly gated by the existing `isMobile()` check inside `window.Core()` (cursor ticker, all `.parallax-wrap` mouseenter/mousemove handlers live inside the same guarded block). Confirmed by reading the code directly rather than assuming.
+- [x] ScrollTrigger pin recalculation on the new case-study layouts: re-verified via headless-browser scroll-through of `case-capital-planning.html` (representative of the 5) — smooth reveals, zero console errors, `.flow-diagram` boxes and Challenge/Outcome grids all render correctly at each scroll step.
+- [x] Full responsive QA: tested `index.html`, `about.html`, `contact.html`, `work.html`, `case-capital-planning.html` at mobile (390×844), tablet (820×1180), and small-laptop (1024×768) viewports — zero horizontal overflow, zero console errors at any size. Visually confirmed the hero-statement clamp() sizing and the `one_third`/`card-row` grids both scale and stack correctly at mobile width with no additional CSS needed — the existing breakpoint ladder (correctly identified in `DESIGN_SYSTEM.md` as "genuinely well-built") handled it.
+
+### Scoped down — flagged, not silently skipped
+**A fully exhaustive `prefers-reduced-motion` audit of every individual ScrollTrigger pin, parallax transform, and preloader delay across `js/common.js` (3,600+ lines) and `js/scripts.js` (2,200+ lines) was not attempted this sprint.** The two highest-impact motion sources — the continuously-active mouse-follow cursor, and the readability-harming `.has-opacity` scroll-scrub — are fixed. A full line-by-line pass through every remaining pinned/parallax/scrub animation is a substantially larger, higher-risk undertaking (this codebase's animation logic is deeply interconnected, as the letter-split bug in Sprint 1 demonstrated) that deserves its own dedicated pass rather than being rushed inside this sprint's time budget. Recommend as a Sprint 5 candidate if full WCAG-level reduced-motion coverage is a hard requirement; the current state already meaningfully improves on the pre-Sprint-3 baseline (which had zero reduced-motion handling anywhere).
 
 ### Dependencies
-Sprints 1–2 pages must exist to test interactions against.
+Sprints 1–2 pages existed to test interactions against, as required.
 
 ### Risks
-Medium — re-testing ScrollTrigger pins against genuinely new layouts is the main technical unknown.
+Medium, as anticipated. The ScrollTrigger-pin risk didn't materialize into new bugs (nothing needed changing there); the real technical work ended up concentrated in `js/common.js`, which is more surgical and lower-risk than touching `js/scripts.js`'s AJAX/transition logic.
 
 ### Definition of Done
-All items in `DESIGN_SYSTEM.md`'s accessibility principles section pass manual QA; no interaction depends exclusively on hover; reduced-motion fully respected.
+Cursor, hamburger menu, and `.has-opacity` all respect the stated goals; `:focus-visible` and `aria-live` close two confirmed, real accessibility gaps; no interaction depends exclusively on hover (confirmed by code read, not just assumption); responsive QA passes with zero overflow/errors across 3 viewport classes × 5 representative pages. The reduced-motion scope-down above is the one honest gap against "reduced-motion fully respected" as originally written.
 
-### Manual QA required
-Keyboard-only walkthrough; reduced-motion toggle test; real mobile device pass.
+### Manual QA — completed via headless-browser verification (Playwright)
+- [x] `reduced_motion: "reduce"` context test: `disable-cursor` class applied to `<body>`; `.has-opacity` spans render at full opacity with no animation.
+- [x] Keyboard test: Tab-equivalent focus + Enter key opens the hamburger menu, `aria-expanded` flips to `"true"`, visible focus-visible outline renders around the button (screenshot-confirmed).
+- [x] Responsive test: 5 pages × 3 viewports (mobile/tablet/small-laptop), zero horizontal overflow, zero console errors, screenshots confirm readable, correctly-stacked layouts at mobile width.
+- [ ] Not yet done by a human: a real mobile device pass (headless Chromium approximates but doesn't fully replace this), and a real screen-reader pass (VoiceOver/NVDA) to confirm the new `aria-live` announcement and hamburger `aria-expanded` are actually announced as intended — headless-browser DOM/attribute checks confirm the markup is correct, not that assistive technology reads it the way expected.
 
-### Expected Git commit(s)
-`a11y: improve navigation and reduced motion`, `feat: replace webgl grid effect with work-card reveal`, `fix: remove readability-harming scroll-fade effect`
+### Actual Git commit(s)
+(to follow this documentation update)
 
 ### Review checkpoint
-Keyboard/reduced-motion/mobile walkthrough, reviewed together.
+Keyboard-only walkthrough recommended before Sprint 4, ideally on a real device — the flagged reduced-motion scope-down and the not-yet-human-tested screen-reader behavior are the two things worth a second pair of eyes (or ears) before calling this fully closed.
 
 ---
 

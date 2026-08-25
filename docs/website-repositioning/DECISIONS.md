@@ -137,3 +137,29 @@ ADR-style record of every strategic or technical decision made for this project.
 **Decision**: Fixed a pre-existing bug found during this sprint's QA, out of original scope: `index.html`'s `<body>` tag had `class="...smooth-scroll1..."` (confirmed present since the repository's very first commit, via `git show`) instead of `smooth-scroll`, which both `style.css` and `js/common.js` depend on for height-sizing behavior. Every other page had the correct class.
 **Reason**: A one-character, unambiguous, zero-risk correction discovered while verifying the homepage after this sprint's link updates — worth fixing on sight rather than filing away, per the general principle of not shipping a known bug forward once found.
 **Status**: Approved.
+
+### DEC-020
+**Date**: 2026-08-25
+**Decision**: Fix `.has-opacity` at the mechanism level (`js/common.js`), not by removing it from `project03.html`'s copy. Convert from a continuous scroll-scrub (measured empirically at a dim, low-contrast 0.2 resting opacity) to a one-time reveal, gated behind `prefers-reduced-motion`.
+**Reason**: All new positioning-critical copy (Sprints 1–2) already doesn't use this class at all — there was nothing to remove there. `project03.html` (Earlier Work, secondary content) and the 7 archived pages still use it; fixing the shared mechanism benefits all of them without touching 8 separate files individually, and without deciding on their behalf whether the word-reveal effect itself should be removed from content that's explicitly de-emphasized already.
+**Status**: Approved. Verified via headless-browser computed-style check: spans render at 0.2 opacity at rest (confirmed the defect), reach 1 on scroll-entry, and stay at 1 regardless of further scroll (confirmed the fix); under `prefers-reduced-motion`, spans render at 1 immediately with no animation at all.
+
+### DEC-021
+**Date**: 2026-08-25
+**Decision**: Set the hamburger menu's `role`, `tabindex`, `aria-expanded`, and keydown handling entirely via JS (`js/common.js`, inside the `FirstLoad()` function that already reruns after every AJAX page transition) rather than hand-editing the attributes into each of the ~15 pages' duplicated header markup.
+**Reason**: The header/nav/footer duplication across every page (no templating system exists — see `TECHNICAL_STANDARDS.md`) makes any markup-level fix an error-prone find-and-replace across many files. Setting these attributes in the one shared script that already initializes on every page load and every AJAX transition achieves the same result with a single, low-risk change point, and stays consistent automatically as new pages (the 5 case studies, future ones) are added.
+**Alternatives considered**: Editing `#burger-wrapper` in every HTML file directly — rejected as higher-risk (more files touched, more chances for a typo or an inconsistency to slip through) for no benefit over the JS approach, given `FirstLoad()` already reliably runs on every page.
+**Status**: Approved. Verified via headless-browser: focusing the button and pressing Enter opens the menu and flips `aria-expanded` to `"true"`; visible focus-visible outline confirmed via screenshot.
+
+### DEC-022
+**Date**: 2026-08-25
+**Decision**: Reuse the theme's existing `disable-cursor` body class — already the mechanism `isMobile()` uses to turn off the custom cursor on touch devices — to also disable the cursor under `prefers-reduced-motion`, rather than adding new reduced-motion checks scattered across the cursor's individual GSAP tweens.
+**Reason**: `window.Core()` (the cursor system) is already fully gated by a single `if (!isMobile() && !$('body').hasClass("disable-cursor"))` check at its top. Adding the class before `Core()` initializes achieves complete cursor disablement (the mouse-follow ticker never starts, none of its hover-triggered tweens ever bind) through the codebase's own existing, already-tested gate, rather than a new one.
+**Status**: Approved. Verified via headless-browser test with a `reduced_motion: "reduce"` browser context: `disable-cursor` class confirmed present on `<body>`.
+
+### DEC-023 (scope decision, not deferred silently)
+**Date**: 2026-08-25
+**Decision**: A fully exhaustive `prefers-reduced-motion` audit of every individual ScrollTrigger pin, parallax transform, and preloader delay across `js/common.js` (3,600+ lines) and `js/scripts.js` (2,200+ lines) was not attempted in Sprint 3.
+**Reason**: The two highest-impact, most continuously-active motion sources (the mouse-follow cursor, and the readability-harming `.has-opacity` scroll-scrub) are fixed — see DEC-020 and DEC-022. A full pass through every remaining pinned/parallax/scrub animation in this deeply interconnected animation codebase (the Sprint 1 letter-split bug is a concrete example of how non-obvious the interactions between these systems can be) is a substantially larger and riskier undertaking than fits this sprint's scope, and rushing it risks introducing new bugs rather than genuinely improving accessibility.
+**Alternatives considered**: Attempting a sweeping change across both files in this sprint — rejected as too high-risk given the demonstrated fragility of this animation system under rapid, broad changes.
+**Status**: Approved as a conscious scope reduction, flagged for Sprint 5 if full reduced-motion coverage becomes a hard requirement. Not a silent gap — recorded here and in `IMPLEMENTATION_ROADMAP.md` Sprint 3.
