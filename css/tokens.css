@@ -11,6 +11,27 @@
 	--font-body: 'Poppins', sans-serif;
 }
 
+/* Visible keyboard focus. No :focus-visible styles existed anywhere in
+   the theme's own CSS, combined with a global user-select:none on
+   html/body — keyboard users previously had no visible indication of
+   where focus was. Scoped to :focus-visible (not plain :focus) so
+   mouse/touch interaction, which this theme's custom-cursor and hover
+   effects are built around, is unaffected. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 3px;
+}
+
+.light-section a:focus-visible,
+.light-section button:focus-visible,
+.light-section [tabindex]:focus-visible {
+	outline-color: #000;
+}
+
 /* Hero: sentence-length statement headline (index.html hero).
    .hero-title is built for 1-3 words at ~24vw with white-space:nowrap;
    a full sentence needs to wrap across multiple lines instead. */

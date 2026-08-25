@@ -1,5 +1,16 @@
 jQuery(function ($) {
-	
+
+	// Respect prefers-reduced-motion: reuse the theme's existing
+	// "disable-cursor" body class (already the mechanism isMobile()
+	// uses to turn off the custom cursor on touch devices — see
+	// window.Core below and style.css:1452 for #magic-cursor) so
+	// reduced-motion users never get the mouse-follow cursor animation
+	// in the first place, rather than trying to gate every individual
+	// GSAP tween across this file.
+	if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		$('body').addClass('disable-cursor');
+	}
+
 /*--------------------------------------------------
 Function Scroll Effects
 ---------------------------------------------------*/
@@ -1287,21 +1298,34 @@ Function Scroll Effects
 				$(this).append($("<span /> ").text(words[index] + " "));
 			}
 		});
-		
-		var hasOpacity = gsap.utils.toArray('.has-opacity');			
+
+		// Word-by-word reveal for .has-opacity text. Originally a
+		// continuous scroll-scrub (scrub:1) tied to the element's own
+		// height: text sat at a dim, low-contrast 0.2 opacity resting
+		// state until scrolled fully past, re-dimming if the user
+		// scrolled back up. Changed to a one-time reveal (toggleActions
+		// "play none none none") that plays once on entry and leaves
+		// text fully visible regardless of further scroll position, and
+		// is skipped entirely under prefers-reduced-motion (text starts
+		// and stays fully visible, no animation).
+		var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		var hasOpacity = gsap.utils.toArray('.has-opacity');
 		hasOpacity.forEach(function(hOpacity) {
 			var spanOpacity = hOpacity.querySelectorAll("span");
-			gsap.to(spanOpacity, { 					
+			if (prefersReducedMotion) {
+				gsap.set(spanOpacity, { opacity: 1 });
+				return;
+			}
+			gsap.to(spanOpacity, {
 				scrollTrigger: {
 					trigger: hOpacity,
 					start: "top 85%",
-					end: () => `+=${hOpacity.offsetHeight}`,
-					scrub:1,
+					toggleActions: "play none none none",
 				},
-				duration: 1,
+				duration: 0.8,
 				opacity:1,
-				stagger:0.5,  
-				ease:Linear.easeNone,
+				stagger:0.05,
+				ease:Power2.easeOut,
 			});
 		});
 		
@@ -1608,9 +1632,27 @@ Function First Load
 		});
 
 		
+		// Keyboard accessibility for the hamburger menu: role/tabindex/
+		// aria-expanded are set here (once, in JS) rather than hand-added
+		// to every page's duplicated header markup. Enter/Space trigger
+		// the same toggle as a click; aria-expanded tracks open/closed.
+		$('#burger-wrapper').attr({
+			'role': 'button',
+			'tabindex': '0',
+			'aria-expanded': 'false',
+			'aria-label': 'Menu'
+		});
+		$('#burger-wrapper').on('keydown', function(e) {
+			if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32) {
+				e.preventDefault();
+				$(this).trigger('click');
+			}
+		});
+
 		$('#burger-wrapper, .menu .button-text').on('click', function() {
-			$('#menu-burger, nav').toggleClass('open');			
-			setTimeout( function(){			
+			$('#menu-burger, nav').toggleClass('open');
+			$('#burger-wrapper').attr('aria-expanded', $('#menu-burger').hasClass('open') ? 'true' : 'false');
+			setTimeout( function(){
 				if ($('#menu-burger').hasClass("open")) {
 					
 					gsap.to('nav', {duration: 0.3, opacity:1, ease:Power2.easeInOut});
@@ -3406,7 +3448,17 @@ Function Core
 				  
 				 	var clapat_title = event.match(/<title[^>]*>([^<]+)<\/title>/)[1];
 					$('head title').html( clapat_title );
-				  
+
+					// Announce the page change to screen-reader users. The
+					// AJAX page-transition system swaps <main> content
+					// without a real navigation/history event a screen
+					// reader would otherwise announce on its own, so it was
+					// previously silent about page changes entirely.
+					if ($('#a11y-route-announcer').length === 0) {
+						$('body').append('<div id="a11y-route-announcer" role="status" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;"></div>');
+					}
+					$('#a11y-route-announcer').text('Navigated to ' + clapat_title);
+
 					// if we have Elementor inline styles in the target page
 					headTags = [
 								'style[id*=elementor-frontend-inline]',
