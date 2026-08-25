@@ -2,36 +2,17 @@
 Function Contact Formular
 ---------------------------------------------------*/	
 		
-	function ContactForm() {	
-	
-		if( $('#contact-formular').length > 0 ){
-			
-			$('#contactform').submit(function(){
-				var action = $(this).attr('action');
-				$("#message").slideUp(750,function() {
-					$('#message').hide();
-					$('#submit').attr('disabled','disabled');		
-					$.post(action, {
-						name: $('#name').val(),
-						email: $('#email').val(),
-						comments: $('#comments').val(),
-						verify: $('#verify').val()
-					},
-					function(data){
-						document.getElementById('message').innerHTML = data;
-						$('#message').slideDown('slow');
-						$('#contactform img.loader').fadeOut('slow',function(){$(this).remove()});
-						$('#submit').removeAttr('disabled');
-						if(data.match('success') != null) $('#contactform').slideUp('slow');		
-					}
-				);		
-				});		
-				return false;		
-			});		
-		}
-		
+	function ContactForm() {
 
-	}//End ContactForm	
+		// The form now posts natively to a third-party static-form backend
+		// (see contact.html's form action) instead of the old contact.php
+		// AJAX endpoint, so this no longer intercepts submission — the
+		// browser handles the POST and redirect on its own.
+		if( $('#contact-formular').length > 0 ){
+			$('#submit').removeAttr('disabled');
+		}
+
+	}//End ContactForm
 
 
 /*--------------------------------------------------

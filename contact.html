@@ -173,36 +173,29 @@
                                 
                                     <div id="message"></div>
                                 
-                                    <form method="post" action="contact.php" name="contactform" id="contactform">                             
-                                        <div class="name-box">        
-                                            <input name="name" type="text" id="name" size="30" value="" placeholder="What's Your Name"><label class="input_label"></label>
-                                        </div>                                                        
+                                    <form method="POST" action="https://formsubmit.co/jaqueline@razzobusiness.com" name="contactform" id="contactform">
+                                        <input type="hidden" name="_subject" value="New inquiry from JaquelineRazo.github.io" />
+                                        <input type="hidden" name="_template" value="table" />
+                                        <input type="hidden" name="_captcha" value="false" />
+                                        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+                                        <div class="name-box">
+                                            <input name="name" type="text" id="name" size="30" value="" placeholder="What's Your Name" required><label class="input_label"></label>
+                                        </div>
                                         <div class="email-box">
-                                            <input name="email" type="text" id="email" size="30" value="" placeholder="Your Email"><label class="input_label"></label>
-                                        </div>                            
+                                            <input name="email" type="email" id="email" size="30" value="" placeholder="Your Email" required><label class="input_label"></label>
+                                        </div>
                                         <div class="message-box">
-                                            <textarea name="comments" cols="40" rows="4" id="comments" placeholder="Tell Us About Your Project" ></textarea><label class="input_label slow"></label>
+                                            <textarea name="comments" cols="40" rows="4" id="comments" placeholder="Tell Us About Your Project" required></textarea><label class="input_label slow"></label>
                                         </div>
-                                        
-                                        <div class="verify-box">                                        
-                                            <ul class="verify-sum">
-                                                <li>1</li>
-                                                <li>+</li>
-                                                <li>3</li>
-                                                <li>=</li>
-                                            </ul>
-                                            <input name="verify" type="text" id="verify" size="4" value=""/>
-                                            <p class="required"><span>*</span> Captcha Validation</p>
-                                        </div>
-                                                                     
-                                        <div class="button-box">             
+
+                                        <div class="button-box">
                                             <div class="clapat-button-wrap parallax-wrap link">
                                                 <div class="clapat-button parallax-element">
                                                     <div class="button-border rounded outline "><input type="submit" class="send_message" id="submit" value="Send Message" /></div>
                                                 </div>
-                                            </div> 
+                                            </div>
                                         </div>
-                                    </form>                        
+                                    </form>
                                                             
                                 </div>
                                 <!--/Contact Formular -->
@@ -354,7 +347,6 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/5.0.0/imagesloaded.pkgd.min.js'></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/smooth-scrollbar/8.4.0/smooth-scrollbar.js'></script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpK1sWi3J3EbUOkF_K4-UHzi285HyFX5M&sensor=false"></script>
     
     <script src="js/clapat.js"></script>
 	<script src="js/plugins.js"></script>
