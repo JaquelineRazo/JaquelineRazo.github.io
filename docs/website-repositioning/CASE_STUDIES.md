@@ -31,7 +31,7 @@ Framing each case as a **business question**, not a project name, is deliberate 
 - **Capital Planning** — the most product-visual case: UI mockups (desktop + mobile), before/after screens. Closest to a traditional product case study, but anonymized. Real product screenshots may exist and need anonymizing before use — do not block the build on this, ship with clearly-labeled placeholder mockups first.
 - **Decision Intelligence** — decision-flow diagram + a conceptual (dummy-data) reporting mockup. Deliberately does **not** reuse the old real Tableau dashboard imagery from the archived `project04.html` — that was explicitly flagged as an "outdated dashboard hero visual" to avoid, not reframe.
 - **Customer Data Ecosystem** — systems/architecture-map led, no product screens at all.
-- **AI-enabled Workflows** — the most experimental layout of the five. Workflow diagram + small applied-example cards; candidate for a lighter version of the repurposed keyword-ticker interaction (see `DESIGN_SYSTEM.md`) since this case is explicitly about her point of view on AI, not a client deliverable. May fold in real content from the archived `project07.html` (Python/automation/Power Automate work) if that content still fits after the confidentiality/anonymization pass.
+- **AI-enabled Workflows** — the most experimental layout of the five. Workflow diagram + small applied-example cards; candidate for a lighter version of the repurposed keyword-ticker interaction (see `DESIGN_SYSTEM.md`) since this case is explicitly about her point of view on AI, not a client deliverable. `project07.html`'s content (Python/scraping/Power Automate) was evaluated and **not** folded in — see `DECISIONS.md` DEC-013 — it archived with the rest instead.
 
 Same grid/typography/motion system runs through all five (so the site still reads as one coherent whole) — only the Approach visual and hero treatment vary by content type. The intended effect is five features in one magazine issue, not five instances of one template stamped out.
 
@@ -41,7 +41,7 @@ Same grid/typography/motion system runs through all five (so the site still read
 
 ## Archived (not flagship, not secondary — fully out of primary navigation)
 
-`project01.html` (Boho House), `project02.html` (Anjana Bhardwaj), `project04.html` (Dashboards/Tableau), `project05.html` (Data Analysis), `project06.html` (Eduardo Estrada), `project08.html` (Slaughter Ranch) — relocated to an unlinked `archive/` directory, removed from nav/sitemap, `Disallow`ed in `robots.txt`. Not deleted, in case of existing external links. `project07.html` (AI and Automation) is evaluated for folding into `case-ai-workflows.html` before defaulting to archive.
+`project01.html` (Boho House), `project02.html` (Anjana Bhardwaj), `project04.html` (Dashboards/Tableau), `project05.html` (Data Analysis), `project06.html` (Eduardo Estrada), `project07.html` (AI and Automation — evaluated for folding into `case-ai-workflows.html`, not folded in, see DEC-013), `project08.html` (Slaughter Ranch) — all relocated to `archive/`, removed from nav/sitemap. `robots.txt` disallow rule still pending (Sprint 4). Not deleted, in case of existing external links.
 
 ## Confidentiality treatment (applies to all 5 flagship cases, non-negotiable)
 

@@ -165,7 +165,7 @@ New Home, About, Contact live and structurally/copy-complete; `work.html` rename
 
 ---
 
-## Sprint 2 — Work & Flagship Case Studies
+## Sprint 2 — Work & Flagship Case Studies ✅ (complete, pending Jaqueline's narrative/confidentiality review)
 
 ### Objective
 Build the full new Work section — the biggest structural build in the project.
@@ -173,37 +173,43 @@ Build the full new Work section — the biggest structural build in the project.
 ### Scope
 `work.html` full build, 5 new case-study pages, archive relocation for old projects, UNODC reframe.
 
-### Files
-`work.html`, 5 new `case-*.html` files, new `archive/` directory + 6 relocated project pages, `project03.html` (UNODC reframe), `project07.html` (fold-in evaluation).
+### Files (as actually touched)
+`work.html` (rebuilt), 5 new `case-*.html` files, new `archive/` directory + **7** relocated project pages (`project01,02,04,05,06,07,08.html` — see `project07.html` decision below), `project03.html` (UNODC reframe), `index.html` (Selected Work links repointed), `css/tokens.css` (new component styles).
+
+### `project07.html` decision (DEC-013, resolved)
+Archived, not folded into `case-ai-workflows.html`. Its actual content — personal web-scraping scripts (Instagram, Amazon, metadata scraping) — doesn't fit the approved "AI-enabled Workflow Design" narrative (knowledge systems, second-brain, applied AI workshops); folding it in would have diluted the case with exactly the kind of tactical-scripting flavor the repositioning is meant to move away from.
 
 ### Tasks
-- [ ] Build `work.html` (intro, 5 case cards using the Work-card reveal interaction, Earlier Work line, closing section).
-- [ ] Build `case-enterprise-transformation.html` per the shared template + `CASE_STUDIES.md` differentiation notes.
-- [ ] Build `case-capital-planning.html`.
-- [ ] Build `case-decision-intelligence.html`.
-- [ ] Build `case-customer-data.html`.
-- [ ] Build `case-ai-workflows.html` (decide `project07.html` fold-in first).
-- [ ] Create `archive/` directory; relocate `project01.html`, `project02.html`, `project04.html`, `project05.html`, `project06.html`, `project08.html` (and `project07.html` if not folded in); update any internal links.
-- [ ] Reframe `project03.html` as "Earlier Work" (light edit, not full flagship rebuild).
-- [ ] Update `index.html` Selected Work section links to point at the real case pages.
+- [x] Build `work.html`: intro, 5 case cards (reused the proven `one_third`/`box-icon-wrapper` card pattern from Home rather than the old WebGL/ClapatSlider gallery — see technical note below), Earlier Work line linking to `project03.html`, closing section.
+- [x] Build `case-enterprise-transformation.html`, `case-capital-planning.html`, `case-decision-intelligence.html`, `case-customer-data.html`, `case-ai-workflows.html` — all 5 via a shared Python generator script (not hand-duplicated HTML) to guarantee structural consistency across the 10-part template while letting content vary per `CASE_STUDIES.md`'s differentiation notes. Each case's "Next Case" link forms a closed loop (5 → 1).
+- [x] Create `archive/`; relocate all 7 legacy project pages; rewrote every relative path (`images/`, `css/`, `js/`, and links to `index.html`/`about.html`/`contact.html`/`work.html`/`favicon.ico`/`style.css`) for the new directory depth. The one cross-boundary link (`project02.html`'s "next" pointing at `project03.html`, which stays at root) was fixed individually.
+- [x] Reframe `project03.html` as "Earlier Work": new eyebrow label, title/description, footer/copyright fix, and — this was a real broken-link fix, not just polish — its "next case" teaser pointed at `project04.html`, which had just moved into `archive/`; repointed to loop into `case-enterprise-transformation.html` instead.
+- [x] Update `index.html` Selected Work section: all 5 card links repointed from the generic `work.html` placeholder to their real case-study pages.
+
+### Technical notes / corrections found during implementation
+- **WebGL slider replaced with the planned card pattern, not incrementally repurposed.** The old `work.html` used a `ClapatSlider`/Three.js-driven full-bleed gallery keyed to each old project's hero image. Since the 5 new cases have no hero photography yet (all placeholder per `DESIGN_SYSTEM.md`), and DEC-009 already called for replacing this mechanism, it was removed outright — along with its now-orphaned slider-specific footer (PREV/NEXT/"Scroll or Drag" controls) and thumbnail rail, both restored to the standard site footer pattern. `ShowcaseGallery()` in `js/scripts.js` is self-guarded (`if ($('.showcase-gallery').length > 0)`), so removing the markup left it a safe no-op — confirmed via zero console errors.
+- **Framework/process diagrams use a new `.flow-diagram` component** (`css/tokens.css`) — a dashed-border, typographic arrow-flow box (e.g. "Business Goals → Opportunity Areas → Prioritization → Execution → Value") — instead of placeholder images or broken `<img>` tags. Visually confirmed via screenshot; reads as an intentional editorial device, not a missing asset.
+- **Found and fixed a real pre-existing bug unrelated to this sprint's scope**: `index.html`'s `<body>` tag had `class="...smooth-scroll1..."` (an extra stray "1") since the very first commit in this repo's history — confirmed via `git show` on the initial commit. Every other page correctly has `smooth-scroll`, which both `style.css` (`body.smooth-scroll`) and `js/common.js` (`.smooth-scroll main` height-sizing selector) depend on. The homepage was silently missing these rules. Fixed as a one-character correction.
 
 ### Dependencies
-Sprint 1's nav/IA must be in place first.
+Sprint 1's nav/IA was in place first, as required.
 
 ### Risks
-Medium-high — five new pages, a shared template that must not feel repetitive, confidentiality treatment needs care.
+Medium-high, as anticipated. Materialized/mitigated: the WebGL-slider removal (bigger than originally scoped as "keep and adapt," but lower-risk than keeping a mechanism with no matching assets) and the `project03.html` broken-link discovery (caught and fixed, not shipped broken).
 
 ### Definition of Done
-Full new Work section live with placeholder imagery where needed; all 5 cases follow the shared template with case-specific differentiation; confidentiality rules applied throughout.
+Full new Work section live with placeholder diagrams where real assets don't exist yet; all 5 cases follow the shared template with case-specific differentiation (framework-diagram-led vs. product-mockup-oriented vs. systems-map, per `CASE_STUDIES.md`); confidentiality rules applied throughout (no client names, no fabricated figures, safe category descriptions in every metadata pill); zero console/JS errors and zero failed local requests confirmed across all 9 touched/new pages via headless-browser verification, including the archived pages' rewritten relative paths.
 
-### Manual QA required
-Review each case study's copy and confidentiality treatment specifically — highest legal/reputational-risk content on the site.
+### Manual QA — completed via headless-browser verification (Playwright); confidentiality/narrative review still needs a human
+- [x] `work.html`, all 5 `case-*.html` pages, `project03.html`, and a sample archived page (`archive/project01.html`) all return HTTP 200 with zero console errors, zero JS exceptions, and zero failed local requests.
+- [x] Visually confirmed (screenshots): hero + eyebrow + metadata pills render correctly on case pages; the Challenge 2×2 grid, the `.flow-diagram` Approach visuals, and the Next Case loop all display as designed; `work.html`'s 5-card grid and closing section render cleanly; the archived page's images load correctly (proving the relative-path rewrite worked); `project03.html`'s real UNODC screenshots still display.
+- [ ] **Not yet done by a human — this is the important one**: read each case study's actual copy for narrative quality and confidentiality correctness. This is explicitly flagged in the original plan as the highest legal/reputational-risk content on the site — headless-browser checks confirm the pages don't *break*, not that the content is *right*.
 
-### Expected Git commit(s)
-`feat: add work index`, `feat: add enterprise transformation case study`, `feat: add capital planning case study`, `feat: add decision intelligence case study`, `feat: add customer data case study`, `feat: add ai workflows case study`, `chore: archive legacy project pages`
+### Actual Git commit(s)
+(to follow this documentation update: case-study pages, work.html rebuild, archive migration + project03 reframe, index.html link updates, docs)
 
 ### Review checkpoint
-Narrative + confidentiality review with Jaqueline before finalizing.
+**Narrative + confidentiality review with Jaqueline is the explicit next step before Sprint 3** — same rationale as Sprint 1's checkpoint, but higher-stakes here since this is the content most exposed to legal/reputational risk (client confidentiality, accuracy of role/context claims).
 
 ---
 

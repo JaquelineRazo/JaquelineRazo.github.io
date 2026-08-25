@@ -112,8 +112,28 @@ ADR-style record of every strategic or technical decision made for this project.
 **Status**: Approved (form backend). Corrected (clapat.js retention) — see `IMPLEMENTATION_ROADMAP.md` Sprint 0 for the full account of the error.
 **Outstanding**: Jaqueline must click the "Activate Form" link sent to `jaqueline@razzobusiness.com` before real submissions are delivered — an AI session has no inbox access to do this step.
 
-### DEC-013 (open, unresolved — track until closed)
-**Date**: 2026-08-24
-**Decision**: Not yet made. Whether `project07.html` (AI and Automation) folds into `case-ai-workflows.html` or archives with the other 5 legacy project pages.
-**Reason for tracking**: Flagged as an evaluation, not decided, in the original planning conversation — depends on whether the existing content survives the confidentiality/anonymization pass.
-**Status**: Deferred — resolve during Sprint 2.
+### DEC-013 (resolved)
+**Date**: 2026-08-24 (opened) → 2026-08-25 (resolved during Sprint 2 build)
+**Decision**: `project07.html` archives with the other 6 legacy project pages; it is not folded into `case-ai-workflows.html`.
+**Reason**: Its actual content is personal web-scraping scripts (Instagram scraping, Amazon scraping, metadata scraping) and Power Automate report generation — tactical automation work, not the approved "AI-enabled Workflow Design" narrative (knowledge systems, second-brain workflows, applied AI workshops). Folding it in would have diluted the flagship case with exactly the kind of generic "AI Tools" flavor the repositioning explicitly moves away from.
+**Alternatives considered**: Extracting only the Power Automate/reporting-automation thread and reframing it — rejected as more effort than value, given the case already has strong original content per `CASE_STUDIES.md`.
+**Status**: Approved. `archive/project07.html`.
+
+### DEC-017
+**Date**: 2026-08-25
+**Decision**: Replace `work.html`'s WebGL/`ClapatSlider`-driven full-bleed gallery outright with a 5-card grid (the same `one_third`/`box-icon-wrapper` pattern used on Home), rather than adapting the slider to show 5 items.
+**Reason**: The slider mechanism is keyed to a large hero image per slide; the 5 new flagship cases have no hero photography yet (all placeholder per `DESIGN_SYSTEM.md`), and DEC-009 had already decided this mechanism should be replaced, not preserved. Adapting a photo-dependent slider to a set of image-less cases would have meant either broken images or fake placeholder photography neither the brief nor `DESIGN_SYSTEM.md` calls for.
+**Alternatives considered**: Keeping the slider with blank/placeholder slide images — rejected, would look broken rather than intentional. Waiting on real case photography before touching `work.html` at all — rejected, blocks the whole sprint on an asset dependency the plan explicitly says not to block on.
+**Status**: Approved. `ShowcaseGallery()` in `js/scripts.js` confirmed self-guarded (no-ops when `.showcase-gallery` markup is absent) — zero console errors after removal.
+
+### DEC-018
+**Date**: 2026-08-25
+**Decision**: Framework/process diagrams across the 5 case studies (the "Approach" visuals, and the "My Role" process-flow line) use a new typographic `.flow-diagram` CSS component — a dashed-border box with arrow-flow text (e.g. "Business Goals → Opportunity Areas → Prioritization → Execution → Value") — instead of an `[PLACEHOLDER — ...]`-labeled empty box or a broken `<img>` reference.
+**Reason**: `DESIGN_SYSTEM.md`'s asset table calls for these to be "fully abstract/diagrammatic" even once real assets exist — a typographic treatment achieves that intent immediately, reads as an intentional editorial device rather than a missing asset, and needs no image file at all (present or future).
+**Status**: Approved. Visually confirmed via screenshot.
+
+### DEC-019
+**Date**: 2026-08-25
+**Decision**: Fixed a pre-existing bug found during this sprint's QA, out of original scope: `index.html`'s `<body>` tag had `class="...smooth-scroll1..."` (confirmed present since the repository's very first commit, via `git show`) instead of `smooth-scroll`, which both `style.css` and `js/common.js` depend on for height-sizing behavior. Every other page had the correct class.
+**Reason**: A one-character, unambiguous, zero-risk correction discovered while verifying the homepage after this sprint's link updates — worth fixing on sight rather than filing away, per the general principle of not shipping a known bug forward once found.
+**Status**: Approved.

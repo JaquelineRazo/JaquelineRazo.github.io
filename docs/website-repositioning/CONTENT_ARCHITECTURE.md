@@ -13,7 +13,7 @@ Primary pages: **Home, Work, About, Contact.** Perspectives (thought-leadership 
 
 5 case-study pages hang off Work (not in primary nav): `case-enterprise-transformation.html`, `case-capital-planning.html`, `case-decision-intelligence.html`, `case-customer-data.html`, `case-ai-workflows.html`.
 
-`project03.html` (UNODC) is kept and reframed as a secondary "Earlier Work" link — not a flagship case, not deleted. `project01.html`, `project02.html`, `project04.html`, `project05.html`, `project06.html`, `project08.html` relocate to an unlinked `archive/` directory (not deleted, not in nav/sitemap). `project07.html` is evaluated for folding into `case-ai-workflows.html`; if not folded in, it archives with the rest.
+`project03.html` (UNODC) is kept and reframed as a secondary "Earlier Work" link — not a flagship case, not deleted. `project01.html`, `project02.html`, `project04.html`, `project05.html`, `project06.html`, `project07.html`, `project08.html` (all 7 — `project07.html`'s fold-in was evaluated and rejected, see `DECISIONS.md` DEC-013) relocated to an unlinked `archive/` directory (not deleted, not in nav/sitemap).
 
 Out of scope, untouched throughout: `privacy.html`, `tos.html`, `contact.php`, the TikTok verification file (unrelated Mars Petcare/TikTok API compliance surface hosted on this same domain).
 
