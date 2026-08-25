@@ -90,6 +90,14 @@ ADR-style record of every strategic or technical decision made for this project.
 **Alternatives**: (a) Add the 5th topic to Home for consistency; (b) keep Home at 4 intentionally for space/tightness; (c) some other resolution.
 **Status**: Deferred — resolve during Sprint 1 content review, then update this entry and `CONTENT_ARCHITECTURE.md`.
 
+### DEC-014
+**Date**: 2026-08-24
+**Decision**: Use FormSubmit.co as the third-party contact-form backend (`https://formsubmit.co/jaqueline@razzobusiness.com`), replacing `contact.php`. `js/clapat.js` is **not** deleted, correcting the Phase 0 audit's claim that it was empty — it's a live 23.8KB browser-detection + `ClapatSlider` library actively powering `index-showcase-gallery.html`'s gallery slider and `js/common.js`'s `.content-slider` component.
+**Reason**: FormSubmit requires no account signup (an AI session can't complete an account-creation/OAuth flow on Jaqueline's behalf) — the form just posts to the address directly, and FormSubmit emails a one-time "Activate Form" confirmation link on first use. This fits the "static-friendly, GitHub-Pages-compatible" requirement with the least setup friction. The `clapat.js` correction was caught by re-verifying file size/content immediately before the planned deletion, rather than trusting the inherited Phase 0 audit — the file would have broken the gallery slider if deleted on faith.
+**Alternatives considered**: Formspree and Web3Forms — both require an account-creation or API-key-request step involving email verification an AI session can't complete unsupervised; rejected in favor of FormSubmit's zero-signup model. Deleting `js/clapat.js` as originally planned — rejected once its real (non-empty, in-use) contents were discovered.
+**Status**: Approved (form backend). Corrected (clapat.js retention) — see `IMPLEMENTATION_ROADMAP.md` Sprint 0 for the full account of the error.
+**Outstanding**: Jaqueline must click the "Activate Form" link sent to `jaqueline@razzobusiness.com` before real submissions are delivered — an AI session has no inbox access to do this step.
+
 ### DEC-013 (open, unresolved — track until closed)
 **Date**: 2026-08-24
 **Decision**: Not yet made. Whether `project07.html` (AI and Automation) folds into `case-ai-workflows.html` or archives with the other 5 legacy project pages.

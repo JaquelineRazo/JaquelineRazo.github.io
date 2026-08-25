@@ -51,7 +51,7 @@ Summary of files created + any open questions surfaced during cross-check + `git
 
 ---
 
-## Sprint 0 — Safety & Critical Fixes
+## Sprint 0 — Safety & Critical Fixes ✅ (complete, pending Jaqueline's manual QA)
 
 ### Objective
 Fix confirmed bugs and security exposures with zero content/positioning risk.
@@ -59,41 +59,55 @@ Fix confirmed bugs and security exposures with zero content/positioning risk.
 ### Scope
 Bug fixes and security-relevant removals only — no positioning/content changes.
 
-### Files
-- `index.html`, `about.html`, `contact.html`, `project0X.html` `<head>` blocks (favicon path fix)
-- `about.html` (malformed accordion tag)
-- Every page's Google Maps `<script>` tag (unrestricted API key removal)
-- `contact.html` + new third-party form-service integration
-- Delete: `index-showcase-grid.html`, `multimedia.html`, `shortcodes.html`, `typography.html`, `js/clapat.js`, `images/Thumbs.db`, `images/favicon.png`
-- New `.gitignore`
+### Correction found during implementation
+The Phase 0 audit claimed `js/clapat.js` was empty (0 bytes) and safe to delete. On inspection before deleting it, it turned out to be a real, load-bearing 23.8KB file — a browser-detection utility plus a custom `ClapatSlider` class actively used by `index-showcase-gallery.html`'s gallery slider and a generic `.content-slider` component in `js/common.js`. **It was not deleted.** This is logged as DEC-014 in `DECISIONS.md`. Lesson: don't trust an inherited audit claim about file contents without re-verifying immediately before an irreversible action (delete) — this file would have broken the Work/Portfolio gallery if removed on faith.
+
+### Files (as actually touched)
+- `.gitignore` (new)
+- Deleted: `index-showcase-grid.html`, `multimedia.html`, `shortcodes.html`, `typography.html`, `images/Thumbs.db`, `images/favicon.png`
+- Renamed: `images/favicon.ico` → `favicon.ico`
+- Edited: `index.html`, `about.html`, `index-showcase-gallery.html`, `project01–08.html` (Google Maps API key script tag removed)
+- Edited: `about.html` (malformed accordion tag fixed)
+- Edited: `contact.html`, `js/contact.js` (form backend swapped to FormSubmit.co)
+- **Not touched, contrary to the original task list**: `js/clapat.js` (see correction above)
 
 ### Tasks
-- [ ] Fix broken favicon reference sitewide (point to correct path or move file to root).
-- [ ] Fix malformed tag in `about.html` services accordion (`<div>AI Automations/div></span>` → properly closed).
-- [ ] Remove the unrestricted Google Maps API key script tag and associated map markup from every page that has it.
-- [ ] Select and wire a third-party static-friendly form backend for `contact.html`; verify it delivers to Jaqueline's real inbox with a live test.
-- [ ] Delete `index-showcase-grid.html`, `multimedia.html`, `shortcodes.html`, `typography.html`.
-- [ ] Delete `js/clapat.js` (confirmed empty), `images/Thumbs.db`, `images/favicon.png` (confirmed dead duplicate).
-- [ ] Add `.gitignore` for OS junk files.
-- [ ] Confirm `privacy.html`, `tos.html`, `contact.php`, the TikTok verification file are unchanged.
+- [x] Fix broken favicon reference sitewide — moved `images/favicon.ico` to repo root (all pages already referenced the root-relative path, so no HTML edits were needed once the file was in the right place).
+- [x] Fix malformed tag in `about.html` services accordion.
+- [x] Remove the unrestricted Google Maps API key script tag from every page that had it (the only map markup, on `contact.html`, was already commented out — no live map existed anywhere, so nothing else needed removing).
+- [x] Select and wire a third-party static-friendly form backend for `contact.html` — chose **FormSubmit.co** (zero account signup required; see DEC-014). Live-tested via `curl`, confirmed FormSubmit sent a one-time "Activate Form" email to `jaqueline@razzobusiness.com`.
+- [x] Delete `index-showcase-grid.html`, `multimedia.html`, `shortcodes.html`, `typography.html` (confirmed zero references from any surviving HTML/CSS/JS before deleting).
+- [x] Delete `images/Thumbs.db`, `images/favicon.png` (confirmed byte-identical to `favicon.ico` via MD5 before deleting). **`js/clapat.js` was not deleted — see correction above.**
+- [x] Add `.gitignore` for OS junk files.
+- [x] Confirm `privacy.html`, `tos.html`, `contact.php`, the TikTok verification file are unchanged (`git status` on those exact paths returned empty throughout).
+
+### Outstanding — needs Jaqueline, not further implementation work
+- [ ] **Click the "Activate Form" link FormSubmit emailed to `jaqueline@razzobusiness.com`.** Until this happens, real submissions through the live form will not be delivered. This is the one part of "verify it delivers... with a live test" that requires her — an AI session has no access to that inbox to click the link or confirm arrival.
+- [ ] Once activated, send one real submission through the live `contact.html` page (not `curl`) and confirm it arrives, ideally from a real browser to catch anything a raw HTTP test wouldn't (e.g. CSS/JS issues with the trimmed form).
 
 ### Dependencies
 None.
 
 ### Risks
-Low — no content or IA changes.
+Low — no content or IA changes. Materialized risk: the `js/clapat.js` audit error above — caught before causing harm, not after.
 
 ### Definition of Done
-Contact form delivers a real test email; favicon resolves with no 404; no exposed API key remains in any page; dead files removed; protected files verified unchanged.
+Contact form delivers a real test email *once activated by Jaqueline*; favicon resolves with no 404; no exposed API key remains in any page; dead files removed; protected files verified unchanged; `js/clapat.js` intact and still powers the gallery slider.
 
-### Manual QA required
-Smoke test across all real pages; send and confirm receipt of a real contact-form test message.
+### Manual QA — completed via headless-browser smoke test (Playwright against a local static server)
+- [x] `index.html`, `about.html`, `contact.html`, `index-showcase-gallery.html`, `project01.html` all load HTTP 200 with **zero console errors and zero JS exceptions**.
+- [x] `favicon.ico` confirmed resolving with HTTP 200 (was a 404 before this sprint).
+- [x] `about.html`'s fixed "AI Automations" accordion item renders with no stray leaked text (`/div>` does not appear anywhere in the rendered page).
+- [x] `contact.html`'s form has the correct `name`/`email`/`comments`/submit fields, the correct FormSubmit action URL, and the old non-functional "1+3=" fake captcha field is gone.
+- [x] `index-showcase-gallery.html`'s slider (powered by `js/clapat.js`, correctly *not* deleted) renders and functions — confirmed visually via screenshot (PREV/NEXT controls, "Scroll or Drag" hint, images sliding into view).
+- [x] Visually confirmed via screenshots, after correctly waiting for the site's own preloader-hide signal (initial screenshots taken too early were misleadingly blank — the preloader stays up until every image on the page finishes loading via `imagesLoaded` plus ~1.5s of GSAP reveal delay; this is itself a live illustration of why image compression is already flagged as a performance task in `TECHNICAL_STANDARDS.md`).
+- [ ] Not yet done by a human: a real cross-browser/real-device pass, and the live contact-form send-and-receive test (blocked on FormSubmit activation above).
 
-### Expected Git commit(s)
-`fix: repoint broken favicon references`, `fix: remove exposed maps integration`, `fix: restore working contact flow`, `chore: remove dead template files`
+### Actual Git commits
+`chore: remove dead template files and committed OS junk` (`6a00191`), `fix: remove exposed Google Maps API key` (`90db06b`), `fix: remove exposed maps key and fix malformed markup in about.html` (`ffe6bdc`), `fix: restore working contact flow` (`8ee1a4e`)
 
 ### Review checkpoint
-Quick walkthrough with Jaqueline before Sprint 1.
+Jaqueline: (1) activate the FormSubmit email, (2) do a quick visual pass on Home/About/Contact/Work/one project page in a real browser, (3) confirm favicon shows correctly, before Sprint 1 begins.
 
 ---
 
