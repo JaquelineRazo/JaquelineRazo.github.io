@@ -32,6 +32,16 @@ textarea:focus-visible,
 	outline-color: #000;
 }
 
+/* Card titles: semantically h3 (subsections within an h2), styled
+   identically to the theme's own h6 (18px/36px) since h3's default
+   fluid viewport-relative sizing (~45px+) is sized for full section
+   headings, not compact grid cards. Fixes the h2-straight-to-h6
+   heading-hierarchy skip flagged in the original SEO audit. */
+.card-title {
+	font-size: 18px;
+	line-height: 36px;
+}
+
 /* Hero: sentence-length statement headline (index.html hero).
    .hero-title is built for 1-3 words at ~24vw with white-space:nowrap;
    a full sentence needs to wrap across multiple lines instead. */
