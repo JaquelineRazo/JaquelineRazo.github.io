@@ -163,3 +163,34 @@ ADR-style record of every strategic or technical decision made for this project.
 **Reason**: The two highest-impact, most continuously-active motion sources (the mouse-follow cursor, and the readability-harming `.has-opacity` scroll-scrub) are fixed — see DEC-020 and DEC-022. A full pass through every remaining pinned/parallax/scrub animation in this deeply interconnected animation codebase (the Sprint 1 letter-split bug is a concrete example of how non-obvious the interactions between these systems can be) is a substantially larger and riskier undertaking than fits this sprint's scope, and rushing it risks introducing new bugs rather than genuinely improving accessibility.
 **Alternatives considered**: Attempting a sweeping change across both files in this sprint — rejected as too high-risk given the demonstrated fragility of this animation system under rapid, broad changes.
 **Status**: Approved as a conscious scope reduction, flagged for Sprint 5 if full reduced-motion coverage becomes a hard requirement. Not a silent gap — recorded here and in `IMPLEMENTATION_ROADMAP.md` Sprint 3.
+
+### DEC-024
+**Date**: 2026-08-25
+**Decision**: Generate the 10 OG share images programmatically (Python/Pillow: DIN Condensed Bold + Arial on the site's own `#0c0c0c` background with the accent-color rule) rather than treating real photography/design as a blocking dependency.
+**Reason**: `DESIGN_SYSTEM.md`'s own visual asset plan calls for OG images to be "typographic, on-brand, not screenshots of the page itself" — a programmatic approach satisfies that directly, ships now instead of blocking Sprint 4 on a design-asset dependency, and is trivially regenerable if the copy changes.
+**Status**: Approved. Visually confirmed via screenshot — clean, legible, on-brand.
+
+### DEC-025
+**Date**: 2026-08-25
+**Decision**: Regenerate `favicon.ico` as a proper multi-size icon (16/32/48px) plus a full supporting set (`favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest`), all derived from `images/logo-white.png` (the site's own mark).
+**Reason**: Sprint 0's favicon fix only corrected the file's *path* (it was being requested from repo root but lived in `images/`); the file itself was still just the single original 16px icon, not a real favicon set. Discovered while doing this sprint's favicon task properly.
+**Status**: Approved. All new files confirmed serving HTTP 200.
+
+### DEC-026
+**Date**: 2026-08-25
+**Decision**: Every card/grid title built across Sprints 1–2 (90 elements across 8 files: Capabilities, Selected Work, Speaking, Final CTA, and every case study's Challenge/Built/Outcome grids) used `<h6>`, skipping `<h3>`–`<h5>` entirely (`<h2>` straight to `<h6>`). Fixed by adding a `.card-title` CSS class (`css/tokens.css`) that exactly replicates `h6`'s existing 18px/36px sizing, and changing the element itself to `<h3>`.
+**Reason**: `<h6>` was a deliberate, pre-existing theme convention for compact card-title text (h3's default fluid sizing is ~45px+, meant for full section headings, not grid cards) — the *sizing* choice was correct, but skipping heading levels is a real hierarchy issue. The `.card-title` class preserves the exact visual result while fixing the semantic level, at zero visual-regression risk (confirmed via screenshot).
+**Alternatives considered**: Leaving `<h6>` as-is (matches the original theme's own pattern, low risk) — rejected since this project has an explicit "no skipped heading levels" requirement from the original SEO audit, and a safe fix was available.
+**Status**: Approved.
+
+### DEC-027 (flagged, not decided)
+**Date**: 2026-08-25
+**Decision**: `images/about.mp4` (9.3MB, the background video behind `about.html`'s hero portrait) was left uncompressed and untouched.
+**Reason**: No video-compression tooling (`ffmpeg`) is available in this environment. The only alternative without that tooling — removing the video and keeping just the now-compressed static image — is a visual/content decision about the site's identity (does the ambient motion matter to Jaqueline, or is it purely decorative weight), not a technical call this project should make unilaterally on performance grounds alone.
+**Status**: Open. Needs either a pre-compressed version supplied by Jaqueline, or an explicit decision from her to drop the video in favor of the static image.
+
+### DEC-028
+**Date**: 2026-08-25
+**Decision**: Removed the dead placeholder Universal Analytics snippet (`ga('create', 'code_here', 'auto')`) from the 5 pages that still had it. Did not replace it with anything.
+**Reason**: The snippet was confirmed inert since the original audit (placeholder tracking ID, deprecated UA product) — shipping known-dead code forward serves no purpose. A real GA4 property requires Jaqueline to create the account first; that's an external dependency this project can't complete on her behalf.
+**Status**: Approved (removal). GA4 wiring itself remains open, blocked on her account creation.

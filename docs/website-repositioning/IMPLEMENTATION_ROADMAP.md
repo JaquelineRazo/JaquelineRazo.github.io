@@ -264,7 +264,7 @@ Keyboard-only walkthrough recommended before Sprint 4, ideally on a real device 
 
 ---
 
-## Sprint 4 — SEO, Performance & Launch QA
+## Sprint 4 — SEO, Performance & Launch QA ✅ (complete, two items need Jaqueline directly)
 
 ### Objective
 Ship a launch-ready site.
@@ -272,42 +272,51 @@ Ship a launch-ready site.
 ### Scope
 OG/Twitter/canonical/JSON-LD, sitemap/robots, full favicon set, heading-structure fixes, final alt-text pass, cross-browser QA.
 
-### Files
-Every real page's `<head>` block, new `sitemap.xml`/`robots.txt`/`site.webmanifest`, `images/` (compression pass on anything shipping).
+### Files (as actually touched)
+All 10 in-scope pages' `<head>` blocks (`index.html`, `about.html`, `contact.html`, `work.html`, 5 `case-*.html`, `project03.html`), new `sitemap.xml`/`robots.txt`/`site.webmanifest`/`apple-touch-icon.png`/favicon set/`images/og/*.png`, `css/tokens.css` (`.card-title`), 4 compressed images.
 
 ### Tasks
-- [ ] Apply title/meta-description templates from `TECHNICAL_STANDARDS.md` to every real page.
-- [ ] Add OG + Twitter Card tags to every real page.
-- [ ] Add canonical links to every real page.
-- [ ] Add JSON-LD `Person` schema (Home/About minimum); consider `WebSite`/`CreativeWork` schema.
-- [ ] Create and add `sitemap.xml` (primary pages + case studies only; excludes archive/privacy/tos/contact.php).
-- [ ] Create and add `robots.txt` (`Disallow: /archive/`, sitemap reference).
-- [ ] Produce full favicon set (`favicon.ico`, 32×32, 16×16, apple-touch-icon) + `site.webmanifest`.
-- [ ] Produce OG share images (1200×630) per primary page + case study.
-- [ ] Fix heading structure (single `h1` per page, proper `h2`/`h3` nesting) on all shipping pages.
-- [ ] Final `alt` text pass on all in-scope (non-archived) pages.
-- [ ] Compress/convert oversized media that survives into the final page set.
-- [ ] Wire GA4 (or alternative) once Jaqueline has created the account — external dependency, not blocking otherwise.
-- [ ] Cross-browser/cross-device final QA.
-- [ ] Confirm `privacy.html`/`tos.html`/`contact.php`/TikTok file remain byte-for-byte unchanged and unreferenced from the new sitemap/nav.
+- [x] Title/meta-description templates: already applied in Sprints 1–2 for every page — confirmed via audit at the start of this sprint, nothing left to do.
+- [x] OG + Twitter Card tags: added to all 10 pages (title, description, type, url, image + dimensions, site_name; twitter:card=summary_large_image + title/description/image).
+- [x] Canonical links: added to all 10 pages, pointing at `https://jaquelinerazo.github.io/...` (confirmed via `git remote` — no custom domain/`CNAME` configured).
+- [x] JSON-LD: `Person` schema on `index.html` and `about.html` (name, jobTitle, url, sameAs → LinkedIn, knowsAbout → the 5 capability domains); `WebSite` schema on `index.html`.
+- [x] `sitemap.xml`: exactly the 10 in-scope pages, nothing archived/out-of-scope.
+- [x] `robots.txt`: `Disallow: /archive/` + sitemap reference.
+- [x] Full favicon set: regenerated `favicon.ico` as a proper multi-size icon (it turned out to be silently 404ing in a different way than Sprint 0 fixed — see note below), plus `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png` (180×180), `icon-192.png`/`icon-512.png`, `site.webmanifest` — all generated from `images/logo-white.png` (the site's own mark) rather than a generic placeholder.
+- [x] OG share images: 10 images (1200×630) covering all in-scope pages, generated programmatically (DIN Condensed Bold + Arial, black background, accent-color rule) rather than left as a blocking asset dependency — typographic per `DESIGN_SYSTEM.md`'s own direction, not stock photography.
+- [x] Heading structure: `project03.html` had 3 `<h1>`s (confirmed the only in-scope page with this issue — all Sprint 1–2 pages were already correctly single-`h1`, built that way from the start); demoted the two section headers to `<h2>`. Separately found and fixed a real h2→h6 hierarchy skip across 8 files (90 card-title elements) — see note below.
+- [x] Final alt-text pass: fixed 4 literal `"Image Title"` placeholders and 1 empty `alt=""` across `about.html`/`project03.html`; confirmed via audit that the 5 case-study pages have no images beyond the already-correct logo (nothing else to fix there).
+- [x] Image compression: compressed the 4 oversized images that actually ship (`about.jpg` 2.3MB→222KB, 3× UNODC screenshots) — see note below on the one asset (`about.mp4`) left untouched.
+- [ ] **GA4 wiring — external dependency, not done.** Removed the dead placeholder Universal Analytics snippet (5 pages had it, tracking ID was literally `'code_here'`) rather than leave known-dead code shipping, but a real GA4 property requires Jaqueline to create the account first. Nothing to wire until she has one.
+- [ ] **Cross-browser/cross-device final QA — partially done.** Extensive headless Chromium verification across all 10 pages (metadata presence, heading counts, console errors, failed requests — all clean). No access to real Safari/Firefox or a physical mobile device in this environment; recommend a human pass before launch, especially given this theme leans on GSAP/ScrollTrigger/Smooth Scrollbar behavior that can vary subtly across engines.
+- [x] Confirmed `privacy.html`/`tos.html`/`contact.php`/TikTok file byte-for-byte unchanged (`git status` on those exact paths, checked at every commit this sprint) and absent from `sitemap.xml`/nav.
+
+### Notes / corrections found during implementation
+- **The `favicon.ico` fixed in Sprint 0 was only path-corrected, not actually complete.** It was still the original single-16px icon, not a proper multi-size `.ico` — regenerated as a real 16/32/48px set this sprint.
+- **A second, separate heading-hierarchy issue beyond the originally-scoped `project03.html` h1s**: every card/grid title built across Sprints 1–2 (Capabilities, Selected Work, Speaking, Final CTA, and every case study's Challenge/Built/Outcome grids — 90 elements across 8 files) used `<h6>` for small compact titles, which is the theme's own established pattern (h6 is deliberately sized small — 18px/36px — for exactly this use, versus h3's ~45px+ fluid sizing meant for full section headings). Still, jumping from `<h2>` straight to `<h6>` is a real hierarchy skip. Fixed by adding a new `.card-title` CSS class replicating h6's exact sizing and changing the element to `<h3>` — confirmed via screenshot that nothing changed visually, only the semantic level.
+- **`images/about.mp4` (9.3MB) was deliberately left uncompressed.** No video-compression tooling (`ffmpeg`) is available in this environment. More importantly, removing the video background outright (the only real alternative without that tooling) is a visual/content decision about the site's identity, not a purely technical performance fix — flagged here for Jaqueline rather than decided unilaterally. If she wants it addressed, either she supplies a pre-compressed version or explicitly asks for the video to be dropped in favor of the now-compressed static `about.jpg`.
+- **A notable discovery**: `images/about.jpg` (the image behind that same video) shows Jaqueline mid-presentation, wearing a headset microphone, in what looks like Türkiye (matching her stated international ties) — this may already satisfy the "Speaking/workshop photo" placeholder need flagged in `DESIGN_SYSTEM.md`'s visual asset plan, rather than requiring a net-new photo. Not acted on this sprint (a content-placement decision, not a technical one) — flagged for Jaqueline's consideration.
 
 ### Dependencies
-Final content in place (Sprints 1–2); imagery ideally final but not required (placeholders can ship if unavoidable, clearly labeled).
+Final content in place (Sprints 1–2) — confirmed satisfied.
 
 ### Risks
-Low.
+Low, as anticipated. No surprises beyond the two notes above.
 
 ### Definition of Done
-Every item in `QA_CHECKLIST.md` passes.
+Every item in `QA_CHECKLIST.md` that doesn't require a live account (GA4) or physical device/browser access passes; both exceptions are clearly flagged, not silently skipped.
 
-### Manual QA required
-Full QA pass using `QA_CHECKLIST.md`; metadata validated with Rich Results Test + a social-share debugger.
+### Manual QA — completed via headless-browser verification (Playwright) across all 10 in-scope pages
+- [x] HTTP 200, exactly one `<h1>`, all metadata tags present (og:title, og:image, canonical, twitter:card, manifest, apple-touch-icon), zero console errors, zero failed requests — every page.
+- [x] `sitemap.xml` validated as well-formed XML; `robots.txt`, `site.webmanifest`, full favicon set, and all 10 OG images confirmed serving with HTTP 200.
+- [x] Visually confirmed (screenshot): OG images render as intended (clean, on-brand, legible); compressed images show no perceptible quality loss; the `.card-title` h3 swap is visually identical to the previous h6 styling.
+- [ ] **Not yet done by a human**: metadata validated with Google's Rich Results Test and a real social-share debugger (Facebook/LinkedIn/Twitter card preview tools) — headless checks confirm the tags exist and are well-formed, not that each platform renders the preview as intended.
 
-### Expected Git commit(s)
-`seo: add metadata and structured data`, `seo: add sitemap and robots`, `perf: optimize production assets`, `fix: complete favicon set`
+### Actual Git commit(s)
+`feat: add full favicon set and OG share images`, `seo: add sitemap and robots`, `perf: optimize production images`, `seo: add metadata and structured data; fix heading hierarchy and alt text`
 
 ### Review checkpoint
-Full QA pass reviewed with Jaqueline; explicit go/no-go for launch.
+Full QA pass reviewed with Jaqueline before launch — in particular, a go/no-go call on the two flagged items above (the `about.mp4` size/removal question, and whether `about.jpg` should be repurposed as the Speaking-section photo), plus the still-pending real-browser/real-device pass and GA4 account creation.
 
 ---
 
