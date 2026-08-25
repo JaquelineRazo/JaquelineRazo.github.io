@@ -87,7 +87,13 @@ Function Height Titles
 			});
 		}
 		
-		generateSpans('.height-title .hero-title');
+		// .no-letter-split opts a hero-title out of the per-letter shred+shuffle
+		// reveal below: fine for a short word ("CONTACT"), but for a full-sentence
+		// headline the same letter-count drives the shuffle stagger past 4s and
+		// reads as scattered/broken rather than dramatic. Excluding it here keeps
+		// its original single <span> intact, so the shuffle animation further
+		// down (which queries that span) just does one clean block reveal.
+		generateSpans('.height-title .hero-title:not(.no-letter-split)');
 		generateSpans('.height-title .next-hero-title');
 		generateSpans('.height-title .slide-hero-title');
 		generateSpans('.fixed-title');
