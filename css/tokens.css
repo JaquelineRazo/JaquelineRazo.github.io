@@ -538,19 +538,23 @@ textarea:focus-visible,
 }
 
 .cap2-card--featured .cap2-card-title {
-	font-size: clamp(1.9rem, 2.6vw, 2.8rem);
+	font-size: 4.8rem;
+	letter-spacing: 0.1em;
 	color: #000;
 }
 
 .cap2-card-tagline {
-	font-style: italic;
+	font-style: normal;
 	font-size: 14px;
 	color: rgba(255, 255, 255, 0.65);
 	margin: 0 0 14px;
 }
 
 .cap2-card--featured .cap2-card-tagline {
-	color: rgba(0, 0, 0, 0.7);
+	color: rgb(255, 255, 255);
+	background-color: #8c6144;
+	text-align: center;
+	padding: 6px 12px;
 }
 
 .cap2-card-divider {
@@ -715,6 +719,9 @@ textarea:focus-visible,
 	.cap2-intro-right {
 		max-width: 100%;
 	}
+	.cap2-card--featured .cap2-card-title {
+		font-size: 3.2rem;
+	}
 }
 
 @media only screen and (max-width: 767px) {
@@ -729,6 +736,10 @@ textarea:focus-visible,
 	.cap2-card[data-slot] {
 		grid-column: 1 !important;
 		grid-row: auto !important;
+	}
+	.cap2-card--featured .cap2-card-title {
+		font-size: 2.6rem;
+		letter-spacing: 0.06em;
 	}
 	.cap2-card-inner {
 		height: auto;
@@ -1191,6 +1202,27 @@ textarea:focus-visible,
 	}
 	.work-file-reveal:last-child {
 		margin-bottom: 0 !important;
+	}
+}
+
+/* Speaking / "Ideas That Move People to Act" — particle-mic illustration
+   anchored right, where the section's own text/cards (centered, left of
+   it) stay clear of it. */
+.speaking-row {
+	background-color: #fff;
+	background-image: url("../images/ideas that move people to act.png");
+	background-repeat: no-repeat;
+	background-position: center right;
+	background-size: cover;
+}
+
+@media only screen and (max-width: 767px) {
+	/* `cover` on a narrow+tall mobile section blows the wide illustration
+	   up far past its actual density, burying the text under solid dot
+	   texture. `contain` keeps it at its own proportions instead. */
+	.speaking-row {
+		background-size: contain;
+		background-position: top right;
 	}
 }
 
