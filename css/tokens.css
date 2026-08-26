@@ -322,10 +322,6 @@ textarea:focus-visible,
 	max-width: 1600px;
 	margin: 0 auto;
 	box-sizing: border-box;
-	display: grid;
-	grid-template-columns: minmax(260px, 340px) 1fr;
-	column-gap: 48px;
-	row-gap: 32px;
 }
 
 .cap2-field {
@@ -338,30 +334,36 @@ textarea:focus-visible,
 	opacity: 0.9;
 }
 
+/* Title sits in a horizontal band above the grid (not a side column) —
+   so the pinned entrance (js/common.js) fills the viewport with real
+   content immediately instead of leaving a tall empty gap above a
+   narrow side column. See DEC-038. */
 .cap2-intro {
 	position: relative;
 	z-index: 1;
-	grid-column: 1;
-	grid-row: 1;
-	align-self: start;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	flex-wrap: wrap;
+	gap: 28px;
+	margin-bottom: 40px;
 	text-align: left;
 }
 
-.cap2-title {
-	font-size: clamp(3rem, 5.5vw, 5.4rem);
-	line-height: 0.95;
-	margin: 6px 0 20px;
+.cap2-intro-left {
+	max-width: 520px;
 }
 
-/* Entrance for the eyebrow/statement/taxonomy/cards is a bespoke GSAP
-   timeline (js/common.js), not the sitewide .has-animation default —
-   see DESIGN_SYSTEM.md interaction spec 7. The hidden/offset states
-   below are baked into CSS (not set by JS) so there's no flash of the
-   final state before the timeline runs, same pattern as
-   .has-animation elsewhere. */
-.cap2-eyebrow {
-	opacity: 0;
-	transform: translateY(16px);
+.cap2-intro-right {
+	max-width: 380px;
+}
+
+.cap2-title {
+	/* Floor 2.6rem @400px viewport, ceiling 9.2rem @1600px (this
+	   section's own max-width) — same fluid-clamp method as the hero. */
+	font-size: clamp(2.6rem, 0.4rem + 8.8vw, 9.2rem);
+	line-height: 0.95;
+	margin: 6px 0 0;
 }
 
 .cap2-statement {
@@ -369,15 +371,12 @@ textarea:focus-visible,
 	font-size: 17px;
 	line-height: 1.5;
 	color: rgba(255, 255, 255, 0.7);
-	max-width: 320px;
-	margin: 0 0 26px;
-	opacity: 0;
-	transform: translateY(16px);
+	margin: 0 0 14px;
 }
 
 .cap2-taxonomy {
 	font-family: var(--font-body);
-	font-size: 12px;
+	font-size: 14px;
 	letter-spacing: 0.08em;
 	text-transform: uppercase;
 	color: rgba(255, 255, 255, 0.55);
@@ -385,11 +384,6 @@ textarea:focus-visible,
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
-}
-
-.cap2-taxonomy > * {
-	opacity: 0;
-	transform: translateY(6px) scale(0.92);
 }
 
 .cap2-tax-x {
@@ -409,8 +403,6 @@ textarea:focus-visible,
 .cap2-grid {
 	position: relative;
 	z-index: 1;
-	grid-column: 2;
-	grid-row: 1;
 	display: grid;
 	grid-template-columns: 1fr 1.25fr 1fr;
 	grid-template-rows: auto auto;
@@ -423,21 +415,29 @@ textarea:focus-visible,
 .cap2-card[data-slot="4"] { grid-column: 1; grid-row: 2; }
 .cap2-card[data-slot="5"] { grid-column: 3; grid-row: 2; }
 
-/* Entrance: each card flies/rotates in from a direction keyed to its
-   fixed identity (data-cap, not data-slot — slot is mutable once the
-   featured-swap interaction runs, this isn't). Baked into CSS so
-   there's no flash before the GSAP timeline (js/common.js) runs; once
-   it completes, the inline styles GSAP sets win regardless of any
-   later data-slot change. */
-.cap2-card[data-cap="1"] { opacity: 0; transform: translate3d(-70px, 24px, 0) rotate(-5deg) scale(0.82); }
-.cap2-card[data-cap="2"] { opacity: 0; transform: translate3d(70px, 24px, 0) rotate(5deg) scale(0.82); }
-.cap2-card[data-cap="3"] { opacity: 0; transform: translate3d(0, 60px, 0) scale(0.78); }
-.cap2-card[data-cap="4"] { opacity: 0; transform: translate3d(-45px, 45px, 0) rotate(-4deg) scale(0.85); }
-.cap2-card[data-cap="5"] { opacity: 0; transform: translate3d(45px, 45px, 0) rotate(4deg) scale(0.85); }
-
 .cap2-card {
 	position: relative;
 	min-height: 0;
+}
+
+/* Entrance: cards descend a large distance from above, scroll-scrubbed
+   and pinned on desktop (js/common.js) so the sequence gets guaranteed
+   screen time even on a fast scroll — same spirit as the dormant
+   .move-thumbs-wrapper mechanism elsewhere in this codebase (a big,
+   visible, scroll-driven transformation), adapted for text cards
+   instead of replicating its two-state thumbnail-swap structure. See
+   DESIGN_SYSTEM.md interaction spec 7 (revised). Baked into CSS so
+   there's no flash before JS runs. */
+.cap2-card {
+	opacity: 0;
+	transform: translateY(-65vh) scale(0.88);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cap2-card {
+		opacity: 1;
+		transform: none;
+	}
 }
 
 .cap2-card-inner {
@@ -616,7 +616,6 @@ textarea:focus-visible,
 .cap2-nav {
 	position: relative;
 	z-index: 1;
-	grid-column: 1 / span 2;
 	display: flex;
 	align-items: center;
 	gap: 20px;
@@ -703,21 +702,11 @@ textarea:focus-visible,
 }
 
 @media only screen and (max-width: 1024px) {
-	.cap2-shell {
-		grid-template-columns: 1fr;
-	}
 	.cap2-intro {
-		grid-row: 1;
-		grid-column: 1;
-		max-width: 480px;
+		align-items: flex-start;
 	}
-	.cap2-grid {
-		grid-row: 2;
-		grid-column: 1;
-		margin-top: 28px;
-	}
-	.cap2-nav {
-		grid-column: 1;
+	.cap2-intro-right {
+		max-width: 100%;
 	}
 }
 

@@ -1223,60 +1223,62 @@ Function Scroll Effects
 			var capReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 			var capIsMobile = function() { return window.matchMedia('(max-width: 767px)').matches; };
 
-			// Bespoke entrance — deliberately not the sitewide
-			// .has-animation/.has-mask-fill defaults (see
-			// DESIGN_SYSTEM.md interaction spec 7): a scramble-reveal
-			// title and a staggered "assemble" entrance for the bento
-			// cards (directional slide + rotation + scale per card,
-			// keyed to each card's fixed identity so it still makes
-			// sense after a featured-swap changes its slot).
-			var capEyebrowEl = capShell.querySelector('.cap2-eyebrow');
-			var capTitleEl = capShell.querySelector('.cap2-title');
-			var capStatementEl = capShell.querySelector('.cap2-statement');
-			var capTaxonomyEl = capShell.querySelector('.cap2-taxonomy');
-			var capTaxonomyItems = capTaxonomyEl ? Array.prototype.slice.call(capTaxonomyEl.children) : [];
-
-			var capScrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+=-';
-			var capScrambleText = function(el, finalText, duration) {
-				var start = null;
-				var step = function(ts) {
-					if (!start) start = ts;
-					var progress = Math.min((ts - start) / duration, 1);
-					var revealCount = Math.floor(progress * finalText.length);
-					var out = '';
-					for (var i = 0; i < finalText.length; i++) {
-						var ch = finalText.charAt(i);
-						if (ch === ' ') { out += ' '; continue; }
-						out += i < revealCount ? ch : capScrambleChars.charAt((Math.random() * capScrambleChars.length) | 0);
-					}
-					el.textContent = out;
-					if (progress < 1) requestAnimationFrame(step);
-					else el.textContent = finalText;
-				};
-				requestAnimationFrame(step);
-			};
-
-			if (capTitleEl) {
-				var capEntranceTl = gsap.timeline({
-					scrollTrigger: { trigger: capShell, start: 'top 78%', once: true },
-					defaults: { ease: 'power3.out' }
-				});
-
-				if (capEyebrowEl) capEntranceTl.to(capEyebrowEl, { opacity: 1, y: 0, duration: 0.5 }, 0);
-
-				var capTitleFinal = capTitleEl.textContent.trim();
-				capEntranceTl.set(capTitleEl, { opacity: 1 }, 0.1)
-					.call(function() { capScrambleText(capTitleEl, capTitleFinal, 700); }, null, 0.1);
-
-				if (capStatementEl) capEntranceTl.to(capStatementEl, { opacity: 1, y: 0, duration: 0.6 }, 0.35);
-				if (capTaxonomyItems.length) {
-					capEntranceTl.to(capTaxonomyItems, { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.05 }, 0.55);
-				}
-				if (capCards.length) {
-					capEntranceTl.to(capCards, {
-						x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
-						duration: 0.9, ease: 'back.out(1.25)', stagger: 0.09
-					}, 0.7);
+			// Title/eyebrow/statement/taxonomy use the sitewide
+			// .has-animation/.has-mask-fill defaults (see their classes
+			// in index.html) — same treatment as every other section
+			// heading, including Point of View's promoted statement.
+			//
+			// Cards: a big, visible, scroll-driven descent — in the
+			// spirit of this codebase's dormant .move-thumbs-wrapper
+			// gallery effect (a large, scroll-scrubbed transformation),
+			// adapted to text cards instead of replicating its two-state
+			// thumbnail-swap structure. A short scrub over a small pixel
+			// range (the first version of this) barely registers on a
+			// fast scroll, so desktop PINS the section for the sequence
+			// — the same technique this page already uses for the hero,
+			// the ticker, and Point of View — guaranteeing the cascade
+			// gets real screen time regardless of scroll speed. Mobile
+			// skips the pin (consistent with how the ticker/
+			// pinned-section already degrade on mobile — pinning reads
+			// as "stuck" on a touch device) and just settles each card
+			// in as it's scrolled to. Gated behind prefers-reduced-motion
+			// per DESIGN_SYSTEM.md's accessibility principle that ALL
+			// scroll-scrubbed motion (not just continuous/idle effects)
+			// must be gated — unlike a one-time reveal, which this
+			// codebase leaves unguarded.
+			if (capCards.length && !capReducedMotion) {
+				if (!isMobile()) {
+					// start: 'top top' (not 'top 80%') — matches this
+					// page's other pins (hero, ticker). Pinning while the
+					// section's top is still 80% down the viewport left a
+					// tall empty gap above it for the whole pinned
+					// duration; pinning at the natural "top meets top"
+					// point means the section is already filling the
+					// viewport when it freezes.
+					var capCascadeTl = gsap.timeline({
+						scrollTrigger: {
+							trigger: capShell,
+							start: 'top top',
+							end: function() { return '+=' + window.innerHeight; },
+							scrub: true,
+							pin: true,
+							pinSpacing: true
+						}
+					});
+					capCards.forEach(function(card, i) {
+						capCascadeTl.to(card, {
+							y: 0, opacity: 1, scale: 1,
+							ease: 'power2.out', duration: 1
+						}, i * 0.35);
+					});
+				} else {
+					capCards.forEach(function(card) {
+						gsap.to(card, {
+							y: 0, opacity: 1, scale: 1,
+							duration: 0.6, ease: 'power2.out',
+							scrollTrigger: { trigger: card, start: 'top 92%' }
+						});
+					});
 				}
 			}
 
