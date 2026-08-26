@@ -1282,3 +1282,82 @@ textarea:focus-visible,
 	transform-origin: 0% 0%;
 }
 
+/* About — Career Arc: was a single inline paragraph with text arrows
+   ("A / B -> C -> ..."); now a vertical staged timeline so the sequence
+   itself carries the visual weight instead of reading as body copy. */
+.career-arc-row .eyebrow {
+	display: block;
+	margin-bottom: clamp(32px, 5vw, 56px);
+}
+
+.arc-stages {
+	position: relative;
+	list-style: none;
+	margin: 0 auto;
+	padding: 0;
+	max-width: 1020px;
+	text-align: left;
+}
+
+.arc-stages::before {
+	content: "";
+	position: absolute;
+	top: 0.6em;
+	bottom: 0.6em;
+	left: 1.2ch;
+	width: 1px;
+	background: rgba(255, 255, 255, 0.14);
+}
+
+.arc-stage {
+	display: flex;
+	align-items: baseline;
+	gap: clamp(16px, 3vw, 36px);
+	padding: clamp(12px, 1.8vw, 20px) 0;
+}
+
+.arc-stage-index {
+	position: relative;
+	z-index: 1;
+	flex-shrink: 0;
+	width: 2.4ch;
+	background: #0c0c0c;
+	font-family: var(--font-title);
+	font-size: clamp(1.4rem, 1.8vw, 2rem);
+	color: var(--color-accent);
+	opacity: 0.8;
+}
+
+.arc-stage-name {
+	text-transform: lowercase;
+	font-size: clamp(1.8rem, 0.9rem + 3.2vw, 3.4rem);
+	line-height: 1.05;
+	color: var(--color-fg);
+}
+
+.arc-stage--final .arc-stage-name {
+	color: var(--color-accent);
+}
+
+.arc-copy {
+	margin-top: clamp(48px, 6vw, 80px);
+}
+
+@media only screen and (max-width: 767px) {
+	.arc-stages {
+		max-width: 100%;
+	}
+	.arc-stage {
+		gap: 14px;
+	}
+	.arc-stage-index {
+		width: 2ch;
+		font-size: 1.3rem;
+	}
+	.arc-stage-name {
+		font-size: clamp(1.5rem, 6vw, 2.1rem);
+	}
+}
+
+/*CSS_COLLAB_PLACEHOLDER*/
+
