@@ -44,19 +44,139 @@ textarea:focus-visible,
 
 /* Hero: sentence-length statement headline (index.html hero).
    .hero-title is built for 1-3 words at ~24vw with white-space:nowrap;
-   a full sentence needs to wrap across multiple lines instead. */
+   a full sentence needs to wrap across multiple lines instead.
+   Fluid scale: floor 5.4rem @400px viewport, ceiling 8.4rem @1600px,
+   growing continuously in between (~6.3rem @768px). Tighter line-height
+   and a wider wrap column keep the taller glyphs from costing extra
+   lines at the new size. */
 .hero-statement .hero-title {
 	white-space: normal;
 	overflow: visible;
-	font-size: clamp(2.4rem, 5.2vw, 4.6rem);
-	line-height: 1.15;
-	max-width: 1200px;
+	font-size: clamp(5.4rem, 4.4rem + 4vw, 8.4rem);
+	line-height: 1.05;
+	max-width: 1500px;
 	margin-left: auto;
 	margin-right: auto;
 }
 
 .hero-statement .hero-title span {
 	min-width: 0;
+}
+
+/* #hero-caption's height is normally forced to exactly one viewport by
+   js/common.js's setHeroProperties() (an inline style, which always
+   wins over CSS height/min-height). At the larger hero scale above, a
+   wrapped sentence can exceed one viewport on short/narrow screens;
+   setHeroProperties() was patched to grow to fit content instead of
+   clipping — this min-height is just the pre-JS/no-JS fallback so the
+   hero never renders collapsed. */
+#hero-caption.hero-statement {
+	height: auto;
+	min-height: 100vh;
+}
+
+/* Signature visual (Home, immediately after the hero) — an offset
+   "mounted print" mega-card: portrait card + accent-color backdrop
+   panel peeking out behind it + a slow-drifting dot field, distinct
+   from both the flat, borderless .content-row sections used everywhere
+   else and the full-bleed circle .clipped-image on about.html. */
+.signature-frame {
+	position: relative;
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: 8%;
+}
+
+.signature-card {
+	position: relative;
+	overflow: hidden;
+	z-index: 2;
+	aspect-ratio: 1672 / 941;
+	width: 100%;
+	border-radius: 10px;
+}
+
+/* <picture> has no default box behavior, so it's sized explicitly to
+   fill the card; the image parallax (js/common.js) animates the actual
+   <img> inside it. */
+.signature-card picture {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.signature-card picture img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* Color-block backing panel, peeking out behind the card on two edges */
+.signature-backdrop {
+	position: absolute;
+	top: 28px;
+	left: -28px;
+	width: 100%;
+	height: 100%;
+	background-color: var(--color-accent);
+	border-radius: 10px;
+	z-index: 1;
+}
+
+/* Decorative, slow-drifting dot field echoing the photo's own fine
+   topographic texture. Pure CSS, no new image asset; animates
+   `transform` only (GPU-cheap). rgba() below is --color-accent
+   (#8c6144) at low opacity — hex custom properties can't carry alpha
+   without color-mix(), so it's restated as rgb. */
+.signature-frame-field {
+	position: absolute;
+	top: -15%;
+	left: -20%;
+	width: 140%;
+	height: 130%;
+	z-index: 0;
+	pointer-events: none;
+	background-image: radial-gradient(rgba(140, 97, 68, 0.35) 1px, transparent 1.5px);
+	background-size: 28px 28px;
+	animation: signature-field-drift 50s linear infinite;
+}
+
+@keyframes signature-field-drift {
+	from { transform: translate3d(0, 0, 0); }
+	to   { transform: translate3d(-28px, -28px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.signature-frame-field {
+		animation: none;
+	}
+}
+
+@media only screen and (max-width: 1024px) {
+	.signature-frame {
+		max-width: 100%;
+		margin-right: 0;
+	}
+	.signature-backdrop {
+		top: 20px;
+		left: -20px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.signature-frame {
+		margin-left: 0;
+	}
+	.signature-backdrop {
+		top: 14px;
+		left: -14px;
+		border-radius: 6px;
+	}
+	.signature-card {
+		border-radius: 6px;
+	}
 }
 
 /* Capabilities / Selected Work cards (Home) */

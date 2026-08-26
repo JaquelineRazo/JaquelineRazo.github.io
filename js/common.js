@@ -416,10 +416,17 @@ Function Scroll Effects
 		
 		} else {
 			
-			function setHeroProperties() {								
-				gsap.set("#hero-caption.height-title", { height: window.innerHeight});						
+			function setHeroProperties() {
+				// The oversized hero-statement headline (css/tokens.css) can
+				// wrap to more lines than fit in one viewport on short/narrow
+				// screens; grow the box to fit rather than clipping against
+				// #hero's overflow:hidden.
+				var heroCaptionEl = document.querySelector("#hero-caption.height-title");
+				if (heroCaptionEl) {
+					gsap.set(heroCaptionEl, { height: Math.max(window.innerHeight, heroCaptionEl.scrollHeight) });
+				}
 			}
-			
+
 			setHeroProperties();
 			
 			window.addEventListener('resize', setHeroProperties);
@@ -1182,11 +1189,11 @@ Function Scroll Effects
 			});
 		});
 			
-		var hasParallax = gsap.utils.toArray('.has-parallax');			
+		var hasParallax = gsap.utils.toArray('.has-parallax');
 		hasParallax.forEach(function(hParallax) {
 			var bgImage = hParallax.querySelector("img");
 			var bgVideo = hParallax.querySelector("video");
-			var parallax = gsap.fromTo( [bgImage, bgVideo], {y: '-20%', scale:1.15}, {y: '20%', scale:1, duration: 1, ease:Linear.easeNone});		
+			var parallax = gsap.fromTo( [bgImage, bgVideo], {y: '-20%', scale:1.15}, {y: '20%', scale:1, duration: 1, ease:Linear.easeNone});
 			var parallaxScene = ScrollTrigger.create({
 				trigger: hParallax,
 				start: "top 100%",
@@ -1195,6 +1202,31 @@ Function Scroll Effects
 				scrub: true
 			});
 		});
+
+		// Home signature section — a dedicated scroll-scrub image parallax,
+		// deliberately NOT using the .has-parallax class above: that class
+		// is also targeted by an unrelated mobile-only "make it exactly
+		// window height" fix a few hundred lines up (isMobile() block,
+		// `$('.smooth-scroll main, .has-parallax, nav, ...').css({'height':
+		// winHeight})`), which is correct for that block's full-viewport
+		// background use cases but wrong for this aspect-ratio-sized
+		// portrait card. Gated per TECHNICAL_STANDARDS.md ("respect
+		// prefers-reduced-motion in every new or modified animation-driving
+		// code path").
+		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			var signatureCard = document.querySelector('.signature-card');
+			var signatureImg = signatureCard ? signatureCard.querySelector('img') : null;
+			if (signatureCard && signatureImg) {
+				var signatureParallax = gsap.fromTo(signatureImg, {y: '-20%', scale: 1.15}, {y: '20%', scale: 1, duration: 1, ease: Linear.easeNone});
+				ScrollTrigger.create({
+					trigger: signatureCard,
+					start: "top 100%",
+					end: () => `+=${signatureCard.offsetHeight + window.innerHeight}`,
+					animation: signatureParallax,
+					scrub: true
+				});
+			}
+		}
 		
 		var hasAnimation = gsap.utils.toArray('.has-animation');			
 		hasAnimation.forEach(function(hAnimation) {
