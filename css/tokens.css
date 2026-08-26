@@ -1226,3 +1226,59 @@ textarea:focus-visible,
 	}
 }
 
+/* Selected Work CTA — the whole black band is the button, not a small
+   pill centered inside it. Reuses the vendor's own text-swap-on-hover
+   trick (data-hover + ::before, .button-border span in style.css) at a
+   bigger scale, plus a full-bleed color invert so the entire clickable
+   area visibly reacts, not just the text. */
+.work-cta-row {
+	padding: 0;
+}
+
+.work-cta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: calc(50% - 50vw);
+	margin-right: calc(50% - 50vw);
+	width: 100vw;
+	box-sizing: border-box;
+	padding: clamp(64px, 9vw, 120px) 24px;
+	text-decoration: none;
+	background-color: var(--color-bg);
+	color: var(--color-fg);
+	transition: background-color 0.45s cubic-bezier(0.76, 0, 0.24, 1), color 0.45s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.work-cta:hover,
+.work-cta:focus-visible {
+	background-color: var(--color-fg);
+	color: var(--color-bg);
+}
+
+.work-cta-text {
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	font-family: var(--font-body);
+	font-size: clamp(1.3rem, 0.9rem + 1.4vw, 2rem);
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+	transform-origin: 100% 0%;
+}
+
+.work-cta-text::before {
+	content: attr(data-hover);
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+}
+
+.work-cta:hover .work-cta-text,
+.work-cta:focus-visible .work-cta-text {
+	transform: translateY(-100%);
+	transform-origin: 0% 0%;
+}
+
