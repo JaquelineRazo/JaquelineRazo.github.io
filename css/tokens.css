@@ -1359,5 +1359,81 @@ textarea:focus-visible,
 	}
 }
 
-/*CSS_COLLAB_PLACEHOLDER*/
+/* Moving Gallery (About — Collaborations) — the vendor defines this
+   component in css/shortcodes.css, but the site's real pages load only
+   the minified css/all.min.css bundle, which predates that component
+   and doesn't include it. Ported the rules this usage needs (plus
+   overflow:hidden on the outer element, needed to clip the scroll-driven
+   horizontal translate js/common.js already applies to any
+   .moving-gallery it finds — that part of the vendor JS is unchanged). */
+.moving-gallery {
+	overflow: hidden;
+}
+
+.bw-gallery .wrapper-gallery {
+	display: inline-flex;
+	align-items: flex-start;
+	margin: 0;
+	padding: 0;
+}
+
+.moving-gallery li {
+	position: relative;
+	width: 25vw;
+	padding-left: 10px;
+	padding-right: 10px;
+	box-sizing: border-box;
+	margin: 10px 0;
+	list-style: none;
+}
+
+.moving-gallery li img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	margin: 0;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.moving-gallery + .moving-gallery {
+	margin-top: 20px;
+}
+
+.moving-gallery-caption {
+	position: absolute;
+	height: auto;
+	padding: 30px;
+	box-sizing: border-box;
+	text-align: center;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0;
+	color: var(--color-fg);
+	font-family: var(--font-body);
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-size: 13px;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+	transition: opacity 0.2s ease-in-out;
+}
+
+.moving-gallery li:hover .moving-gallery-caption {
+	opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.moving-gallery .wrapper-gallery {
+		transform: none !important;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.moving-gallery li {
+		width: 60vw;
+	}
+}
+
+/*CSS_COMMUNITIES_PLACEHOLDER*/
 
