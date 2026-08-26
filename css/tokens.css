@@ -1435,5 +1435,28 @@ textarea:focus-visible,
 	}
 }
 
-/*CSS_COMMUNITIES_PLACEHOLDER*/
+/* About — Communities & Leadership: replaces the old "MY Capabilities"
+   pinned accordion with a plain two-column split reusing .one_half/
+   .one_half.last (the vendor's own float-based column pair, already
+   used elsewhere on this page — no pin/scroll mechanism needed here
+   since the right side is a single looping video, not a scrollable
+   list). */
+.communities-video-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.communities-video {
+	display: block;
+	width: 100%;
+	aspect-ratio: 3 / 4;
+	object-fit: cover;
+	border-radius: 6px;
+}
+
+@media only screen and (max-width: 767px) {
+	.communities-video-col {
+		margin-top: 32px;
+	}
+}
 
