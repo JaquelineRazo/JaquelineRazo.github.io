@@ -1206,6 +1206,385 @@ Function Scroll Effects
 			});
 		});
 
+		// Capabilities bento grid (Home) — one "featured" card at a time;
+		// clicking another card swaps which grid slot is featured via
+		// GSAP Flip (already loaded/registered for the hero's own Flip
+		// usage above). Desktop: slot swap. Mobile (<=767px, matches the
+		// CSS breakpoint): single-column accordion instead — see
+		// DESIGN_SYSTEM.md interaction spec 6 / DECISIONS.md DEC-033.
+		var capShell = document.querySelector('.cap2-shell');
+		if (capShell) {
+			var capGrid = capShell.querySelector('.cap2-grid');
+			var capCards = Array.prototype.slice.call(capShell.querySelectorAll('.cap2-card'));
+			var capNavDots = Array.prototype.slice.call(capShell.querySelectorAll('.cap2-nav-dot'));
+			var capNavCurrent = capShell.querySelector('.cap2-nav-current');
+			var capPrev = capShell.querySelector('.cap2-nav-prev');
+			var capNext = capShell.querySelector('.cap2-nav-next');
+			var capReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			var capIsMobile = function() { return window.matchMedia('(max-width: 767px)').matches; };
+
+			// Bespoke entrance — deliberately not the sitewide
+			// .has-animation/.has-mask-fill defaults (see
+			// DESIGN_SYSTEM.md interaction spec 7): a scramble-reveal
+			// title and a staggered "assemble" entrance for the bento
+			// cards (directional slide + rotation + scale per card,
+			// keyed to each card's fixed identity so it still makes
+			// sense after a featured-swap changes its slot).
+			var capEyebrowEl = capShell.querySelector('.cap2-eyebrow');
+			var capTitleEl = capShell.querySelector('.cap2-title');
+			var capStatementEl = capShell.querySelector('.cap2-statement');
+			var capTaxonomyEl = capShell.querySelector('.cap2-taxonomy');
+			var capTaxonomyItems = capTaxonomyEl ? Array.prototype.slice.call(capTaxonomyEl.children) : [];
+
+			var capScrambleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&*+=-';
+			var capScrambleText = function(el, finalText, duration) {
+				var start = null;
+				var step = function(ts) {
+					if (!start) start = ts;
+					var progress = Math.min((ts - start) / duration, 1);
+					var revealCount = Math.floor(progress * finalText.length);
+					var out = '';
+					for (var i = 0; i < finalText.length; i++) {
+						var ch = finalText.charAt(i);
+						if (ch === ' ') { out += ' '; continue; }
+						out += i < revealCount ? ch : capScrambleChars.charAt((Math.random() * capScrambleChars.length) | 0);
+					}
+					el.textContent = out;
+					if (progress < 1) requestAnimationFrame(step);
+					else el.textContent = finalText;
+				};
+				requestAnimationFrame(step);
+			};
+
+			if (capTitleEl) {
+				var capEntranceTl = gsap.timeline({
+					scrollTrigger: { trigger: capShell, start: 'top 78%', once: true },
+					defaults: { ease: 'power3.out' }
+				});
+
+				if (capEyebrowEl) capEntranceTl.to(capEyebrowEl, { opacity: 1, y: 0, duration: 0.5 }, 0);
+
+				var capTitleFinal = capTitleEl.textContent.trim();
+				capEntranceTl.set(capTitleEl, { opacity: 1 }, 0.1)
+					.call(function() { capScrambleText(capTitleEl, capTitleFinal, 700); }, null, 0.1);
+
+				if (capStatementEl) capEntranceTl.to(capStatementEl, { opacity: 1, y: 0, duration: 0.6 }, 0.35);
+				if (capTaxonomyItems.length) {
+					capEntranceTl.to(capTaxonomyItems, { opacity: 1, y: 0, scale: 1, duration: 0.4, stagger: 0.05 }, 0.55);
+				}
+				if (capCards.length) {
+					capEntranceTl.to(capCards, {
+						x: 0, y: 0, rotation: 0, scale: 1, opacity: 1,
+						duration: 0.9, ease: 'back.out(1.25)', stagger: 0.09
+					}, 0.7);
+				}
+			}
+
+			var capCardById = function(id) {
+				return capCards.filter(function(c) { return c.getAttribute('data-cap') === String(id); })[0];
+			};
+			var capActiveId = function() {
+				var featured = capCards.filter(function(c) { return c.classList.contains('cap2-card--featured'); })[0];
+				return featured ? featured.getAttribute('data-cap') : capCards[0].getAttribute('data-cap');
+			};
+
+			var capSyncNav = function(activeId) {
+				capNavDots.forEach(function(dot) {
+					dot.setAttribute('aria-selected', dot.getAttribute('data-cap') === activeId ? 'true' : 'false');
+				});
+				if (capNavCurrent) capNavCurrent.textContent = ('0' + activeId).slice(-2);
+			};
+
+			var capSetFeatured = function(id) {
+				var current = capActiveId();
+				if (current === id) return;
+				var target = capCardById(id);
+				var previous = capCardById(current);
+				if (!target || !previous) return;
+
+				var doSwap = function() {
+					var targetSlot = target.getAttribute('data-slot');
+					var previousSlot = previous.getAttribute('data-slot');
+					target.setAttribute('data-slot', previousSlot);
+					previous.setAttribute('data-slot', targetSlot);
+					previous.classList.remove('cap2-card--featured');
+					target.classList.add('cap2-card--featured');
+					previous.querySelector('.cap2-card-inner').setAttribute('aria-expanded', 'false');
+					target.querySelector('.cap2-card-inner').setAttribute('aria-expanded', 'true');
+					capSyncNav(id);
+				};
+
+				if (capReducedMotion || typeof Flip === 'undefined') {
+					doSwap();
+					return;
+				}
+				var state = Flip.getState(capCards);
+				doSwap();
+				Flip.from(state, { duration: 0.7, ease: 'power3.inOut' });
+			};
+
+			var capToggleExpanded = function(id) {
+				var card = capCardById(id);
+				if (!card) return;
+				var wasExpanded = card.classList.contains('cap2-card--expanded');
+				capCards.forEach(function(c) {
+					c.classList.remove('cap2-card--expanded');
+					c.querySelector('.cap2-card-inner').setAttribute('aria-expanded', 'false');
+				});
+				if (!wasExpanded) {
+					card.classList.add('cap2-card--expanded');
+					card.querySelector('.cap2-card-inner').setAttribute('aria-expanded', 'true');
+				}
+				capSyncNav(id);
+			};
+
+			var capActivate = function(id) {
+				if (capIsMobile()) {
+					capToggleExpanded(id);
+				} else {
+					capSetFeatured(id);
+				}
+			};
+
+			var capStep = function(direction) {
+				var ids = capCards.map(function(c) { return parseInt(c.getAttribute('data-cap'), 10); });
+				var current = parseInt(capActiveId(), 10);
+				var idx = ids.indexOf(current);
+				var next = ids[(idx + direction + ids.length) % ids.length];
+				capActivate(String(next));
+			};
+
+			capCards.forEach(function(card) {
+				var inner = card.querySelector('.cap2-card-inner');
+				var id = card.getAttribute('data-cap');
+				inner.addEventListener('click', function() { capActivate(id); });
+				inner.addEventListener('keydown', function(e) {
+					if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+						e.preventDefault();
+						capActivate(id);
+					}
+				});
+			});
+
+			capNavDots.forEach(function(dot) {
+				dot.addEventListener('click', function() { capActivate(dot.getAttribute('data-cap')); });
+			});
+
+			if (capPrev) capPrev.addEventListener('click', function() { capStep(-1); });
+			if (capNext) capNext.addEventListener('click', function() { capStep(1); });
+
+			// Cursor parallax on index/icon — skipped under reduced-motion
+			// and on touch devices (no meaningful "cursor" there).
+			if (!capReducedMotion && !window.matchMedia('(pointer: coarse)').matches) {
+				capCards.forEach(function(card) {
+					var inner = card.querySelector('.cap2-card-inner');
+					inner.addEventListener('mousemove', function(e) {
+						var rect = inner.getBoundingClientRect();
+						var mx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+						var my = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+						inner.style.setProperty('--mx', mx.toFixed(3));
+						inner.style.setProperty('--my', my.toFixed(3));
+					});
+					inner.addEventListener('mouseleave', function() {
+						inner.style.setProperty('--mx', 0);
+						inner.style.setProperty('--my', 0);
+					});
+				});
+			}
+
+			// Ambient 3D wave-mesh (Three.js, already loaded sitewide for
+			// the WebGL grid-fit effect — see TECHNICAL_STANDARDS.md's
+			// approved-libraries list, so this isn't a new dependency).
+			// A field of warm copper/gold points on an undulating surface,
+			// GPU-displaced in the vertex shader via simplex noise + sine
+			// waves. Skipped (renders one static frame, no RAF loop) under
+			// reduced-motion.
+			var capField = capShell.querySelector('.cap2-field');
+			if (capField && typeof THREE !== 'undefined') {
+				var CAP3D_VERTEX_SHADER = [
+					'uniform float uTime;',
+					'uniform vec2 uMouse;',
+					'attribute float aRandom;',
+					'varying float vElevation;',
+					'varying float vRandom;',
+					'vec3 mod289(vec3 x){return x-floor(x*(1.0/289.0))*289.0;}',
+					'vec4 mod289(vec4 x){return x-floor(x*(1.0/289.0))*289.0;}',
+					'vec4 permute(vec4 x){return mod289(((x*34.0)+1.0)*x);}',
+					'vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}',
+					'float snoise(vec3 v){',
+					'  const vec2 C=vec2(1.0/6.0,1.0/3.0);',
+					'  const vec4 D=vec4(0.0,0.5,1.0,2.0);',
+					'  vec3 i=floor(v+dot(v,C.yyy));',
+					'  vec3 x0=v-i+dot(i,C.xxx);',
+					'  vec3 g=step(x0.yzx,x0.xyz);',
+					'  vec3 l=1.0-g;',
+					'  vec3 i1=min(g.xyz,l.zxy);',
+					'  vec3 i2=max(g.xyz,l.zxy);',
+					'  vec3 x1=x0-i1+C.xxx;',
+					'  vec3 x2=x0-i2+C.yyy;',
+					'  vec3 x3=x0-D.yyy;',
+					'  i=mod289(i);',
+					'  vec4 p=permute(permute(permute(',
+					'      i.z+vec4(0.0,i1.z,i2.z,1.0))',
+					'    +i.y+vec4(0.0,i1.y,i2.y,1.0))',
+					'    +i.x+vec4(0.0,i1.x,i2.x,1.0));',
+					'  float n_=0.142857142857;',
+					'  vec3 ns=n_*D.wyz-D.xzx;',
+					'  vec4 j=p-49.0*floor(p*ns.z*ns.z);',
+					'  vec4 x_=floor(j*ns.z);',
+					'  vec4 y_=floor(j-7.0*x_);',
+					'  vec4 x=x_*ns.x+ns.yyyy;',
+					'  vec4 y=y_*ns.x+ns.yyyy;',
+					'  vec4 h=1.0-abs(x)-abs(y);',
+					'  vec4 b0=vec4(x.xy,y.xy);',
+					'  vec4 b1=vec4(x.zw,y.zw);',
+					'  vec4 s0=floor(b0)*2.0+1.0;',
+					'  vec4 s1=floor(b1)*2.0+1.0;',
+					'  vec4 sh=-step(h,vec4(0.0));',
+					'  vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;',
+					'  vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;',
+					'  vec3 p0=vec3(a0.xy,h.x);',
+					'  vec3 p1=vec3(a0.zw,h.y);',
+					'  vec3 p2=vec3(a1.xy,h.z);',
+					'  vec3 p3=vec3(a1.zw,h.w);',
+					'  vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));',
+					'  p0*=norm.x; p1*=norm.y; p2*=norm.z; p3*=norm.w;',
+					'  vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);',
+					'  m=m*m;',
+					'  return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));',
+					'}',
+					'void main() {',
+					'  vec3 pos = position;',
+					'  float n = snoise(vec3(pos.x * 0.35, pos.z * 0.35, uTime * 0.06));',
+					'  float wave = sin(pos.x * 0.5 + uTime * 0.25) * 0.18 + sin(pos.z * 0.4 - uTime * 0.2) * 0.18;',
+					'  float mouseDist = length(pos.xz - uMouse);',
+					'  float mouseInfluence = smoothstep(3.5, 0.0, mouseDist) * 0.5;',
+					'  pos.y += n * 0.9 + wave + mouseInfluence;',
+					'  vElevation = pos.y;',
+					'  vRandom = aRandom;',
+					'  vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);',
+					'  gl_PointSize = (16.0 + aRandom * 12.0) * (1.0 / -mvPosition.z);',
+					'  gl_Position = projectionMatrix * mvPosition;',
+					'}'
+				].join('\n');
+
+				var CAP3D_FRAGMENT_SHADER = [
+					'precision mediump float;',
+					'varying float vElevation;',
+					'varying float vRandom;',
+					'uniform vec3 uColorLow;',
+					'uniform vec3 uColorHigh;',
+					'void main() {',
+					'  float dist = length(gl_PointCoord - vec2(0.5));',
+					'  if (dist > 0.5) discard;',
+					'  float alpha = smoothstep(0.5, 0.0, dist);',
+					'  float t = clamp(vElevation * 0.6 + 0.5, 0.0, 1.0);',
+					'  vec3 color = mix(uColorLow, uColorHigh, t);',
+					'  gl_FragColor = vec4(color, alpha * (0.22 + vRandom * 0.3));',
+					'}'
+				].join('\n');
+
+				var cap3dRenderer = new THREE.WebGLRenderer({ canvas: capField, alpha: true, antialias: true });
+				cap3dRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+				var cap3dScene = new THREE.Scene();
+				cap3dScene.fog = new THREE.FogExp2(0x0b0b0d, 0.1);
+
+				var cap3dCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+				var cap3dBaseCameraX = 0;
+				cap3dCamera.position.set(cap3dBaseCameraX, 3.4, 6.4);
+				cap3dCamera.lookAt(0, 0, 0);
+
+				var cap3dCols = 90, cap3dRows = 60, cap3dSpanX = 13, cap3dSpanZ = 9;
+				var cap3dPositions = new Float32Array(cap3dCols * cap3dRows * 3);
+				var cap3dRandoms = new Float32Array(cap3dCols * cap3dRows);
+				var p3i = 0;
+				for (var ry = 0; ry < cap3dRows; ry++) {
+					for (var cx = 0; cx < cap3dCols; cx++) {
+						var u = cx / (cap3dCols - 1) - 0.5;
+						var v = ry / (cap3dRows - 1) - 0.5;
+						cap3dPositions[p3i * 3] = u * cap3dSpanX;
+						cap3dPositions[p3i * 3 + 1] = 0;
+						cap3dPositions[p3i * 3 + 2] = v * cap3dSpanZ;
+						cap3dRandoms[p3i] = Math.random();
+						p3i++;
+					}
+				}
+
+				var cap3dGeometry = new THREE.BufferGeometry();
+				cap3dGeometry.setAttribute('position', new THREE.BufferAttribute(cap3dPositions, 3));
+				cap3dGeometry.setAttribute('aRandom', new THREE.BufferAttribute(cap3dRandoms, 1));
+
+				var cap3dMaterial = new THREE.ShaderMaterial({
+					uniforms: {
+						uTime: { value: 0 },
+						uMouse: { value: new THREE.Vector2(0, 0) },
+						uColorLow: { value: new THREE.Color('#3a2418') },
+						uColorHigh: { value: new THREE.Color('#e8b878') }
+					},
+					vertexShader: CAP3D_VERTEX_SHADER,
+					fragmentShader: CAP3D_FRAGMENT_SHADER,
+					transparent: true,
+					depthWrite: false,
+					blending: THREE.AdditiveBlending
+				});
+
+				var cap3dPoints = new THREE.Points(cap3dGeometry, cap3dMaterial);
+				cap3dScene.add(cap3dPoints);
+
+				var cap3dTargetMouse = new THREE.Vector2(0, 0);
+
+				var cap3dResize = function() {
+					var rect = capShell.getBoundingClientRect();
+					var w = Math.max(rect.width, 1);
+					var h = Math.max(rect.height, 1);
+					cap3dRenderer.setSize(w, h, false);
+					cap3dCamera.aspect = w / h;
+					cap3dCamera.updateProjectionMatrix();
+				};
+				cap3dResize();
+
+				if (!capReducedMotion && !window.matchMedia('(pointer: coarse)').matches) {
+					capShell.addEventListener('mousemove', function(e) {
+						var rect = capShell.getBoundingClientRect();
+						var nx = (e.clientX - rect.left) / rect.width - 0.5;
+						var ny = (e.clientY - rect.top) / rect.height - 0.5;
+						cap3dTargetMouse.set(nx * cap3dSpanX, ny * cap3dSpanZ);
+					});
+				}
+
+				var cap3dClock = new THREE.Clock();
+				var cap3dRafId = null;
+
+				var cap3dRender = function() {
+					cap3dMaterial.uniforms.uTime.value = cap3dClock.getElapsedTime();
+					cap3dMaterial.uniforms.uMouse.value.lerp(cap3dTargetMouse, 0.04);
+					cap3dCamera.position.x += (cap3dBaseCameraX + cap3dTargetMouse.x * 0.15 - cap3dCamera.position.x) * 0.03;
+					cap3dCamera.lookAt(0, 0, 0);
+					cap3dRenderer.render(cap3dScene, cap3dCamera);
+					if (!capReducedMotion) cap3dRafId = requestAnimationFrame(cap3dRender);
+				};
+				cap3dRender();
+
+				var cap3dResizeTimer;
+				window.addEventListener('resize', function() {
+					clearTimeout(cap3dResizeTimer);
+					cap3dResizeTimer = setTimeout(cap3dResize, 150);
+				});
+
+				// The AJAX page-transition system (js/scripts.js,
+				// CleanupBeforeAjax) calls this before swapping content, so
+				// this WebGL context/RAF loop doesn't keep running after the
+				// section leaves the DOM.
+				window.__cap2FieldCleanup = function() {
+					if (cap3dRafId) cancelAnimationFrame(cap3dRafId);
+					cap3dGeometry.dispose();
+					cap3dMaterial.dispose();
+					cap3dRenderer.dispose();
+				};
+			}
+		}
+
 		// Home signature section — a dedicated scroll-scrub image parallax,
 		// deliberately NOT using the .has-parallax class above: that class
 		// is also targeted by an unrelated mobile-only "make it exactly

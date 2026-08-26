@@ -305,6 +305,483 @@ textarea:focus-visible,
 	}
 }
 
+/* Capabilities (Home) — editorial bento grid ("cap2-*"), replacing the
+   earlier flat grid and the short-lived horizontal-strip iteration.
+   One card is "featured" (larger, AI-accent glow, full copy) at a
+   time; clicking another card swaps which slot is featured via
+   GSAP Flip. See DESIGN_SYSTEM.md interaction spec 6 (superseding the
+   prior spec of the same number) and DECISIONS.md DEC-033. */
+.cap2-row {
+	overflow: hidden;
+}
+
+.cap2-shell {
+	/* No side padding here — the parent #main-page-content.content-full-width
+	   already applies it; adding more here just wastes width. */
+	position: relative;
+	max-width: 1600px;
+	margin: 0 auto;
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: minmax(260px, 340px) 1fr;
+	column-gap: 48px;
+	row-gap: 32px;
+}
+
+.cap2-field {
+	position: absolute;
+	inset: -60px;
+	width: calc(100% + 120px);
+	height: calc(100% + 120px);
+	z-index: 0;
+	pointer-events: none;
+	opacity: 0.9;
+}
+
+.cap2-intro {
+	position: relative;
+	z-index: 1;
+	grid-column: 1;
+	grid-row: 1;
+	align-self: start;
+	text-align: left;
+}
+
+.cap2-title {
+	font-size: clamp(3rem, 5.5vw, 5.4rem);
+	line-height: 0.95;
+	margin: 6px 0 20px;
+}
+
+/* Entrance for the eyebrow/statement/taxonomy/cards is a bespoke GSAP
+   timeline (js/common.js), not the sitewide .has-animation default —
+   see DESIGN_SYSTEM.md interaction spec 7. The hidden/offset states
+   below are baked into CSS (not set by JS) so there's no flash of the
+   final state before the timeline runs, same pattern as
+   .has-animation elsewhere. */
+.cap2-eyebrow {
+	opacity: 0;
+	transform: translateY(16px);
+}
+
+.cap2-statement {
+	font-family: var(--font-body);
+	font-size: 17px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.7);
+	max-width: 320px;
+	margin: 0 0 26px;
+	opacity: 0;
+	transform: translateY(16px);
+}
+
+.cap2-taxonomy {
+	font-family: var(--font-body);
+	font-size: 12px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.cap2-taxonomy > * {
+	opacity: 0;
+	transform: translateY(6px) scale(0.92);
+}
+
+.cap2-tax-x {
+	color: var(--color-accent);
+}
+
+.cap2-tax-arrow {
+	color: var(--color-accent);
+	margin: 0 2px;
+}
+
+.cap2-tax-impact {
+	color: var(--color-fg);
+	font-weight: 600;
+}
+
+.cap2-grid {
+	position: relative;
+	z-index: 1;
+	grid-column: 2;
+	grid-row: 1;
+	display: grid;
+	grid-template-columns: 1fr 1.25fr 1fr;
+	grid-template-rows: auto auto;
+	gap: 20px;
+}
+
+.cap2-card[data-slot="1"] { grid-column: 1; grid-row: 1; }
+.cap2-card[data-slot="2"] { grid-column: 3; grid-row: 1; }
+.cap2-card[data-slot="3"] { grid-column: 2; grid-row: 1 / span 2; }
+.cap2-card[data-slot="4"] { grid-column: 1; grid-row: 2; }
+.cap2-card[data-slot="5"] { grid-column: 3; grid-row: 2; }
+
+/* Entrance: each card flies/rotates in from a direction keyed to its
+   fixed identity (data-cap, not data-slot — slot is mutable once the
+   featured-swap interaction runs, this isn't). Baked into CSS so
+   there's no flash before the GSAP timeline (js/common.js) runs; once
+   it completes, the inline styles GSAP sets win regardless of any
+   later data-slot change. */
+.cap2-card[data-cap="1"] { opacity: 0; transform: translate3d(-70px, 24px, 0) rotate(-5deg) scale(0.82); }
+.cap2-card[data-cap="2"] { opacity: 0; transform: translate3d(70px, 24px, 0) rotate(5deg) scale(0.82); }
+.cap2-card[data-cap="3"] { opacity: 0; transform: translate3d(0, 60px, 0) scale(0.78); }
+.cap2-card[data-cap="4"] { opacity: 0; transform: translate3d(-45px, 45px, 0) rotate(-4deg) scale(0.85); }
+.cap2-card[data-cap="5"] { opacity: 0; transform: translate3d(45px, 45px, 0) rotate(4deg) scale(0.85); }
+
+.cap2-card {
+	position: relative;
+	min-height: 0;
+}
+
+.cap2-card-inner {
+	position: relative;
+	height: 100%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+	border: 1px solid rgba(255, 255, 255, 0.09);
+	border-radius: 16px;
+	padding: 28px 26px 24px;
+	overflow: hidden;
+	cursor: pointer;
+	transform: translate3d(0, 0, 0) scale(1);
+	transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1), border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, opacity 0.35s ease;
+}
+
+.cap2-card-inner:hover,
+.cap2-card-inner:focus-visible {
+	transform: translate3d(0, -6px, 0) scale(1.03);
+	border-color: var(--color-accent);
+	box-shadow: 0 18px 50px -22px rgba(0, 0, 0, 0.6);
+}
+
+.cap2-grid:has(.cap2-card-inner:hover) .cap2-card-inner:not(:hover) {
+	opacity: 0.55;
+}
+
+/* Featured = the one deliberate high-contrast moment: white card,
+   black text, everything else stays black/white/accent. */
+.cap2-card--featured .cap2-card-inner {
+	background: var(--color-fg);
+	border-color: var(--color-fg);
+	box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.6);
+}
+
+.cap2-card-top {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 18px;
+}
+
+.cap2-card-index {
+	display: inline-block;
+	font-family: var(--font-title);
+	font-size: clamp(2.2rem, 3vw, 3.4rem);
+	line-height: 1;
+	color: var(--color-accent);
+	transition: color 0.3s ease, font-size 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+	transform: translate3d(calc(var(--mx, 0) * 6px), calc(var(--my, 0) * 6px), 0);
+}
+
+.cap2-card--featured .cap2-card-index {
+	color: #000;
+	font-size: clamp(2.8rem, 4vw, 4.4rem);
+}
+
+.cap2-card-icon {
+	width: 40px;
+	height: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.16);
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: rgba(255, 255, 255, 0.75);
+	font-size: 16px;
+	transition: color 0.3s ease, border-color 0.3s ease;
+	transform: translate3d(calc(var(--mx, 0) * -4px), calc(var(--my, 0) * -4px), 0);
+}
+
+.cap2-card-inner:hover .cap2-card-icon {
+	color: var(--color-accent);
+	border-color: rgba(140, 97, 68, 0.5);
+}
+
+.cap2-card--featured .cap2-card-icon {
+	color: #000;
+	border-color: rgba(0, 0, 0, 0.25);
+}
+
+.cap2-card-title {
+	text-transform: lowercase;
+	font-size: clamp(1.3rem, 1.8vw, 1.9rem);
+	line-height: 1.05;
+	margin: 0 0 8px;
+	color: var(--color-fg);
+	transition: font-size 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.cap2-card--featured .cap2-card-title {
+	font-size: clamp(1.9rem, 2.6vw, 2.8rem);
+	color: #000;
+}
+
+.cap2-card-tagline {
+	font-style: italic;
+	font-size: 14px;
+	color: rgba(255, 255, 255, 0.65);
+	margin: 0 0 14px;
+}
+
+.cap2-card--featured .cap2-card-tagline {
+	color: rgba(0, 0, 0, 0.7);
+}
+
+.cap2-card-divider {
+	display: block;
+	height: 1px;
+	width: 100%;
+	background: rgba(255, 255, 255, 0.14);
+	position: relative;
+	margin-bottom: 14px;
+	overflow: hidden;
+}
+
+.cap2-card--featured .cap2-card-divider {
+	background: rgba(0, 0, 0, 0.15);
+}
+
+.cap2-card-divider::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: var(--color-accent);
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.cap2-card-inner:hover .cap2-card-divider::after,
+.cap2-card--featured .cap2-card-divider::after {
+	transform: scaleX(1);
+}
+
+.cap2-card-desc {
+	font-size: 13px;
+	line-height: 1.55;
+	color: rgba(255, 255, 255, 0.55);
+	margin: 0 0 10px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.cap2-card-tags {
+	font-size: 11px;
+	letter-spacing: 0.03em;
+	color: rgba(255, 255, 255, 0.4);
+	margin: 0;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.cap2-card--featured .cap2-card-desc,
+.cap2-card--featured .cap2-card-tags {
+	-webkit-line-clamp: unset;
+	overflow: visible;
+}
+
+.cap2-card--featured .cap2-card-desc {
+	font-size: 14px;
+	color: rgba(0, 0, 0, 0.75);
+}
+
+.cap2-card--featured .cap2-card-tags {
+	font-size: 12px;
+	color: rgba(0, 0, 0, 0.55);
+}
+
+.cap2-nav {
+	position: relative;
+	z-index: 1;
+	grid-column: 1 / span 2;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	margin-top: 8px;
+	padding-top: 24px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cap2-nav-label {
+	font-family: var(--font-title);
+	text-transform: lowercase;
+	font-size: 15px;
+	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.6);
+	white-space: nowrap;
+}
+
+.cap2-nav-rail {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.cap2-nav-dot {
+	flex: 1;
+	height: 2px;
+	background: rgba(255, 255, 255, 0.15);
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	border-radius: 2px;
+	transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.cap2-nav-dot[aria-selected="true"] {
+	background: var(--color-accent);
+	transform: scaleY(2.5);
+}
+
+.cap2-nav-count {
+	font-size: 12px;
+	letter-spacing: 0.05em;
+	color: rgba(255, 255, 255, 0.5);
+	white-space: nowrap;
+}
+
+.cap2-nav-current {
+	color: var(--color-fg);
+	font-weight: 600;
+}
+
+.cap2-nav-arrow {
+	flex: 0 0 auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	background: none;
+	color: var(--color-fg);
+	font-size: 16px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.cap2-nav-arrow:hover,
+.cap2-nav-arrow:focus-visible {
+	border-color: var(--color-accent);
+	color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cap2-card-inner,
+	.cap2-card-index,
+	.cap2-card-icon,
+	.cap2-card-title,
+	.cap2-card-divider::after,
+	.cap2-nav-dot {
+		transition: none !important;
+	}
+}
+
+@media only screen and (max-width: 1024px) {
+	.cap2-shell {
+		grid-template-columns: 1fr;
+	}
+	.cap2-intro {
+		grid-row: 1;
+		grid-column: 1;
+		max-width: 480px;
+	}
+	.cap2-grid {
+		grid-row: 2;
+		grid-column: 1;
+		margin-top: 28px;
+	}
+	.cap2-nav {
+		grid-column: 1;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	/* Mobile: single-column accordion, not the desktop bento — tapping a
+	   card expands it in place instead of swapping the featured slot. */
+	.cap2-grid {
+		grid-template-columns: 1fr;
+		grid-template-rows: none;
+		gap: 14px;
+	}
+	.cap2-card,
+	.cap2-card[data-slot] {
+		grid-column: 1 !important;
+		grid-row: auto !important;
+	}
+	.cap2-card-inner {
+		height: auto;
+	}
+	.cap2-card-inner:hover {
+		transform: none;
+		box-shadow: none;
+	}
+	.cap2-card-desc,
+	.cap2-card-tags {
+		-webkit-line-clamp: unset;
+		max-height: 0;
+		opacity: 0;
+		margin: 0;
+		overflow: hidden;
+		transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+	}
+	.cap2-card--expanded .cap2-card-desc {
+		max-height: 240px;
+		opacity: 1;
+		margin: 0 0 10px;
+	}
+	.cap2-card--expanded .cap2-card-tags {
+		max-height: 120px;
+		opacity: 1;
+	}
+	.cap2-card--featured .cap2-card-desc,
+	.cap2-card--featured .cap2-card-tags {
+		max-height: 0;
+		opacity: 0;
+		margin: 0;
+	}
+	.cap2-card--featured.cap2-card--expanded .cap2-card-desc {
+		max-height: 240px;
+		opacity: 1;
+		margin: 0 0 10px;
+	}
+	.cap2-card--featured.cap2-card--expanded .cap2-card-tags {
+		max-height: 120px;
+		opacity: 1;
+	}
+	.cap2-nav {
+		padding-top: 18px;
+	}
+	.cap2-nav-label {
+		display: none;
+	}
+}
+
 /* Case-study eyebrow label, above the hero title */
 .eyebrow {
 	display: block;

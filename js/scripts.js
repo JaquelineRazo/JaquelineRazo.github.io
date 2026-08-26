@@ -41,15 +41,23 @@ Function CustomFunction
 	Function Cleanup Before Ajax
 ---------------------------------------------------*/	
 	
-	function CleanupBeforeAjax(){		
+	function CleanupBeforeAjax(){
 		// reset all scroll triggers
 		let triggers = ScrollTrigger.getAll();
-		triggers.forEach( trigger => {			
+		triggers.forEach( trigger => {
 		  	trigger.kill();
 		});
-		
+
 		ClapatSlider.instances.forEach(slider => slider.off());
 		ClapatSlider.instances = [];
+
+		// Capabilities' Three.js ambient field (js/common.js) — stop its
+		// render loop and dispose the WebGL context before this page's
+		// content is swapped out.
+		if (window.__cap2FieldCleanup) {
+			window.__cap2FieldCleanup();
+			window.__cap2FieldCleanup = null;
+		}
 	}
 	
 	
