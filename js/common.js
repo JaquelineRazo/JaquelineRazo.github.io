@@ -1612,7 +1612,137 @@ Function Scroll Effects
 			}
 		}
 		
-		var hasAnimation = gsap.utils.toArray('.has-animation');			
+		// Selected Work "suspended dossier" — entrance (CSS transition,
+		// triggered by adding .is-visible once) + per-card cursor-follow
+		// physics. The physics deliberately never touch .work-file (which
+		// carries the percentage-based centering/base-rotation transform)
+		// — only .work-file-motion, a plain wrapper with no other
+		// transform source, so there's no risk of GSAP/JS clobbering the
+		// base position the way animating a translate(-50%,-50%) element
+		// directly would. See DESIGN_SYSTEM.md interaction spec 8
+		// (revised) / DECISIONS.md.
+		var workCanvas = document.querySelector('.work-canvas');
+		if (workCanvas) {
+			var workFileEls = Array.prototype.slice.call(workCanvas.querySelectorAll('.work-file'));
+			var workReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+			var workCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+			// Entrance: one trigger, add .is-visible to every card at once —
+			// the visual stagger comes from each card's own --enter-delay
+			// CSS transition-delay, not from staggered JS timing.
+			ScrollTrigger.create({
+				trigger: workCanvas,
+				start: 'top 85%',
+				once: true,
+				onEnter: function() {
+					workFileEls.forEach(function(f) { f.classList.add('is-visible'); });
+				}
+			});
+
+			var workClearActive = function() {
+				workFileEls.forEach(function(f) { f.classList.remove('is-active'); });
+			};
+
+			var workSetActive = function(file) {
+				workClearActive();
+				file.classList.add('is-active');
+			};
+
+			// Desktop: bounded, weighted (lerped) cursor-follow per card.
+			// Rect is cached on pointerenter, not re-read every frame
+			// (TECHNICAL_STANDARDS.md performance guidance).
+			if (!workCoarsePointer) {
+				workFileEls.forEach(function(file) {
+					var motion = file.querySelector('.work-file-motion');
+					var maxX = parseFloat(file.style.getPropertyValue('--max-x')) || 14;
+					var maxY = parseFloat(file.style.getPropertyValue('--max-y')) || 10;
+					var rect = null;
+					var target = { x: 0, y: 0, z: 0, s: 1 };
+					var current = { x: 0, y: 0, z: 0, s: 1 };
+					var rafId = null;
+
+					var loop = function() {
+						current.x += (target.x - current.x) * 0.08;
+						current.y += (target.y - current.y) * 0.08;
+						current.z += (target.z - current.z) * 0.08;
+						current.s += (target.s - current.s) * 0.08;
+						motion.style.setProperty('--px', current.x.toFixed(2) + 'px');
+						motion.style.setProperty('--py', current.y.toFixed(2) + 'px');
+						motion.style.setProperty('--pz', current.z.toFixed(2) + 'px');
+						motion.style.setProperty('--s', current.s.toFixed(4));
+						var settled = Math.abs(target.x - current.x) < 0.05 &&
+							Math.abs(target.y - current.y) < 0.05 &&
+							Math.abs(target.z - current.z) < 0.05 &&
+							Math.abs(target.s - current.s) < 0.0005;
+						rafId = settled ? null : requestAnimationFrame(loop);
+					};
+
+					var ensureLoop = function() {
+						if (!rafId) rafId = requestAnimationFrame(loop);
+					};
+
+					if (!workReducedMotion) {
+						file.addEventListener('pointerenter', function(e) {
+							if (e.pointerType === 'touch') return;
+							rect = file.getBoundingClientRect();
+							target.z = 60;
+							target.s = 1.015;
+							ensureLoop();
+						});
+
+						file.addEventListener('pointermove', function(e) {
+							if (e.pointerType === 'touch' || !rect) return;
+							var nx = Math.max(-1, Math.min(1, ((e.clientX - rect.left) / rect.width - 0.5) * 2));
+							var ny = Math.max(-1, Math.min(1, ((e.clientY - rect.top) / rect.height - 0.5) * 2));
+							// Edge resistance: sine easing keeps movement
+							// responsive near center, damped near the limit.
+							target.x = Math.sin(nx * Math.PI / 2) * maxX;
+							target.y = Math.sin(ny * Math.PI / 2) * maxY;
+							motion.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+							motion.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+							ensureLoop();
+						});
+
+						file.addEventListener('pointerleave', function(e) {
+							if (e.pointerType === 'touch') return;
+							target.x = 0; target.y = 0; target.z = 0; target.s = 1;
+							ensureLoop();
+						});
+					}
+
+					file.addEventListener('pointerenter', function(e) {
+						if (e.pointerType !== 'touch') workSetActive(file);
+					});
+					file.addEventListener('pointerleave', function(e) {
+						if (e.pointerType !== 'touch') workClearActive();
+					});
+					file.addEventListener('focus', function() { workSetActive(file); });
+					file.addEventListener('blur', function() { workClearActive(); });
+				});
+			} else {
+				// Mobile/touch: no pointer-follow, no hover — first tap
+				// opens the file (reveals description/CTA) instead of
+				// navigating immediately; tapping it again (or its CTA)
+				// follows the link. Only one file open at a time.
+				workFileEls.forEach(function(file) {
+					file.addEventListener('click', function(e) {
+						if (!file.classList.contains('is-active')) {
+							// stopImmediatePropagation is required, not just
+							// preventDefault: the site's own ajax-link/
+							// page-transition handlers (js/common.js) are
+							// bound directly to this same element and via
+							// delegation on #main, and they don't check
+							// preventDefault before starting the transition.
+							e.preventDefault();
+							e.stopImmediatePropagation();
+							workSetActive(file);
+						}
+					});
+				});
+			}
+		}
+
+		var hasAnimation = gsap.utils.toArray('.has-animation');
 		hasAnimation.forEach(function(hAnimation) {
 			var delayValue = parseInt(hAnimation.getAttribute("data-delay")) || 0;
 			gsap.to(hAnimation, { 					

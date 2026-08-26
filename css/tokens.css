@@ -9,6 +9,13 @@
 	--color-accent: #8c6144;
 	--font-title: 'Six Caps', sans-serif;
 	--font-body: 'Poppins', sans-serif;
+	/* Shared between .work-file and .work-file-reveal (Selected Work)
+	   so the reveal's clearance offset is always derived from the
+	   card's actual current width, at every breakpoint, instead of a
+	   hand-tuned number that silently drifts out of sync when the
+	   card size changes. */
+	--work-card-w: clamp(360px, 30vw, 540px);
+	--work-reveal-w: clamp(220px, 18vw, 300px);
 }
 
 /* Visible keyboard focus. No :focus-visible styles existed anywhere in
@@ -816,4 +823,374 @@ textarea:focus-visible,
 /* Case-study Next Case loop link reuses .page-title/.next-hero-title
    markup already proven elsewhere on the site (see #project-nav) —
    no new CSS needed for that part. */
+
+/* Selected Work (Home) — a "suspended dossier" spatial composition:
+   two diagonal stacks of tilted project files floating above a black
+   canvas, framed by a warm-white border, reacting to the cursor as
+   weighted physical objects (bounded, lerped movement — js/common.js).
+   Replaces the folder-tab version. See DESIGN_SYSTEM.md interaction
+   spec 8 (revised) / DECISIONS.md. Warm off-white (#f2f1ee) is a
+   one-off frame color for this section only, not a new sitewide
+   token — the palette elsewhere stays black/white/copper. */
+.work-stage-row {
+	padding: 0;
+}
+
+.work-frame {
+	box-sizing: border-box;
+	background: #f2f1ee;
+	padding: 40px clamp(16px, 4vw, 64px) 72px;
+}
+
+.work-canvas {
+	position: relative;
+	overflow: visible;
+	background: #050505;
+	border-radius: 6px;
+	min-height: clamp(640px, 60vw, 900px);
+}
+
+.work-canvas-marker {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-family: var(--font-body);
+	font-size: 11px;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.16);
+	pointer-events: none;
+	white-space: nowrap;
+	z-index: 0;
+}
+
+.work-scene {
+	position: absolute;
+	inset: 0;
+	perspective: 1400px;
+	transform-style: preserve-3d;
+}
+
+/* Outer anchor: base position + base rotation only. Never touched by
+   the pointer-follow JS (that targets .work-file-motion instead) so
+   the percentage-based centering transform here is never at risk of
+   being overwritten. */
+.work-file {
+	position: absolute;
+	left: var(--base-x);
+	top: var(--base-y);
+	z-index: var(--depth, 1);
+	width: var(--work-card-w);
+	text-decoration: none;
+	color: inherit;
+	display: block;
+	opacity: 0;
+	transform: translate(calc(-50% + var(--enter-x, 0px)), -50%) rotateZ(var(--base-rotate));
+	transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--enter-delay, 0ms),
+		transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--enter-delay, 0ms);
+}
+
+.work-file.is-visible {
+	opacity: 1;
+	transform: translate(-50%, -50%) rotateZ(var(--base-rotate));
+}
+
+/* Pointer-follow layer: JS lerps --px/--py/--pz/--s every frame.
+   Nothing else sets this element's transform. */
+.work-file-motion {
+	position: relative;
+	width: 100%;
+	will-change: transform;
+	transform: translate3d(var(--px, 0px), var(--py, 0px), var(--pz, 0px)) scale(var(--s, 1));
+}
+
+/* Rigid content layer — per the brief's "text must not have
+   independent parallax" rule, this never receives a transform of its
+   own; it only rides along with .work-file-motion as one physical
+   unit. Holds the visible card surface (background/border/shadow). */
+.work-file-content {
+	position: relative;
+	box-sizing: border-box;
+	padding: 36px 40px;
+	background: #141414;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 14px;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.42), 0 6px 18px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transform: none;
+	transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
+}
+
+/* Simulated physical thickness — a sliver of a darker layer peeking
+   from behind the card, per the brief's "subtle pseudo-element to
+   simulate thickness" note. */
+.work-file::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: #0a0a0a;
+	border-radius: 14px;
+	transform: translate(6px, 7px);
+	z-index: -1;
+}
+
+.work-file-content::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	background: linear-gradient(145deg, rgba(255, 255, 255, 0.025), transparent 40%);
+	pointer-events: none;
+}
+
+.work-file-light {
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.035), transparent 60%);
+	opacity: 0;
+	transition: opacity 0.35s ease;
+	pointer-events: none;
+}
+
+.work-scene:has(.work-file.is-active) .work-file:not(.is-active) .work-file-content {
+	opacity: 0.78;
+}
+
+.work-file.is-active .work-file-content {
+	background: linear-gradient(145deg, #1b1614, #0d0d0f);
+	border-color: rgba(140, 97, 68, 0.55);
+	box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5), 0 10px 26px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.work-file.is-active .work-file-light {
+	opacity: 1;
+}
+
+.work-file-top {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.work-file-index {
+	font-family: var(--font-title);
+	font-size: clamp(1.8rem, 2.4vw, 2.4rem);
+	line-height: 1;
+	color: var(--color-accent);
+	opacity: 0.85;
+}
+
+.work-file-title {
+	display: block;
+	text-transform: lowercase;
+	font-size: clamp(1.8rem, 0.87rem + 3.73vw, 4.6rem);
+	line-height: 1.05;
+	color: var(--color-fg);
+	margin: 0;
+}
+
+/* Projected outside the card, in the empty space toward the canvas
+   center — not layered on top of the card surface. Positioned off the
+   same --base-x/--base-y as its paired .work-file (duplicated inline,
+   since custom properties don't reach a sibling by inheritance), then
+   pushed further out with a fixed offset so it lands in the void. */
+.work-file-reveal {
+	position: absolute;
+	top: var(--base-y);
+	left: var(--base-x);
+	width: var(--work-reveal-w);
+	opacity: 0;
+	pointer-events: none;
+	/* Sits behind every card depth (1-5) on purpose: the offset below is
+	   sized to clear the card entirely, but if a rotated corner ever
+	   still reaches into this space, the card's own solid surface
+	   should win over the reveal text, never the other way round. */
+	z-index: 2;
+	transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Clearance has to cover HALF THE CARD's width, THEN half the reveal
+   panel's OWN width (the translate below re-centers the panel, so its
+   near edge is offset-minus-its-own-half-width, not offset itself),
+   plus a fixed gap generous enough to also absorb a rotated card's
+   widened footprint (rotation adds roughly height*sin(angle) of extra
+   horizontal reach beyond the plain unrotated half-width). Both widths
+   are read from the shared vars so this stays correct at every
+   breakpoint without hand-tuned numbers drifting out of sync. */
+.work-file-reveal[data-side="right"] {
+	text-align: left;
+	transform: translate(calc(-50% + var(--work-card-w) / 2 + var(--work-reveal-w) / 2 + 34px), -50%);
+}
+
+.work-file-reveal[data-side="left"] {
+	text-align: right;
+	transform: translate(calc(-50% - var(--work-card-w) / 2 - var(--work-reveal-w) / 2 - 34px), -50%);
+}
+
+.work-file.is-active + .work-file-reveal[data-side="right"] {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translate(calc(-50% + var(--work-card-w) / 2 + var(--work-reveal-w) / 2 + 50px), -50%);
+}
+
+.work-file.is-active + .work-file-reveal[data-side="left"] {
+	opacity: 1;
+	pointer-events: auto;
+	transform: translate(calc(-50% - var(--work-card-w) / 2 - var(--work-reveal-w) / 2 - 50px), -50%);
+}
+
+.work-file-desc {
+	font-family: var(--font-body);
+	font-size: 13px;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.62);
+	margin: 0 0 12px;
+}
+
+.work-file-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-family: var(--font-body);
+	font-size: 12px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--color-fg);
+}
+
+/* The vendor theme forces black/gray text on any `a`, `h1-h6` and `p`
+   inside `.light-content .light-section` (style.css), since it assumes
+   a light background there. This canvas is a black card surface nested
+   inside that light-section row, so it needs the same specificity
+   (3 classes) to win these back to the dark-card palette. */
+.light-content .light-section .work-file {
+	color: var(--color-fg);
+}
+
+.light-content .light-section .work-file-title {
+	color: var(--color-fg);
+}
+
+.light-content .light-section .work-file-desc {
+	color: rgba(255, 255, 255, 0.62);
+}
+
+.work-file-arrow {
+	display: inline-block;
+	transition: transform 0.3s ease;
+}
+
+.work-file.is-active + .work-file-reveal .work-file-arrow {
+	transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.work-file-motion {
+		transform: none !important;
+	}
+}
+
+@media only screen and (max-width: 1024px) {
+	:root {
+		--work-card-w: clamp(300px, 38vw, 420px);
+		--work-reveal-w: clamp(180px, 24vw, 240px);
+	}
+	.work-file-content {
+		padding: 26px 28px;
+	}
+	.work-file-title {
+		font-size: clamp(1.8rem, 4.2vw, 2.8rem);
+	}
+	.work-canvas {
+		min-height: clamp(620px, 84vw, 820px);
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.work-frame {
+		padding: 24px 0 48px;
+	}
+	.work-canvas {
+		min-height: 0;
+		background: transparent;
+		border-radius: 0;
+	}
+	.work-canvas-marker {
+		display: none;
+	}
+	.work-scene {
+		position: static;
+		perspective: none;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 0 20px;
+	}
+	.work-file {
+		position: relative;
+		left: auto;
+		top: auto;
+		width: 90vw;
+		max-width: 420px;
+		margin-bottom: -20px;
+		transform: rotateZ(var(--mobile-rotate, 0deg)) !important;
+		transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--enter-delay, 0ms);
+	}
+	.work-file.is-visible {
+		transform: rotateZ(var(--mobile-rotate, 0deg)) !important;
+	}
+	.work-file-motion {
+		transform: none;
+	}
+	.work-file-content {
+		padding: 26px 24px;
+	}
+	.work-file-title {
+		font-size: clamp(1.8rem, 8vw, 2.4rem);
+	}
+	.work-file.is-active {
+		z-index: 20;
+	}
+	.work-file.is-active .work-file-content {
+		border-radius: 14px 14px 0 0;
+	}
+
+	/* On mobile there's no horizontal void to project into, so the
+	   reveal becomes a collapsible extension directly under its card
+	   instead of a side-facing panel — same tap-to-reveal-then-navigate
+	   behavior, just visually reattached to the card it belongs to. */
+	.work-file-reveal {
+		position: static;
+		left: auto;
+		top: auto;
+		width: 90vw;
+		max-width: 420px;
+		margin: -20px auto -20px;
+		box-sizing: border-box;
+		background: #141414;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-top: none;
+		border-radius: 0 0 14px 14px;
+		padding: 0 24px;
+		max-height: 0;
+		overflow: hidden;
+		text-align: left !important;
+		transform: none !important;
+		transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease;
+	}
+	.work-file.is-active + .work-file-reveal {
+		max-height: 280px;
+		opacity: 1;
+		padding: 18px 24px 26px;
+		pointer-events: auto;
+	}
+	.work-file-reveal:last-child {
+		margin-bottom: 0 !important;
+	}
+}
 
