@@ -761,7 +761,10 @@ Function Scroll Effects
 							return "top +=" + startPin;
 						},
 						end: function() {
-							const endPin =  window.innerHeight * 3;
+							// Was innerHeight * 3 — took 3 full viewport-heights of
+							// scroll to cycle through 5 items, reading as "stuck in
+							// place" rather than one continuous scroll (DEC-030).
+							const endPin =  window.innerHeight * 1;
 							return "+=" + endPin;
 						},
 						pin: true,
@@ -788,7 +791,7 @@ Function Scroll Effects
 							return "top +=" + startPin;
 						},
 						end: function() {
-							const endPin = window.innerHeight * 3;
+							const endPin = window.innerHeight * 1;
 							return "+=" + endPin;
 						},
 						scrub: true,

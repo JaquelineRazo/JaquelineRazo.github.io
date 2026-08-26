@@ -45,11 +45,21 @@ Every interaction must support one of: **narrative, hierarchy, discovery, compre
 1. **Where**: Home, directly under the Hero.
 2. **Trigger**: scroll-scrubbed, same mechanism as the current moving-gallery marquee.
 3. **What moves**: a horizontal strip of positioning keywords/domains ("Enterprise Transformation · Digital Products · Decision Intelligence · AI-enabled Workflows · Customer Data") scrolls continuously, tied to scroll position.
-4. **Duration/behavior**: continuous, scroll-position-linked — matches existing marquee behavior, no new timing logic.
+4. **Duration/behavior**: continuous, scroll-position-linked — matches existing marquee behavior, no new timing logic. Pinned scroll range tuned down from `window.innerHeight * 3` to `window.innerHeight * 1` (DEC-030) — the original 3-viewport-height range made the reveal feel like the user had to keep scrolling in place rather than one continuous motion; the per-item stagger/duration values are unchanged, only the pixel range the scrubbed timeline maps onto.
 5. **Why**: gives the hero's supporting line room to breathe while reinforcing the 5-domain positioning kinetically, without duplicating the Capabilities section's language wholesale.
 6. **Mobile fallback**: same scroll-scrub mechanism already works at narrow breakpoints — no special-casing needed.
 7. **Accessibility**: real text content, readable by screen readers if `aria-hidden` isn't applied; add `aria-hidden="true"` only if the same keyword list already appears as static text elsewhere on the page.
 8. **Library**: existing GSAP/ScrollTrigger — no new dependency.
+
+### 5. "Intersection" motif (Home, Point of View)
+1. **Where**: Home (`index.html`), Point of View section — next to/below the promoted "Building at the intersection of business and technology" headline.
+2. **Trigger**: continuous, non-scroll-linked idle animation (renders and animates as soon as the section is in the DOM; not tied to scroll position).
+3. **What moves/changes**: a small inline SVG of two overlapping accent-stroked circles (`.pov-mark`) — each circle drifts a few pixels horizontally in opposing directions on a slow loop, so the overlap ("intersection") area subtly breathes rather than sitting static.
+4. **Duration/behavior**: ~7s ease-in-out, infinite, alternating direction per circle.
+5. **Why**: a literal, original graphic reinforcement of the section's actual thesis (two domains meeting), not decorative filler — satisfies the standing "every interaction must serve narrative/hierarchy/discovery/comprehension/personality" principle via comprehension + personality. Also gives Point of View its own small piece of visual identity, echoing the fine-line-art language already established by the Home signature section's dot field.
+6. **Mobile fallback**: renders in-flow (not absolutely positioned), so it stacks naturally under the headline at every breakpoint — no special-casing needed. Same idle animation at all sizes.
+7. **Accessibility**: `aria-hidden="true"` (purely decorative graphic, the headline text already carries the meaning); gated behind `prefers-reduced-motion: reduce` (pure CSS, no JS).
+8. **Library**: inline SVG + CSS `@keyframes` — no new dependency.
 
 ### 3. AI-workflows applied-example cards ticker (proposed, not yet fully approved)
 Referenced in `CASE_STUDIES.md` as a candidate for `case-ai-workflows.html`'s small applied-example cards (Research / Meeting prep / Follow-ups / Documentation / Project memory / Opportunity tracking). **Not yet specified in full** — do not implement until this section is filled in with the same 8-point spec as above and logged in `DECISIONS.md`. Flagged here explicitly so it isn't implemented informally during Sprint 2.
