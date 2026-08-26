@@ -1611,7 +1611,28 @@ Function Scroll Effects
 				});
 			}
 		}
-		
+
+		// Work page intro portrait — same dedicated-parallax pattern as
+		// the Signature card above (own class, not .has-parallax, for the
+		// same reason: .has-parallax is also targeted by an unrelated
+		// mobile-only isMobile() height-forcing block elsewhere in this
+		// file). Image is sized 112% of its frame in CSS so this travel
+		// range never exposes empty space at the top/bottom edge.
+		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			var workIntroPortrait = document.querySelector('.work-intro-portrait');
+			var workIntroImg = workIntroPortrait ? workIntroPortrait.querySelector('.work-intro-portrait-img') : null;
+			if (workIntroPortrait && workIntroImg) {
+				var workIntroParallax = gsap.fromTo(workIntroImg, {y: '-6%'}, {y: '6%', ease: Linear.easeNone});
+				ScrollTrigger.create({
+					trigger: workIntroPortrait,
+					start: "top bottom",
+					end: "bottom top",
+					animation: workIntroParallax,
+					scrub: true
+				});
+			}
+		}
+
 		// Selected Work "suspended dossier" — entrance (CSS transition,
 		// triggered by adding .is-visible once) + per-card cursor-follow
 		// physics. The physics deliberately never touch .work-file (which
