@@ -1463,10 +1463,11 @@ textarea:focus-visible,
 	}
 	.arc-stage-index {
 		width: 2ch;
-		font-size: 1.3rem;
+		font-size: 1.6rem;
 	}
 	.arc-stage-name {
-		font-size: clamp(1.5rem, 6vw, 2.1rem);
+		font-size: clamp(2.2rem, 1.2rem + 7vw, 3rem);
+		line-height: 1.15;
 	}
 }
 
@@ -1568,6 +1569,44 @@ textarea:focus-visible,
 @media only screen and (max-width: 767px) {
 	.communities-video-col {
 		margin-top: 32px;
+	}
+
+	/* Puts the first paragraph above the video (using the blank space
+	   there instead of stacking all 3 paragraphs before it) and the
+	   other two below. The two columns are float-based (.one_half /
+	   .one_half.last), so reordering across them takes display:contents
+	   on the text column to expose its own children (h2 + 2 spacer
+	   <hr>s + 3 <p>s) as direct flex items of the row, interleaved with
+	   the video column via order. The bare <hr>s are pure vertical
+	   spacers in this theme (height:28px, no visible line — see
+	   style.css) — hidden here since the reordered items get their own
+	   margins instead. */
+	.communities-row {
+		display: flex;
+		flex-direction: column;
+	}
+	.communities-row > .one_half:not(.last) {
+		display: contents;
+	}
+	.communities-row .one_half > hr {
+		display: none;
+	}
+	.communities-row h2 {
+		order: 1;
+	}
+	.communities-row .one_half > p:nth-of-type(1) {
+		order: 2;
+	}
+	.communities-video-col {
+		order: 3;
+		margin-top: 28px;
+	}
+	.communities-row .one_half > p:nth-of-type(2) {
+		order: 4;
+		margin-top: 28px;
+	}
+	.communities-row .one_half > p:nth-of-type(3) {
+		order: 5;
 	}
 }
 
@@ -1792,6 +1831,28 @@ textarea:focus-visible,
 	   at any specificity, cannot outrank. */
 	opacity: 0.6 !important;
 	transition: opacity 0.3s ease;
+}
+
+@media only screen and (max-width: 767px) {
+	/* The index/title clamps above barely move off their floor at
+	   phone widths (1vw-1.2vw of ~390px is a few px), and .work-tag
+	   is the sitewide 12px default — all three read as too small to
+	   register as a heading here. Scoped to .work-cases-row so the
+	   shared .work-tag/.card-title classes stay untouched elsewhere
+	   (Selected Work, case-study pages, index, contact). */
+	.work-case-index {
+		font-size: clamp(2.4rem, 1rem + 5vw, 2.8rem);
+	}
+	.work-cases-row .work-tag {
+		font-size: 15px;
+	}
+	.work-cases-row .card-title {
+		font-size: clamp(2.4rem, 1.2rem + 7vw, 3.2rem);
+		line-height: 1.1;
+	}
+	.work-case-top {
+		margin-bottom: 18px;
+	}
 }
 
 /* Case studies — "The Approach" diagrams and "What I Built" mockups.
