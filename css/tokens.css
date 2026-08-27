@@ -787,6 +787,62 @@ textarea:focus-visible,
 	.cap2-nav-label {
 		display: none;
 	}
+
+	/* Mobile's accordion never reassigns --featured (js/common.js's
+	   capActivate calls capToggleExpanded here, never capSetFeatured), so
+	   without this, Decision Intelligence (the one card with --featured
+	   hardcoded in the HTML) permanently reads as the only legible/
+	   highlighted card next to four small, plain ones — not a
+	   hover/click state that cycles through, just a fixed inconsistency.
+	   Bigger title + copper tagline banner apply to all five here,
+	   independent of which one is --featured. */
+	.cap2-card-title {
+		font-size: 2.6rem;
+		letter-spacing: 0.06em;
+	}
+	.cap2-card-tagline {
+		color: #fff;
+		background-color: #8c6144;
+		text-align: center;
+		padding: 6px 12px;
+	}
+
+	/* Alternating white/dark cards (1, 3, 5 white — 3 already is, via
+	   --featured; 2, 4 keep the dark card so five in a row don't read as
+	   one flat block) — replicating --featured's black-on-white look
+	   under slots 1 and 5 explicitly, since --featured itself never
+	   moves off slot 3 at this width. */
+	.cap2-card[data-slot="1"] .cap2-card-inner,
+	.cap2-card[data-slot="5"] .cap2-card-inner {
+		background: var(--color-fg);
+		border-color: var(--color-fg);
+	}
+	.cap2-card[data-slot="1"] .cap2-card-index,
+	.cap2-card[data-slot="5"] .cap2-card-index {
+		color: #000;
+		font-size: clamp(2.8rem, 4vw, 4.4rem);
+	}
+	.cap2-card[data-slot="1"] .cap2-card-icon,
+	.cap2-card[data-slot="5"] .cap2-card-icon {
+		color: #000;
+		border-color: rgba(0, 0, 0, 0.25);
+	}
+	.cap2-card[data-slot="1"] .cap2-card-title,
+	.cap2-card[data-slot="5"] .cap2-card-title {
+		color: #000;
+	}
+	.cap2-card[data-slot="1"] .cap2-card-divider,
+	.cap2-card[data-slot="5"] .cap2-card-divider {
+		background: rgba(0, 0, 0, 0.15);
+	}
+	.cap2-card[data-slot="1"] .cap2-card-desc,
+	.cap2-card[data-slot="5"] .cap2-card-desc {
+		color: rgba(0, 0, 0, 0.75);
+	}
+	.cap2-card[data-slot="1"] .cap2-card-tags,
+	.cap2-card[data-slot="5"] .cap2-card-tags {
+		color: rgba(0, 0, 0, 0.55);
+	}
 }
 
 /* Case-study eyebrow label, above the hero title */
@@ -1133,37 +1189,51 @@ textarea:focus-visible,
 }
 
 @media only screen and (max-width: 767px) {
+	/* Mobile "flashcard deck": the old vertical stack (each card in flex
+	   flow with a small -20px negative margin meant to shingle corners)
+	   actually compounded into 60-190px of real overlap once its paired
+	   .work-file-reveal's own -20px top+bottom margins were added on
+	   top — flex children don't collapse adjoining margins the way
+	   block children do, so those margins summed instead of merging,
+	   crushing every card into the one above it. Replaced with an
+	   actual deck: all 5 cards centered at the same point, one visible
+	   at a time, the next few peeking behind at decreasing scale/
+	   opacity, advanced by a scroll-scrubbed GSAP timeline (js/common.js)
+	   — see DECISIONS.md. This site's "scroll" is a smooth-scrollbar
+	   transform on a wrapper, not real element scrolling, so
+	   position:sticky / scroll-snap silently no-op here; GSAP
+	   ScrollTrigger (already wired to this site's custom scroller via
+	   scrollerProxy) is the only mechanism that actually works. */
 	.work-frame {
 		padding: 24px 0 48px;
 	}
 	.work-canvas {
+		position: relative;
 		min-height: 0;
-		background: transparent;
-		border-radius: 0;
+		height: 64vh;
+		max-height: 580px;
+		background: #050505;
+		border-radius: 10px;
+		overflow: hidden;
 	}
 	.work-canvas-marker {
 		display: none;
 	}
 	.work-scene {
-		position: static;
+		position: absolute;
+		inset: 0;
 		perspective: none;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		padding: 0 20px;
 	}
 	.work-file {
-		position: relative;
-		left: auto;
-		top: auto;
-		width: 90vw;
-		max-width: 420px;
-		margin-bottom: -20px;
-		transform: rotateZ(var(--mobile-rotate, 0deg)) !important;
-		transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--enter-delay, 0ms);
-	}
-	.work-file.is-visible {
-		transform: rotateZ(var(--mobile-rotate, 0deg)) !important;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 82vw;
+		max-width: 380px;
+		/* JS (gsap.set) drives xPercent/yPercent/x/y/scale/opacity per
+		   stack position — no CSS transform/transition here so nothing
+		   fights those inline styles (the old rules used !important,
+		   which blocks GSAP's inline styles regardless of specificity). */
 	}
 	.work-file-motion {
 		transform: none;
@@ -1172,46 +1242,77 @@ textarea:focus-visible,
 		padding: 26px 24px;
 	}
 	.work-file-title {
-		font-size: clamp(1.8rem, 8vw, 2.4rem);
-	}
-	.work-file.is-active {
-		z-index: 20;
-	}
-	.work-file.is-active .work-file-content {
-		border-radius: 14px 14px 0 0;
+		font-size: clamp(1.6rem, 7vw, 2.1rem);
 	}
 
-	/* On mobile there's no horizontal void to project into, so the
-	   reveal becomes a collapsible extension directly under its card
-	   instead of a side-facing panel — same tap-to-reveal-then-navigate
-	   behavior, just visually reattached to the card it belongs to. */
+	/* Sits below its paired card by a fixed gap (tuned to the card's
+	   own approximate height); GSAP applies the identical xPercent/
+	   yPercent/x/y/scale/opacity to both elements of a pair every step,
+	   so this gap holds constant and the two read as one card. */
 	.work-file-reveal {
-		position: static;
-		left: auto;
-		top: auto;
-		width: 90vw;
-		max-width: 420px;
-		margin: -20px auto -20px;
-		box-sizing: border-box;
+		position: absolute;
+		left: 50%;
+		top: calc(50% + 132px);
+		width: 82vw;
+		max-width: 380px;
+		background: transparent;
+		border: none;
+		padding: 0;
+		max-height: none;
+		overflow: visible;
+		text-align: left !important;
+	}
+	.work-file-desc {
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		display: -webkit-box;
+		overflow: hidden;
+	}
+
+	/* prefers-reduced-motion fallback (js/common.js applies this class
+	   instead of running gsap.set/the scroll timeline): the deck above
+	   is motion by definition — with no scroll-driven step, and no
+	   hover/tap alternative, cards 2-5 would stay permanently hidden
+	   behind card 1 forever. Reverts to a plain always-visible vertical
+	   list, all 5 cards in normal flow, nothing overlapping. !important
+	   only because these elements carry no inline style at all in this
+	   path (gsap.set is skipped), so there's nothing to actually
+	   override — it's here purely as a guard against the base mobile
+	   rules above, not fighting JS. */
+	.work-canvas--static {
+		height: auto;
+		max-height: none;
+		overflow: visible;
+		background: transparent;
+		border-radius: 0;
+	}
+	.work-canvas--static .work-scene {
+		position: static !important;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		padding: 0 4px;
+	}
+	.work-canvas--static .work-file {
+		position: static !important;
+		width: auto !important;
+		max-width: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+	.work-canvas--static .work-file-reveal {
+		position: static !important;
+		width: auto !important;
+		max-width: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+		pointer-events: auto !important;
+		margin: -18px 0 0;
+		padding: 16px 24px 22px;
 		background: #141414;
 		border: 1px solid rgba(255, 255, 255, 0.08);
 		border-top: none;
-		border-radius: 0 0 14px 14px;
-		padding: 0 24px;
-		max-height: 0;
-		overflow: hidden;
-		text-align: left !important;
-		transform: none !important;
-		transition: opacity 0.4s ease, max-height 0.4s ease, padding 0.4s ease;
-	}
-	.work-file.is-active + .work-file-reveal {
-		max-height: 280px;
-		opacity: 1;
-		padding: 18px 24px 26px;
-		pointer-events: auto;
-	}
-	.work-file-reveal:last-child {
-		margin-bottom: 0 !important;
+		border-radius: 0 0 10px 10px;
 	}
 }
 

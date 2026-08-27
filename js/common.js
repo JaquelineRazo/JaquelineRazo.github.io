@@ -1645,12 +1645,140 @@ Function Scroll Effects
 		var workCanvas = document.querySelector('.work-canvas');
 		if (workCanvas) {
 			var workFileEls = Array.prototype.slice.call(workCanvas.querySelectorAll('.work-file'));
+			var workRevealEls = Array.prototype.slice.call(workCanvas.querySelectorAll('.work-file-reveal'));
 			var workReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 			var workCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+			var workIsMobileViewport = window.matchMedia('(max-width: 767px)').matches;
 
-			// Entrance: one trigger, add .is-visible to every card at once —
-			// the visual stagger comes from each card's own --enter-delay
-			// CSS transition-delay, not from staggered JS timing.
+			if (workIsMobileViewport) {
+				// Mobile "flashcard deck" (css/tokens.css has the full
+				// rationale) — the old vertical stack's -20px shingle
+				// margins compounded with .work-file-reveal's own -20px
+				// top+bottom margins (flex children don't collapse
+				// adjoining margins the way block children do) into
+				// 60-190px of real overlap. This replaces it: all 5
+				// [card, reveal] pairs centered at the same point, poses
+				// set directly via gsap.set (skipping the .is-visible
+				// entrance below — nothing in the mobile CSS references
+				// it), advanced one per scroll-scrubbed step through a
+				// pinned GSAP timeline. Kept as its own early-return
+				// branch (not folded into the coarsePointer branch below)
+				// because it's gated on viewport width, matching the CSS
+				// breakpoint, not pointer type — an in-range tablet with a
+				// coarse pointer still gets the desktop-style scattered
+				// layout untouched, so its JS has to match.
+				if (workReducedMotion) {
+					// The deck's whole premise is a scroll-driven step —
+					// with motion reduced there's no way to ever reach
+					// cards 2-5 (no hover/tap alternative either), so
+					// this falls back to a plain static list instead
+					// (css/tokens.css .work-canvas--static) rather than
+					// gsap.set-ing an unreachable stack.
+					workCanvas.classList.add('work-canvas--static');
+				} else {
+				var n = workFileEls.length;
+				// Shared geometry for a card and its reveal at a given
+				// stack depth (0 = front). Opacity is computed separately
+				// per element: the reveal (description + CTA) fades out
+				// much faster than the card face, so a peeking card behind
+				// the front one shows just its title, not a second,
+				// partly-legible "View case study" ghosted behind the
+				// front card's own.
+				var workGeometry = function(depth) {
+					var d = Math.max(0, depth);
+					return { xPercent: -50, yPercent: -50, x: 0, y: d * 16, rotation: 0, scale: Math.max(0.8, 1 - d * 0.045) };
+				};
+				var workCardOpacity = function(depth) { return Math.max(0, 1 - Math.max(0, depth) * 0.4); };
+				var workRevealOpacity = function(depth) { return depth <= 0 ? 1 : 0; };
+				var workDismissGeometry = function(i) {
+					return { xPercent: -50, yPercent: -50, x: i % 2 === 0 ? -70 : 70, y: -10, rotation: 0, scale: 0.92 };
+				};
+
+				workFileEls.forEach(function(file, i) {
+					var reveal = workRevealEls[i];
+					gsap.set(file, Object.assign({ opacity: workCardOpacity(i) }, workGeometry(i)));
+					if (reveal) gsap.set(reveal, Object.assign({ opacity: workRevealOpacity(i) }, workGeometry(i)));
+					file.style.zIndex = n - i;
+					if (reveal) reveal.style.zIndex = n - i;
+					file.style.pointerEvents = i === 0 ? 'auto' : 'none';
+					if (reveal) {
+						// Matches the card's own pointer-events below (front
+						// card only) — a blanket 'none' here would make the
+						// click listener just added unreachable, since
+						// pointer-events:none skips dispatching to the
+						// element entirely rather than just styling it.
+						reveal.style.pointerEvents = i === 0 ? 'auto' : 'none';
+						// The reveal is a plain sibling <div>, not nested in
+						// the card's own <a> — without this, tapping its
+						// description/CTA text would do nothing.
+						reveal.addEventListener('click', function() { file.click(); });
+					}
+				});
+
+				if (!workReducedMotion && n > 1) {
+					var workTl = gsap.timeline({
+						scrollTrigger: {
+							trigger: workCanvas,
+							start: 'top top',
+							end: '+=' + (window.innerHeight * (n - 1)),
+							scrub: true,
+							pin: true,
+							pinSpacing: true,
+							onUpdate: function(self) {
+								// Card i stays "front" (clickable) until its
+								// own dismissal transition actually finishes
+								// — which, per the hold-then-snap timing
+								// below, lands at i+0.8, not the unit
+								// boundary at i+1. The +0.2 shifts the
+								// hand-off to match that real finish point
+								// instead of switching too late (during
+								// the trailing settle buffer, when the next
+								// card is already the one visually there).
+								var frontIndex = Math.min(n - 1, Math.floor(self.progress * (n - 1) + 0.2));
+								workFileEls.forEach(function(file, i) {
+									file.style.pointerEvents = i === frontIndex ? 'auto' : 'none';
+									var reveal = workRevealEls[i];
+									if (reveal) reveal.style.pointerEvents = i === frontIndex ? 'auto' : 'none';
+								});
+							}
+						}
+					});
+					// Each card holds its pose for most of its scroll
+					// allotment (a deliberate flashcard "snap," not a
+					// continuous crossfade the whole way through) — the
+					// transition plays out over the middle 30% of that
+					// unit's distance, finishing at i+0.8 rather than
+					// exactly i+1 — GSAP auto-sizes a timeline's duration
+					// to its last real tween, so without the explicit pad
+					// below, that would just rescale progress-to-time
+					// mapping to end at 3.8 instead of 4, landing the
+					// scrub's progress===1 exactly back on the last
+					// tween's own end again (confirmed: the very last
+					// card's arrival flashed back to hidden for a frame
+					// right at that edge). The pad pushes the timeline's
+					// real duration out to n-1 so progress===1 lands
+					// safely inside a settled buffer instead of exactly
+					// on a boundary.
+					var workStepPos = function(i) { return i + 0.5; };
+					var workStepDur = 0.3;
+					for (var wi = 0; wi < n - 1; wi++) {
+						workTl.to(workFileEls[wi], Object.assign({ opacity: 0, duration: workStepDur }, workDismissGeometry(wi)), workStepPos(wi));
+						if (workRevealEls[wi]) workTl.to(workRevealEls[wi], Object.assign({ opacity: 0, duration: workStepDur }, workDismissGeometry(wi)), workStepPos(wi));
+						for (var wj = wi + 1; wj < n; wj++) {
+							var newDepth = wj - wi - 1;
+							workTl.to(workFileEls[wj], Object.assign({ opacity: workCardOpacity(newDepth), duration: workStepDur }, workGeometry(newDepth)), workStepPos(wi));
+							if (workRevealEls[wj]) workTl.to(workRevealEls[wj], Object.assign({ opacity: workRevealOpacity(newDepth), duration: workStepDur }, workGeometry(newDepth)), workStepPos(wi));
+						}
+					}
+					workTl.to({}, { duration: 0.01 }, n - 1);
+				}
+				}
+			} else {
+
+			// Entrance (desktop/tablet only): one trigger, add .is-visible
+			// to every card at once — the visual stagger comes from each
+			// card's own --enter-delay CSS transition-delay, not from
+			// staggered JS timing.
 			ScrollTrigger.create({
 				trigger: workCanvas,
 				start: 'top 85%',
@@ -1760,6 +1888,7 @@ Function Scroll Effects
 						}
 					});
 				});
+			}
 			}
 		}
 
