@@ -365,3 +365,9 @@ ADR-style record of every strategic or technical decision made for this project.
 **Reason**: Direct request — "la tipografía del título tiene que estar muchísimo más grande, igual el número... el título y el subtítulo, los spans de ahí tienen que estar muchísimo más grandes porque sinceramente no se alcanza a ver," explicitly scoped to responsive/mobile-tablet screens.
 **Status**: Approved and committed — implemented and verified in-browser at 390px across all 5 cards, no console errors on a full-page scroll. Desktop (1600px) re-checked untouched: all three font-sizes confirmed at their original values (33.6px/33.6px/12px), 3-column grid layout unchanged.
 
+### DEC-057
+**Date**: 2026-08-26
+**Decision**: Shortened the Contact form's message `<textarea>` placeholder from "Tell me about it — and whether this is an executive opportunity, an advisory conversation, or a speaking invitation" to "What's on your mind?" Unlike the last several fixes, this one isn't mobile-scoped — the textarea's fixed height clips the placeholder mid-sentence on desktop too (confirmed via screenshot: "speaking invitation" cut off at the box's bottom edge at 1600px, not just narrow widths), so the fix is a plain content change applying everywhere, matching the same short, direct style already used by the other two fields ("What's Your Name," "Your Email").
+**Reason**: Direct request — "cambia la frase a algo corto y friendly, porque el texto actual es muy largo y se ve cortado y no se ve bien."
+**Status**: Approved and committed — implemented and verified in-browser on mobile (390px) and desktop (1600px), placeholder now sits fully on one line in both, no console errors.
+
