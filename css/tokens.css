@@ -254,6 +254,13 @@ textarea:focus-visible,
 	margin: 0;
 }
 
+@media only screen and (max-width: 767px) {
+	.editorial-statement {
+		font-size: 5rem;
+		letter-spacing: 0.1rem;
+	}
+}
+
 .pov-lead {
 	text-align: left;
 }
@@ -407,6 +414,19 @@ textarea:focus-visible,
 	font-weight: 600;
 }
 
+/* Mobile-only nudge toward the accordion's tap-to-expand interaction
+   (desktop's bento hover already makes that obvious visually, so this
+   stays hidden there — see the ≤767px override below). */
+.cap2-hint {
+	display: none;
+	font-family: var(--font-body);
+	font-style: italic;
+	font-size: 12px;
+	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.45);
+	margin-top: 10px;
+}
+
 .cap2-grid {
 	position: relative;
 	z-index: 1;
@@ -543,14 +563,20 @@ textarea:focus-visible,
 	color: #000;
 }
 
-.cap2-card-tagline {
+/* .cap2-row prefix (not just .cap2-card-tagline) is required here: the
+   vendor's `.dark-section p { color: #999; }` (style.css) is one class
+   + one tag, out-specificities a single-class rule regardless of
+   source order — this card copy is a plain <p>, sitting inside this
+   section's own .dark-section, so it was silently losing to that gray
+   instead of showing the intended translucent white. */
+.cap2-row .cap2-card-tagline {
 	font-style: normal;
 	font-size: 14px;
 	color: rgba(255, 255, 255, 0.65);
 	margin: 0 0 14px;
 }
 
-.cap2-card--featured .cap2-card-tagline {
+.cap2-row .cap2-card--featured .cap2-card-tagline {
 	color: rgb(255, 255, 255);
 	background-color: #8c6144;
 	text-align: center;
@@ -737,8 +763,14 @@ textarea:focus-visible,
 		grid-column: 1 !important;
 		grid-row: auto !important;
 	}
+	.cap2-title {
+		font-size: 9.2rem;
+	}
+	.cap2-hint {
+		display: block;
+	}
 	.cap2-card--featured .cap2-card-title {
-		font-size: 2.6rem;
+		font-size: 3.6rem;
 		letter-spacing: 0.06em;
 	}
 	.cap2-card-inner {
@@ -797,11 +829,15 @@ textarea:focus-visible,
 	   Bigger title + copper tagline banner apply to all five here,
 	   independent of which one is --featured. */
 	.cap2-card-title {
-		font-size: 2.6rem;
+		font-size: 3.6rem;
 		letter-spacing: 0.06em;
 	}
-	.cap2-card-tagline {
+	/* .cap2-row prefix needed here too, for the same reason as the base
+	   rule above — otherwise this loses to the vendor's `.dark-section
+	   p { color: #999; }` and the banner text stays gray. */
+	.cap2-row .cap2-card-tagline {
 		color: #fff;
+		letter-spacing: 0.1rem;
 		background-color: #8c6144;
 		text-align: center;
 		padding: 6px 12px;
@@ -1204,16 +1240,26 @@ textarea:focus-visible,
 	   position:sticky / scroll-snap silently no-op here; GSAP
 	   ScrollTrigger (already wired to this site's custom scroller via
 	   scrollerProxy) is the only mechanism that actually works. */
+	/* Full-screen takeover: the canvas previously sat at a fixed 76vh/
+	   700px inside the frame's own padding, leaving the frame's cream
+	   background (#f2f1ee) visible as dead space below it — most
+	   noticeable while the section is pinned (scrolling has visibly
+	   stopped, but the screen isn't fully the deck), reading as the
+	   page "getting stuck" rather than an intentional held moment.
+	   Removing the frame's padding and sizing the canvas to the full
+	   viewport means the pinned moment IS the whole screen — the deck
+	   reads as this section's main event, not a card floating in a
+	   frame. */
 	.work-frame {
-		padding: 24px 0 48px;
+		padding: 0;
 	}
 	.work-canvas {
 		position: relative;
 		min-height: 0;
-		height: 64vh;
-		max-height: 580px;
+		height: 100vh;
+		height: 100svh;
 		background: #050505;
-		border-radius: 10px;
+		border-radius: 0;
 		overflow: hidden;
 	}
 	.work-canvas-marker {
@@ -1228,8 +1274,8 @@ textarea:focus-visible,
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		width: 82vw;
-		max-width: 380px;
+		width: 88vw;
+		max-width: 460px;
 		/* JS (gsap.set) drives xPercent/yPercent/x/y/scale/opacity per
 		   stack position — no CSS transform/transition here so nothing
 		   fights those inline styles (the old rules used !important,
@@ -1239,22 +1285,45 @@ textarea:focus-visible,
 		transform: none;
 	}
 	.work-file-content {
-		padding: 26px 24px;
+		padding: 32px 28px;
+		/* --depth (set per-card by js/common.js, in step with the same
+		   stack position that drives its scale/y/opacity) fades the
+		   solid card into frosted glass the further back it sits.
+		   Tried tinting the fill itself lighter first, but a lighter
+		   *dark* grey barely reads against this canvas's near-black
+		   background (#050505) — the two are too close in value for
+		   the eye to separate. brightness() in the backdrop-filter
+		   lightens whatever is actually behind the card (the black
+		   canvas, or a card further back still), which stays visible
+		   regardless of the glass pane's own fill color, so the peeking
+		   cards read as distinct lit panels instead of blending in. */
+		background: rgba(20, 20, 20, calc(0.94 - var(--depth, 0) * 0.16));
+		backdrop-filter: blur(calc(var(--depth, 0) * 5px)) brightness(calc(1 + var(--depth, 0) * 0.35));
+		-webkit-backdrop-filter: blur(calc(var(--depth, 0) * 5px)) brightness(calc(1 + var(--depth, 0) * 0.35));
+		border-color: rgba(255, 255, 255, calc(0.08 + var(--depth, 0) * 0.09));
 	}
 	.work-file-title {
-		font-size: clamp(1.6rem, 7vw, 2.1rem);
+		font-size: 3.3rem;
+	}
+	.work-file-index {
+		font-size: 2.8rem;
+	}
+	.work-scene .work-tag {
+		font-size: 14px;
 	}
 
 	/* Sits below its paired card by a fixed gap (tuned to the card's
-	   own approximate height); GSAP applies the identical xPercent/
-	   yPercent/x/y/scale/opacity to both elements of a pair every step,
-	   so this gap holds constant and the two read as one card. */
+	   own approximate height, including its now-larger 3.3rem title —
+	   the longest title wraps to 3 lines at that size); GSAP applies
+	   the identical xPercent/yPercent/x/y/scale/opacity to both
+	   elements of a pair every step, so this gap holds constant and
+	   the two read as one card. */
 	.work-file-reveal {
 		position: absolute;
 		left: 50%;
-		top: calc(50% + 132px);
-		width: 82vw;
-		max-width: 380px;
+		top: calc(50% + 215px);
+		width: 88vw;
+		max-width: 460px;
 		background: transparent;
 		border: none;
 		padding: 0;

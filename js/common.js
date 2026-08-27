@@ -1686,9 +1686,24 @@ Function Scroll Effects
 				// front card's own.
 				var workGeometry = function(depth) {
 					var d = Math.max(0, depth);
-					return { xPercent: -50, yPercent: -50, x: 0, y: d * 16, rotation: 0, scale: Math.max(0.8, 1 - d * 0.045) };
+					// --depth drives the glass/blur look on .work-file-content
+					// (css/tokens.css) — inherited from this element down to
+					// its card surface, so it stays in step with the same
+					// depth this geometry is already positioning for.
+					// Peek shows above the front card (negative y) per
+					// Jaqueline's request. A pure y-offset only pokes out
+					// reliably if the offset itself is bigger than any
+					// height difference between the two cards paired
+					// (title length varies, so card height does too) —
+					// the x-offset is there as a second, always-reliable
+					// source of visible sliver regardless of height,
+					// since width doesn't vary card to card (the scale
+					// shrink eats into it a little, roughly width*0.045/2
+					// per depth step, so this is padded past that rather
+					// than a round number).
+					return { xPercent: -50, yPercent: -50, x: d * 24, y: -(d * 40), rotation: 0, scale: Math.max(0.8, 1 - d * 0.045), '--depth': d };
 				};
-				var workCardOpacity = function(depth) { return Math.max(0, 1 - Math.max(0, depth) * 0.4); };
+				var workCardOpacity = function(depth) { return Math.max(0, 1 - Math.max(0, depth) * 0.3); };
 				var workRevealOpacity = function(depth) { return depth <= 0 ? 1 : 0; };
 				var workDismissGeometry = function(i) {
 					return { xPercent: -50, yPercent: -50, x: i % 2 === 0 ? -70 : 70, y: -10, rotation: 0, scale: 0.92 };
