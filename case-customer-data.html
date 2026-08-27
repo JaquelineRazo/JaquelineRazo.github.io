@@ -257,9 +257,52 @@
                                 <div class="content-max-width">
                                     <h2 class="big-title has-mask-fill primary-font-title">The Approach</h2>
                                     <hr><hr>
-                                    <div class="flow-diagram">
+                                    <div class="case-diagram">
                                         <span class="flow-label">The Approach</span>
-                                        Touchpoints (QR &middot; Website &middot; Sampling &middot; Chatbot &middot; Campaign) &rarr; Capture &rarr; CRM / Data Layer &rarr; Governance &rarr; Activation (Media &middot; CRM &middot; Personalization &middot; Measurement)
+                                        <svg viewBox="0 0 1900 720" xmlns="http://www.w3.org/2000/svg" class="case-diagram-svg" role="img" aria-label="Architecture diagram: five touchpoints (QR, website, sampling, chatbot, campaign) converge into capture, then CRM data layer, then governance, which branches out into four activation channels: media, CRM, personalization, and measurement">
+<defs>
+<marker id="fArrow-cd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#0c0c0c"/></marker>
+<marker id="fArrowC-cd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8c6144"/></marker>
+</defs>
+<circle cx="140" cy="135" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="140" y="100" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#0c0c0c">QR</text>
+<line x1="165" y1="135" x2="523" y2="360" stroke="#0c0c0c" stroke-width="2.6" marker-end="url(#fArrow-cd)"/>
+<circle cx="140" cy="260" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="140" y="225" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#0c0c0c">Website</text>
+<line x1="165" y1="260" x2="523" y2="360" stroke="#0c0c0c" stroke-width="2.6" marker-end="url(#fArrow-cd)"/>
+<circle cx="140" cy="385" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="140" y="350" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#0c0c0c">Sampling</text>
+<line x1="165" y1="385" x2="523" y2="360" stroke="#0c0c0c" stroke-width="2.6" marker-end="url(#fArrow-cd)"/>
+<circle cx="140" cy="510" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="140" y="475" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#0c0c0c">Chatbot</text>
+<line x1="165" y1="510" x2="523" y2="360" stroke="#0c0c0c" stroke-width="2.6" marker-end="url(#fArrow-cd)"/>
+<circle cx="140" cy="635" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="140" y="600" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#0c0c0c">Campaign</text>
+<line x1="165" y1="635" x2="523" y2="360" stroke="#0c0c0c" stroke-width="2.6" marker-end="url(#fArrow-cd)"/>
+<circle cx="560" cy="360" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="560" y="442" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="48" fill="#0c0c0c">capture</text>
+<line x1="585" y1="360" x2="885" y2="360" stroke="#0c0c0c" stroke-width="3.5" marker-end="url(#fArrow-cd)"/>
+<circle cx="920" cy="360" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="920" y="442" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="48" fill="#0c0c0c">crm</text>
+<text x="920" y="498" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="48" fill="#0c0c0c">data layer</text>
+<line x1="945" y1="360" x2="1245" y2="360" stroke="#0c0c0c" stroke-width="3.5" marker-end="url(#fArrow-cd)"/>
+<circle cx="1280" cy="360" r="19" fill="#ffffff" stroke="#0c0c0c" stroke-width="3.2"/>
+<text x="1280" y="442" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="48" fill="#0c0c0c">governance</text>
+<line x1="1305" y1="360" x2="1643" y2="135" stroke="#8c6144" stroke-width="3.2" marker-end="url(#fArrowC-cd)"/>
+<circle cx="1680" cy="135" r="19" fill="#ffffff" stroke="#8c6144" stroke-width="3.2"/>
+<text x="1680" y="100" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#8c6144">Media</text>
+<line x1="1305" y1="360" x2="1643" y2="270" stroke="#8c6144" stroke-width="3.2" marker-end="url(#fArrowC-cd)"/>
+<circle cx="1680" cy="270" r="19" fill="#ffffff" stroke="#8c6144" stroke-width="3.2"/>
+<text x="1680" y="235" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#8c6144">CRM</text>
+<line x1="1305" y1="360" x2="1643" y2="405" stroke="#8c6144" stroke-width="3.2" marker-end="url(#fArrowC-cd)"/>
+<circle cx="1680" cy="405" r="19" fill="#ffffff" stroke="#8c6144" stroke-width="3.2"/>
+<text x="1680" y="370" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#8c6144">Personalization</text>
+<line x1="1305" y1="360" x2="1643" y2="545" stroke="#8c6144" stroke-width="3.2" marker-end="url(#fArrowC-cd)"/>
+<circle cx="1680" cy="545" r="19" fill="#ffffff" stroke="#8c6144" stroke-width="3.2"/>
+<text x="1680" y="510" text-anchor="middle" font-family="Six Caps, sans-serif" font-size="46" letter-spacing="0.02em" fill="#8c6144">Measurement</text>
+<text x="140" y="30" text-anchor="middle" font-family="Poppins, sans-serif" font-size="13" letter-spacing="0.08em" fill="#0c0c0c" opacity="0.5">TOUCHPOINTS</text>
+<text x="1680" y="30" text-anchor="middle" font-family="Poppins, sans-serif" font-size="13" letter-spacing="0.08em" fill="#8c6144" opacity="0.8">ACTIVATION</text>
+</svg>
                                     </div>
                                 </div>
                             </div>

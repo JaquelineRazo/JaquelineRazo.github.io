@@ -805,16 +805,26 @@ textarea:focus-visible,
    DESIGN_SYSTEM.md's placeholder direction; swap for a real diagram
    asset later without changing markup. */
 .flow-diagram {
+	/* Only ever appears in dark sections now (the "My Role" process
+	   line — the case-study "Approach" instances were replaced by real
+	   .case-diagram artwork). Without an explicit color it fell through
+	   to the vendor body default (color:#444, a dark-mode-unaware
+	   choice meant for text on white) — nearly invisible on this
+	   section's black background. #f2f1ee is the same "pearl white"
+	   already used for the Selected Work frame background, reused here
+	   as ink instead of inventing a new color, for contrast against the
+	   pure #ffffff used everywhere else. */
 	border: 1px dashed rgba(255,255,255,0.25);
 	border-radius: 4px;
-	padding: 36px 24px;
+	padding: 56px 40px;
 	margin: 36px auto;
-	max-width: 900px;
+	max-width: 1000px;
 	font-family: var(--font-title);
-	font-size: clamp(1rem, 2.4vw, 1.6rem);
+	font-size: clamp(1.8rem, 1rem + 3.2vw, 3.4rem);
 	letter-spacing: 0.02em;
-	line-height: 1.6;
+	line-height: 1.5;
 	text-transform: lowercase;
+	color: #f2f1ee;
 }
 
 .light-section .flow-diagram {
@@ -1681,5 +1691,118 @@ textarea:focus-visible,
 	   at any specificity, cannot outrank. */
 	opacity: 0.6 !important;
 	transition: opacity 0.3s ease;
+}
+
+/* Case studies — "The Approach" diagrams and "What I Built" mockups.
+   Replaces the .flow-diagram text placeholder with real inline SVG
+   artwork (embedded directly in the HTML, not referenced via <img>,
+   so the page's own Six Caps font applies to the SVG's <text> —
+   external SVGs loaded via <img src> can't fetch that font). No
+   dashed border here (unlike .flow-diagram) — these are finished
+   diagrams, not placeholders, so they float free on the section
+   background instead of reading as "still unfinished." */
+.case-diagram {
+	/* width:100% resolves against .content-max-width's CONTENT box, not
+	   its border box — its side padding (40-80px, responsive) is real
+	   containing-block space that a max-width on this element can never
+	   reclaim, no matter how high. The @media rule below pulls back into
+	   that padding with a negative margin instead, which is the only way
+	   to actually get more rendering room here. No max-width of its own:
+	   the parent already caps out on very wide screens, so this doesn't
+	   need a second, redundant ceiling. */
+	display: block;
+	width: 100%;
+	margin: 36px auto;
+	box-sizing: border-box;
+}
+
+@media only screen and (min-width: 768px) {
+	/* 40px is the smallest side padding .content-max-width uses at any
+	   breakpoint from here up (it steps up to 60px, then 80px, on wider
+	   screens) — pulling in by exactly that much is always safe (never
+	   overflows past the parent's own edge) and fully reclaims the
+	   padding at the 768-1024px tier, where it's exactly 40px. */
+	.case-diagram {
+		margin-left: -40px;
+		margin-right: -40px;
+		width: calc(100% + 80px);
+	}
+}
+
+.case-diagram + .case-diagram {
+	margin-top: 8px;
+}
+
+.case-diagram .flow-label {
+	display: block;
+	font-family: var(--font-body);
+	font-size: 11px;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	opacity: 0.5;
+	margin-bottom: 14px;
+}
+
+.case-diagram-svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.case-mockup {
+	max-width: 1100px;
+	margin: 0 auto 44px;
+}
+
+.case-mockup-caption {
+	margin-top: 16px;
+	font-size: 12px;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.45);
+	text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+	/* These SVGs are wide (up to 1200x220-750 viewBoxes) so their text
+	   stays comfortably sized at desktop widths — but scaling the whole
+	   diagram down to fit a ~310px mobile column shrinks that text well
+	   past legible. Instead of shrinking to fit, give the diagram a
+	   fixed minimum width and let it scroll horizontally, so labels
+	   stay a fixed, readable size regardless of viewport. */
+	.case-diagram,
+	.case-mockup {
+		position: relative;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		margin-left: calc(50% - 50vw);
+		margin-right: calc(50% - 50vw);
+		padding-left: 24px;
+		padding-right: 24px;
+		box-sizing: border-box;
+	}
+	.case-diagram-svg {
+		width: auto;
+		min-width: 640px;
+		height: auto;
+	}
+	.case-mockup .case-diagram-svg {
+		min-width: 560px;
+	}
+	/* Edge-fade hint that there's more to scroll */
+	.case-diagram::after,
+	.case-mockup::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		width: 32px;
+		background: linear-gradient(to right, transparent, var(--color-bg));
+		pointer-events: none;
+	}
+	.light-section .case-diagram::after {
+		background: linear-gradient(to right, transparent, #ffffff);
+	}
 }
 
