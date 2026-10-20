@@ -29,10 +29,57 @@ Function CustomFunction
 ---------------------------------------------------*/
 
 	function CustomFunction() {
-		
-		//Add here your custom js code
-		
+
+		RazzoDecode();
+
 	}// End CustomFunction
+
+
+/*--------------------------------------------------
+Function Razzo Decode
+Hero eyebrow "decodes" from scrambled glyphs into its text once the
+theme's hero reveal has made it visible. Waits on the element's real
+opacity instead of a fixed delay, because the reveal starts at
+different times on first load (after the preloader) and on AJAX loads.
+---------------------------------------------------*/
+
+	function RazzoDecode() {
+
+		var els = document.querySelectorAll('.hero-decode');
+		if (!els.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+
+		var glyphs = '01<>/\\|_=+*#ABCDEFXZ';
+
+		els.forEach(function(el) {
+			var text = el.textContent;
+			var watchStart = performance.now();
+
+			// Lock the width so the scramble never shifts the layout.
+			el.style.minWidth = el.offsetWidth + 'px';
+
+			(function waitForReveal() {
+				var revealed = parseFloat(getComputedStyle(el.parentNode).opacity) > 0.6;
+				if (!revealed && performance.now() - watchStart < 10000) {
+					requestAnimationFrame(waitForReveal);
+					return;
+				}
+				var start = performance.now();
+				var duration = 1100;
+				(function frame(now) {
+					var progress = Math.min((now - start) / duration, 1);
+					var settled = Math.floor(progress * text.length);
+					var out = '';
+					for (var i = 0; i < text.length; i++) {
+						if (i < settled || text[i] === ' ') { out += text[i]; }
+						else { out += glyphs[Math.floor(Math.random() * glyphs.length)]; }
+					}
+					el.textContent = out;
+					if (progress < 1) { requestAnimationFrame(frame); }
+				})(start);
+			})();
+		});
+
+	}// End RazzoDecode
 	
 	
 	

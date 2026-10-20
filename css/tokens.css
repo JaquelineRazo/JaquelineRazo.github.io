@@ -2037,3 +2037,199 @@ textarea:focus-visible,
 	}
 }
 
+
+
+/* ==================================================================
+   RAZZO 2.0 — Hero (step 1)
+   Eyebrow + actions live inside .hero-subtitle.caption-timeline so the
+   theme's hero reveal (js/scripts.js) staggers them in with the
+   subtitle. The rules below restyle those two wrappers only.
+   Futuristic layer, kept quiet to respect the editorial black/white
+   look: a pulsing "live" signal dot, a decode-on-reveal eyebrow
+   (js/scripts.js RazzoDecode) and a light sweep across the CTAs.
+   ================================================================== */
+
+:root {
+	--razzo-signal: #c6a77b;
+	--razzo-line: rgba(255, 255, 255, 0.22);
+	--razzo-line-strong: rgba(255, 255, 255, 0.6);
+}
+
+/* Only the wrapper span reveals; nested spans (sr-only text, CTA
+   labels) must not inherit the theme's hidden/offset start state. */
+.hero-eyebrow span span,
+.hero-actions span span {
+	opacity: 1;
+	transform: none;
+	-webkit-transform: none;
+	display: inline-block;
+}
+
+.hero-eyebrow span .sr-only {
+	position: absolute;
+}
+
+/* Eyebrow: sits above the H1, so no top margin; full opacity (the
+   theme dims .hero-subtitle to 0.4) but kept small and tracked out. */
+.hero-statement .hero-eyebrow {
+	margin-top: 0;
+	margin-bottom: 34px;
+	opacity: 1;
+	font-size: 12px;
+	line-height: 20px;
+	letter-spacing: 0.32em;
+	text-transform: uppercase;
+}
+
+.hero-eyebrow b {
+	font-weight: 500;
+	white-space: nowrap;
+	display: inline-block;
+	font-variant-numeric: tabular-nums;
+}
+
+.hero-signal {
+	position: relative;
+	display: inline-block;
+	width: 7px;
+	height: 7px;
+	margin-right: 14px;
+	vertical-align: 1px;
+	border-radius: 50%;
+	background: var(--razzo-signal);
+	box-shadow: 0 0 12px rgba(198, 167, 123, 0.7);
+}
+
+.hero-signal::after {
+	content: "";
+	position: absolute;
+	inset: -5px;
+	border-radius: 50%;
+	border: 1px solid var(--razzo-signal);
+	opacity: 0;
+	animation: razzo-signal-pulse 2.6s ease-out infinite;
+}
+
+@keyframes razzo-signal-pulse {
+	0%   { transform: scale(0.5); opacity: 0.9; }
+	70%  { transform: scale(1.8); opacity: 0; }
+	100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Actions row under the subtitle. */
+.hero-statement .hero-actions {
+	margin-top: 46px;
+	opacity: 1;
+	overflow: visible;
+}
+
+.hero-actions > span {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 14px;
+}
+
+.hero-cta {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	gap: 14px;
+	padding: 15px 28px;
+	border: 1px solid var(--razzo-line);
+	border-radius: 999px;
+	overflow: hidden;
+	color: #fff;
+	font-size: 14px;
+	line-height: 20px;
+	letter-spacing: 0.04em;
+	background: rgba(255, 255, 255, 0.03);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	transition: border-color 0.4s ease, background-color 0.4s ease, color 0.4s ease;
+}
+
+/* .hero-actions prefix: the theme's `.light-content a` (style.css)
+   would otherwise force white text onto the white primary button. */
+.hero-actions .hero-cta--primary {
+	background: #fff;
+	border-color: #fff;
+	color: #0c0c0c;
+}
+
+/* Light sweep: a soft diagonal highlight that crosses the button on
+   hover/focus, like a scan passing over glass. */
+.hero-cta::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -60%;
+	width: 50%;
+	background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+	transform: skewX(-20deg);
+	pointer-events: none;
+}
+
+.hero-cta--primary::before {
+	background: linear-gradient(100deg, transparent, rgba(198, 167, 123, 0.45), transparent);
+}
+
+.hero-cta:hover::before,
+.hero-cta:focus-visible::before {
+	animation: razzo-sweep 0.9s ease;
+}
+
+@keyframes razzo-sweep {
+	from { left: -60%; }
+	to   { left: 120%; }
+}
+
+.hero-actions .hero-cta:hover,
+.hero-actions .hero-cta:focus-visible {
+	border-color: var(--razzo-line-strong);
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+}
+
+.hero-actions .hero-cta--primary:hover,
+.hero-actions .hero-cta--primary:focus-visible {
+	background: #f2f1ee;
+	border-color: #f2f1ee;
+	color: #0c0c0c;
+}
+
+.hero-cta-arrow {
+	transition: transform 0.4s ease;
+}
+
+.hero-cta--primary:hover .hero-cta-arrow { transform: translateY(3px); }
+.hero-cta:not(.hero-cta--primary):hover .hero-cta-arrow { transform: translateX(4px); }
+
+@media only screen and (max-width: 767px) {
+	.hero-statement .hero-eyebrow {
+		font-size: 11px;
+		letter-spacing: 0.24em;
+		margin-bottom: 24px;
+	}
+	.hero-statement .hero-actions {
+		margin-top: 34px;
+	}
+	.hero-actions > span {
+		flex-direction: column;
+		align-items: center;
+	}
+	.hero-cta {
+		width: 100%;
+		max-width: 300px;
+		justify-content: center;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.hero-signal::after,
+	.hero-cta:hover::before,
+	.hero-cta:focus-visible::before {
+		animation: none;
+	}
+}

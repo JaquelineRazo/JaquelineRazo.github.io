@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /archive/
 
-Sitemap: https://jaquelinerazo.github.io/sitemap.xml
+Sitemap: https://razzobusiness.com/sitemap.xml

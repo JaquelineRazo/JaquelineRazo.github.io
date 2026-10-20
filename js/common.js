@@ -321,6 +321,25 @@ Function Scroll Effects
 		
 		
 		
+		// In-page anchors (e.g. hero "Explore the ventures" -> #ventures).
+		// A plain href="#id" can't scroll the smooth-scrollbar container
+		// (#content-scroll), so resolve the target's position against
+		// whichever scroller is active, same easing as Scroll Down above.
+		$('[data-scroll-to]').on('click', function(e) {
+			var target = document.querySelector($(this).attr('data-scroll-to'));
+			if (!target) { return; }
+			e.preventDefault();
+			var top;
+			if ($("body").hasClass("smooth-scroll")) {
+				top = scrollbar.scrollTop + target.getBoundingClientRect().top;
+				gsap.to(scrollbar, {duration: 1.5, scrollTop: top, ease:Power4.easeInOut});
+			} else {
+				top = $(window).scrollTop() + target.getBoundingClientRect().top;
+				$("html,body").animate({scrollTop: top}, 800);
+			}
+		});
+		
+		
 		// Hero Section Effects
 		if ($('#hero').hasClass('has-image')) {				
 			
