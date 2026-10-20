@@ -2233,3 +2233,297 @@ textarea:focus-visible,
 		animation: none;
 	}
 }
+
+
+/* ==================================================================
+   RAZZO 2.0 — Signature caption + Ventures "Choose Your Lane" (step 2)
+   Venture palettes come from razzo-strategy DESIGN_SYSTEM_SPEC (E.3).
+   Each card frames a small "window" in its venture's own colors so
+   the visitor sees three distinct worlds inside the RAZZO black frame.
+   ================================================================== */
+
+.signature-caption {
+	position: relative;
+	max-width: 1000px;
+	margin: 34px 8% 0 auto;
+	font-size: 14px;
+	line-height: 24px;
+	color: rgba(255, 255, 255, 0.55);
+}
+
+.signature-caption strong {
+	display: block;
+	margin-bottom: 4px;
+	color: #fff;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+}
+
+.venture-card--systems {
+	--v-bg: #152B3E;
+	--v-surface: #ECF1F4;
+	--v-muted: #748796;
+	--v-accent: #398CA0;
+}
+
+.venture-card--growth {
+	--v-bg: #F4F2EA;
+	--v-surface: #283C32;
+	--v-muted: #B9CE96;
+	--v-accent: #EA8E64;
+}
+
+.venture-card--data {
+	--v-bg: #181B2D;
+	--v-surface: #F4F3F8;
+	--v-muted: #8E79BA;
+	--v-accent: #63A8A0;
+}
+
+.venture-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 28px;
+	max-width: 1320px;
+	margin: 80px auto 0;
+	padding: 0 80px;
+	box-sizing: border-box;
+}
+
+.venture-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 12px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 16px;
+	background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+	color: #fff;
+	overflow: hidden;
+	/* `translate` (not transform) so the hover lift composes with the
+	   theme's .has-animation reveal, which writes an inline transform. */
+	transition: translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.4s ease, box-shadow 0.5s ease;
+}
+
+/* Scan line: an accent-colored edge that sweeps across the top of the
+   card on hover. */
+.venture-card::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -40%;
+	width: 40%;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, var(--v-accent), transparent);
+	opacity: 0;
+	pointer-events: none;
+}
+
+.venture-card:hover,
+.venture-card:focus-visible {
+	translate: 0 -6px;
+	border-color: rgba(255, 255, 255, 0.24);
+	box-shadow: 0 24px 60px -30px var(--v-accent);
+}
+
+.venture-card:hover::before,
+.venture-card:focus-visible::before {
+	opacity: 1;
+	animation: razzo-scan 1.2s ease;
+}
+
+@keyframes razzo-scan {
+	from { left: -40%; }
+	to   { left: 100%; }
+}
+
+.venture-window {
+	position: relative;
+	aspect-ratio: 16 / 10;
+	border-radius: 10px;
+	background: var(--v-bg);
+	overflow: hidden;
+}
+
+/* Soft vignette so each window reads as a lit screen, not a flat tile. */
+.venture-window::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, 0.08), transparent 60%);
+	pointer-events: none;
+}
+
+.venture-svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+	transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.venture-card:hover .venture-svg {
+	transform: scale(1.04);
+}
+
+.venture-svg text {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: 8px;
+	letter-spacing: 0.12em;
+}
+
+.venture-body {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	padding: 26px 14px 14px;
+}
+
+.venture-meta {
+	display: flex;
+	gap: 14px;
+	align-items: baseline;
+	min-height: 40px;
+	font-size: 12px;
+	line-height: 18px;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.venture-index {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	color: var(--v-accent);
+	filter: brightness(1.25);
+}
+
+.venture-name {
+	margin: 18px 0 10px;
+	font-size: clamp(48px, 4.4vw, 68px);
+	line-height: 1;
+	color: #fff;
+}
+
+.venture-value {
+	margin: 0 0 28px;
+	font-size: 17px;
+	line-height: 26px;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.venture-cta {
+	margin-top: auto;
+	padding-top: 18px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	font-size: 13px;
+	letter-spacing: 0.04em;
+	color: #fff;
+}
+
+.venture-cta-arrow {
+	display: inline-block;
+	margin-left: 6px;
+	transition: transform 0.4s ease;
+}
+
+.venture-card:hover .venture-cta-arrow {
+	transform: translateX(6px);
+}
+
+/* --- Industry Systems window: lead-to-payment flow ---------------- */
+.venture-card--systems .vw-grid path { stroke: rgba(236, 241, 244, 0.06); stroke-width: 1; fill: none; }
+.venture-card--systems .vw-track { stroke: rgba(236, 241, 244, 0.18); stroke-width: 1.5; fill: none; }
+.venture-card--systems .vw-flow {
+	stroke: var(--v-accent);
+	stroke-width: 1.5;
+	fill: none;
+	stroke-dasharray: 4 8;
+	animation: vw-dash 1.4s linear infinite;
+}
+.venture-card--systems .vw-nodes rect { fill: var(--v-bg); stroke: rgba(236, 241, 244, 0.5); stroke-width: 1.2; }
+.venture-card--systems .vw-nodes .vw-node-done { fill: var(--v-accent); stroke: var(--v-accent); }
+.venture-card--systems .vw-labels text { fill: var(--v-muted); text-anchor: middle; }
+.venture-card--systems .vw-status circle { fill: var(--v-accent); animation: vw-blink 2.4s ease-in-out infinite; }
+.venture-card--systems .vw-status text { fill: rgba(236, 241, 244, 0.6); }
+.venture-card--systems .vw-runner {
+	fill: var(--v-surface);
+	offset-path: path("M38 100H282");
+	animation: vw-run 3.2s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+
+/* --- Digital Growth window: site + incoming lead ------------------ */
+.venture-card--growth .vw-browser rect { fill: #fff; stroke: var(--v-surface); stroke-width: 1.2; }
+.venture-card--growth .vw-browser path { stroke: rgba(40, 60, 50, 0.2); stroke-width: 1; }
+.venture-card--growth .vw-dots circle { fill: rgba(40, 60, 50, 0.25); }
+.venture-card--growth .vw-copy rect { fill: var(--v-surface); }
+.venture-card--growth .vw-copy .vw-copy-soft { fill: rgba(40, 60, 50, 0.18); }
+.venture-card--growth .vw-button { fill: var(--v-accent); }
+.venture-card--growth .vw-lead {
+	animation: vw-lead 4.8s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+	transform-box: fill-box;
+}
+.venture-card--growth .vw-lead > rect:first-child { fill: var(--v-surface); }
+.venture-card--growth .vw-lead circle { fill: var(--v-muted); }
+.venture-card--growth .vw-lead .vw-lead-line { fill: rgba(244, 242, 234, 0.85); }
+.venture-card--growth .vw-lead .vw-lead-soft { fill: rgba(244, 242, 234, 0.35); }
+.venture-card--growth .vw-bars rect {
+	fill: var(--v-muted);
+	transform-box: fill-box;
+	transform-origin: bottom;
+	animation: vw-grow 4.8s ease-in-out infinite;
+}
+.venture-card--growth .vw-bars rect:nth-child(2) { animation-delay: 0.15s; }
+.venture-card--growth .vw-bars rect:nth-child(3) { animation-delay: 0.3s; fill: var(--v-accent); }
+
+/* --- Data Intelligence window: chart that draws on reveal --------- */
+.venture-card--data .vw-grid path { stroke: rgba(244, 243, 248, 0.07); stroke-width: 1; fill: none; }
+.venture-card--data .vw-area { fill: rgba(99, 168, 160, 0.12); }
+.venture-card--data .vw-line {
+	fill: none;
+	stroke: var(--v-accent);
+	stroke-width: 2;
+	stroke-linejoin: round;
+	stroke-dasharray: 1;
+	stroke-dashoffset: 1;
+}
+.venture-card--data.animated .vw-line { animation: vw-draw 2.2s 0.4s cubic-bezier(0.6, 0, 0.2, 1) forwards; }
+.venture-card--data .vw-points circle { fill: var(--v-bg); stroke: var(--v-accent); stroke-width: 1.5; }
+.venture-card--data .vw-points .vw-point-hot { fill: var(--v-accent); animation: vw-blink 2.4s ease-in-out infinite; }
+.venture-card--data .vw-scatter circle { fill: var(--v-muted); opacity: 0.8; }
+.venture-card--data .vw-sample { fill: rgba(244, 243, 248, 0.45); text-anchor: end; }
+
+@keyframes vw-dash  { to { stroke-dashoffset: -24; } }
+@keyframes vw-run   { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+@keyframes vw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes vw-draw  { to { stroke-dashoffset: 0; } }
+@keyframes vw-lead  {
+	0%, 12%   { opacity: 0; transform: translateY(14px); }
+	22%, 78%  { opacity: 1; transform: translateY(0); }
+	90%, 100% { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes vw-grow  { 0%, 15% { transform: scaleY(0.35); } 45%, 80% { transform: scaleY(1); } 100% { transform: scaleY(0.35); } }
+
+@media only screen and (max-width: 1024px) {
+	.venture-grid {
+		grid-template-columns: minmax(0, 1fr);
+		max-width: 620px;
+		padding: 0 40px;
+		margin-top: 56px;
+	}
+	.venture-meta { min-height: 0; }
+}
+
+@media only screen and (max-width: 767px) {
+	.signature-caption { margin: 26px 0 0; font-size: 13px; line-height: 22px; }
+	.venture-grid { padding: 0 20px; gap: 20px; margin-top: 40px; }
+	.venture-body { padding: 22px 8px 8px; }
+	.venture-name { font-size: 52px; }
+	.venture-value { font-size: 16px; line-height: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.venture-card,
+	.venture-svg { transition: none; }
+	.venture-card:hover::before { animation: none; }
+	.venture-svg *,
+	.venture-card--data.animated .vw-line { animation: none !important; }
+	.venture-card--data .vw-line { stroke-dashoffset: 0; }
+	.venture-card--growth .vw-lead { opacity: 1; }
+}
