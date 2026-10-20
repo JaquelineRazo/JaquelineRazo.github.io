@@ -32,6 +32,7 @@ Function CustomFunction
 
 		RazzoDecode();
 		RazzoSpotlight();
+		RazzoContact();
 		
 	}// End CustomFunction
 	
@@ -53,6 +54,52 @@ radial highlight follows the cursor (css/tokens.css, step 4).
 		});
 		
 	}// End RazzoSpotlight
+	
+	
+/*--------------------------------------------------
+Function Razzo Contact
+- Remembers the first-touch source of the visit (utm_source or ref)
+  for the session, so it survives AJAX page changes before the form.
+- Contact form: preselects the intent from ?intent=, fills the hidden
+  source field, and lets the route cards set the intent.
+---------------------------------------------------*/
+	
+	function RazzoContact() {
+		
+		var params = new URLSearchParams(window.location.search);
+		var source = params.get('utm_source') || params.get('ref');
+		try {
+			if (source && !sessionStorage.getItem('razzo_source')) {
+				sessionStorage.setItem('razzo_source', source);
+			}
+			source = sessionStorage.getItem('razzo_source') || source;
+		} catch (e) {}
+		
+		var form = document.getElementById('contactform');
+		if (!form) { return; }
+		
+		var sourceField = form.querySelector('#source');
+		if (sourceField) {
+			sourceField.value = source || (document.referrer && document.referrer.indexOf(location.host) === -1 ? 'referral' : 'direct');
+		}
+		
+		var select = form.querySelector('#intent');
+		function setIntent(value) {
+			if (select && select.querySelector('option[value="' + value + '"]')) {
+				select.value = value;
+				select.classList.add('has-value');
+			}
+		}
+		setIntent(params.get('intent'));
+		if (select) {
+			select.addEventListener('change', function() { select.classList.add('has-value'); });
+		}
+		
+		document.querySelectorAll('[data-intent]').forEach(function(card) {
+			card.addEventListener('click', function() { setIntent(card.getAttribute('data-intent')); });
+		});
+		
+	}// End RazzoContact
 
 
 /*--------------------------------------------------
