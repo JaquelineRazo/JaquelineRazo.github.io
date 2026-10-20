@@ -31,8 +31,28 @@ Function CustomFunction
 	function CustomFunction() {
 
 		RazzoDecode();
-
+		RazzoSpotlight();
+		
 	}// End CustomFunction
+	
+	
+/*--------------------------------------------------
+Function Razzo Spotlight
+Feeds the pointer position into .route-card's --mx/--my so its
+radial highlight follows the cursor (css/tokens.css, step 4).
+---------------------------------------------------*/
+	
+	function RazzoSpotlight() {
+		
+		document.querySelectorAll('.route-card').forEach(function(card) {
+			card.addEventListener('pointermove', function(e) {
+				var r = card.getBoundingClientRect();
+				card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+				card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+			});
+		});
+		
+	}// End RazzoSpotlight
 
 
 /*--------------------------------------------------

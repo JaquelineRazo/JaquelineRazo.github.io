@@ -2583,3 +2583,185 @@ textarea:focus-visible,
 @media (prefers-reduced-motion: reduce) {
 	.pov-pull::after { animation: none; background: none; }
 }
+
+
+/* ==================================================================
+   RAZZO 2.0 — Speaking formats, final CTA routes, footer (step 4)
+   ================================================================== */
+
+/* Formats row in the (white) Speaking section. */
+.format-chips {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 10px;
+	margin: 30px auto 0;
+	padding: 0;
+	list-style: none;
+}
+
+.format-chips li {
+	margin: 0;
+	padding: 8px 16px;
+	border: 1px solid rgba(0, 0, 0, 0.14);
+	border-radius: 999px;
+	font-size: 13px;
+	line-height: 18px;
+	letter-spacing: 0.03em;
+	color: rgba(0, 0, 0, 0.72);
+	background: rgba(255, 255, 255, 0.7);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+}
+
+/* Final CTA: four intent routes. */
+.final-cta-intro {
+	max-width: 620px;
+	margin: 26px auto 0;
+}
+
+.route-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 18px;
+	max-width: 1320px;
+	margin: 64px auto 0;
+	padding: 0 80px;
+	box-sizing: border-box;
+	text-align: left;
+}
+
+.route-card {
+	--mx: 50%;
+	--my: 0%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-height: 210px;
+	padding: 26px 24px 22px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.02);
+	color: #fff;
+	overflow: hidden;
+	transition: border-color 0.4s ease, translate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+/* Spotlight that follows the pointer (js/scripts.js RazzoSpotlight
+   writes --mx/--my); falls back to a soft top glow without JS. */
+.route-card::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: radial-gradient(260px circle at var(--mx) var(--my), rgba(198, 167, 123, 0.16), transparent 70%);
+	opacity: 0;
+	transition: opacity 0.4s ease;
+	pointer-events: none;
+}
+
+.route-card:hover,
+.route-card:focus-visible {
+	translate: 0 -4px;
+	border-color: rgba(198, 167, 123, 0.45);
+}
+
+.route-card:hover::before,
+.route-card:focus-visible::before {
+	opacity: 1;
+}
+
+.route-index {
+	font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-size: 12px;
+	color: var(--razzo-signal);
+}
+
+.route-card .route-title {
+	margin: 18px 0 10px;
+	font-size: 20px;
+	line-height: 27px;
+	font-weight: 500;
+	color: #fff;
+}
+
+.route-text {
+	margin: 0;
+	font-size: 14px;
+	line-height: 22px;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.route-arrow {
+	margin-top: auto;
+	padding-top: 22px;
+	font-size: 18px;
+	transition: transform 0.4s ease;
+}
+
+.route-card:hover .route-arrow { transform: translateX(5px); }
+.route-card:first-child:hover .route-arrow { transform: translateY(-5px); }
+
+.final-cta-actions {
+	margin-top: 56px;
+}
+
+/* Same specificity fix as the hero: beat the theme's `.dark-section a`. */
+.final-cta-actions .hero-cta--primary {
+	background: #fff;
+	border-color: #fff;
+	color: #0c0c0c;
+}
+
+.final-cta-actions .hero-cta--primary:hover,
+.final-cta-actions .hero-cta--primary:focus-visible {
+	background: #f2f1ee;
+	border-color: #f2f1ee;
+	color: #0c0c0c;
+}
+
+.final-cta-actions .hero-cta--primary:hover .hero-cta-arrow { transform: translateX(4px); }
+
+/* Footer: the copyright box is a fixed-height, overflow:hidden strip
+   (style.css), so the long tagline only shows where it fits. */
+@media only screen and (max-width: 1200px) {
+	.footer-tagline { display: none; }
+}
+
+@media only screen and (max-width: 1024px) {
+	.route-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		padding: 0 40px;
+	}
+}
+
+@media only screen and (max-width: 767px) {
+	.route-grid {
+		grid-template-columns: minmax(0, 1fr);
+		padding: 0 20px;
+		gap: 14px;
+		margin-top: 44px;
+	}
+	.route-card { min-height: 0; }
+	.format-chips li { font-size: 12px; padding: 7px 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.route-card { transition: border-color 0.4s ease; }
+	.route-card:hover { translate: none; }
+}
+
+/* Step 4 polish: readable line length + spacing. */
+.speaking-intro {
+	max-width: 720px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.format-chips {
+	margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 767px) {
+	.format-chips { margin-bottom: 36px; }
+	.final-cta-intro { padding: 0 20px; }
+}
