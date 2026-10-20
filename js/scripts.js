@@ -99,32 +99,36 @@ Function Razzo Contact
 			card.addEventListener('click', function() { setIntent(card.getAttribute('data-intent')); });
 		});
 		
-		// Submit in the background through FormSubmit's AJAX endpoint so the
-		// visitor gets instant feedback instead of a long blank wait. Any
-		// failure falls back to the normal POST (the native submit() skips
-		// this handler), so a message is never lost.
+		// Submit in the background to the razzo-forms worker (Cloudflare +
+		// Resend, URL in the form's data-endpoint), which answers in about a
+		// second. If it errors or takes longer than 10s, fall back to the
+		// normal FormSubmit POST (the native submit() skips this handler and
+		// redirects to thanks.html via _next), so a message is never lost.
 		var button = form.querySelector('#submit');
-		var status = form.querySelector('.form-status');
 		form.addEventListener('submit', function(e) {
-			if (!window.fetch || form.classList.contains('is-sending')) { return; }
+			var endpoint = form.getAttribute('data-endpoint');
+			if (!window.fetch || !endpoint || form.classList.contains('is-sending')) { return; }
 			e.preventDefault();
 			form.classList.add('is-sending');
 			if (button) { button.value = 'Sending\u2026'; button.disabled = true; }
-			if (status) { status.textContent = ''; }
 			var data = {};
 			new FormData(form).forEach(function(value, key) { data[key] = value; });
 			// The submit button's id="submit" shadows form.submit, so call
 			// the native method directly.
 			var fallback = function() { HTMLFormElement.prototype.submit.call(form); };
-			fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+			var controller = window.AbortController ? new AbortController() : null;
+			var timer = setTimeout(function() { if (controller) { controller.abort(); } }, 10000);
+			fetch(endpoint, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-				body: JSON.stringify(data)
+				body: JSON.stringify(data),
+				signal: controller ? controller.signal : undefined
 			}).then(function(r) { return r.json(); }).then(function(res) {
-				if (res && (res.success === true || res.success === 'true')) {
+				clearTimeout(timer);
+				if (res && res.success === true) {
 					window.location.href = 'thanks.html';
 				} else { fallback(); }
-			}).catch(fallback);
+			}).catch(function() { clearTimeout(timer); fallback(); });
 		});
 		
 	}// End RazzoContact
