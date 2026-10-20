@@ -15,9 +15,6 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
     <!-- Fonts served from this site and preloaded (OFL licensed), so the
          card renders in its final typography without a layout shift. -->
-    <link rel="preload" href="webfonts/six-caps-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="webfonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="webfonts/poppins-500-latin.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Standalone on purpose: no theme JS/preloader, so the page is
          usable the moment someone scans the QR on event Wi-Fi. Visual
          language mirrors css/tokens.css (black, champagne signal). -->
@@ -72,19 +69,20 @@
         }
 
         /* One scan line passes over the card when it opens. */
+        /* Animates background-position (paint only), not top: moving a
+           box every frame counts as a layout shift. */
         .card::before {
             content: "";
             position: absolute;
-            left: 0;
-            right: 0;
-            top: -30%;
-            height: 30%;
-            background: linear-gradient(180deg, transparent, rgba(198, 167, 123, 0.14), transparent);
+            inset: 0;
+            background: linear-gradient(180deg, transparent, rgba(198, 167, 123, 0.14), transparent) no-repeat;
+            background-size: 100% 30%;
+            background-position: 0 -45%;
             animation: scan 1.6s 0.2s ease-out forwards;
             pointer-events: none;
         }
 
-        @keyframes scan { to { top: 110%; } }
+        @keyframes scan { to { background-position: 0 145%; } }
 
         .reveal { opacity: 0; transform: translateY(12px); animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
         .reveal:nth-child(2) { animation-delay: 0.08s; }
@@ -126,7 +124,12 @@
 
         @keyframes orbit { to { transform: rotate(360deg); } }
 
+        /* One fixed-height line whatever font is showing: while Six Caps
+           loads, the wider fallback must not wrap and grow the card,
+           which would re-center it (layout shift). */
         h1 {
+            height: 1em;
+            white-space: nowrap;
             margin: 0;
             font-family: 'Six Caps', sans-serif;
             font-weight: 400;
