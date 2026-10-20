@@ -99,6 +99,34 @@ Function Razzo Contact
 			card.addEventListener('click', function() { setIntent(card.getAttribute('data-intent')); });
 		});
 		
+		// Submit in the background through FormSubmit's AJAX endpoint so the
+		// visitor gets instant feedback instead of a long blank wait. Any
+		// failure falls back to the normal POST (the native submit() skips
+		// this handler), so a message is never lost.
+		var button = form.querySelector('#submit');
+		var status = form.querySelector('.form-status');
+		form.addEventListener('submit', function(e) {
+			if (!window.fetch || form.classList.contains('is-sending')) { return; }
+			e.preventDefault();
+			form.classList.add('is-sending');
+			if (button) { button.value = 'Sending\u2026'; button.disabled = true; }
+			if (status) { status.textContent = ''; }
+			var data = {};
+			new FormData(form).forEach(function(value, key) { data[key] = value; });
+			// The submit button's id="submit" shadows form.submit, so call
+			// the native method directly.
+			var fallback = function() { HTMLFormElement.prototype.submit.call(form); };
+			fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+				body: JSON.stringify(data)
+			}).then(function(r) { return r.json(); }).then(function(res) {
+				if (res && (res.success === true || res.success === 'true')) {
+					window.location.href = 'thanks.html';
+				} else { fallback(); }
+			}).catch(fallback);
+		});
+		
 	}// End RazzoContact
 
 

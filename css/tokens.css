@@ -2942,3 +2942,53 @@ button.route-card:hover .route-arrow { transform: translateY(5px); }
 	.legal-heading { font-size: 28px; line-height: 36px; }
 	.legal-section p, .legal-section li { font-size: 15px; line-height: 25px; }
 }
+
+
+/* ==================================================================
+   Fix: never show the theme's "rotate your device" overlay.
+   style.css shows #rotate-device on (orientation: landscape), and on
+   phones opening the keyboard shrinks the viewport until it counts as
+   landscape, so the overlay covered the contact form while typing.
+   Blocking an orientation also fails WCAG 1.3.4; the layout works in
+   landscape anyway.
+   ================================================================== */
+#rotate-device {
+	display: none !important;
+}
+
+/* Contact form background submit (js/scripts.js RazzoContact): instant
+   "Sending…" state with a light running under the button. */
+#contactform .button-box {
+	position: relative;
+}
+
+#contactform.is-sending .button-box::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	bottom: -14px;
+	width: 180px;
+	height: 2px;
+	margin-left: -90px;
+	border-radius: 2px;
+	background: linear-gradient(90deg, transparent, var(--razzo-signal), transparent) no-repeat;
+	background-size: 40% 100%;
+	animation: razzo-sending 1.1s ease-in-out infinite;
+}
+
+#contactform.is-sending input[type="submit"] {
+	opacity: 0.6;
+	cursor: progress;
+}
+
+.form-status {
+	clear: both;
+	margin: 18px 0 0;
+	font-size: 14px;
+	color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes razzo-sending {
+	0%   { background-position: -40% 0; }
+	100% { background-position: 140% 0; }
+}
