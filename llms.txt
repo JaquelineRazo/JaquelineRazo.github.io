@@ -1,0 +1,25 @@
+# RAZZO
+
+> RAZZO is a business studio founded by Jaqueline Razo that builds practical systems for growing businesses through three ventures: Industry Systems (operational software), Digital Growth (websites and CRM) and Data Intelligence (research and data).
+
+Jaqueline Razo is a software engineer by training with 9+ years across data, product and business transformation, working with teams in Mexico, the U.S., Europe and Türkiye. She also speaks and runs corporate training on technology, AI and building businesses. RAZZO works with teams worldwide.
+
+## Ventures
+
+- Industry Systems: custom back-office systems and connected workflows for contractors, real estate and operations-heavy teams that have outgrown spreadsheets and disconnected tools (lead to estimate, job and payment). Contact: https://razzobusiness.com/contact.html?intent=systems
+- Digital Growth: websites, lead capture, CRM and follow-up that work as one system, so inquiries turn into booked work. Contact: https://razzobusiness.com/contact.html?intent=growth
+- Data Intelligence: research, structured data and market intelligence for market and operational decisions. Contact: https://razzobusiness.com/contact.html?intent=data
+
+## Pages
+
+- [Home](https://razzobusiness.com/): who Jaqueline Razo is, the three ventures, point of view, selected work and speaking.
+- [Selected Work](https://razzobusiness.com/work.html): case studies in transformation, digital products, decision intelligence, customer data and AI-enabled workflows.
+- [Capital Planning & Asset Management Platform](https://razzobusiness.com/case-capital-planning.html): an operational platform delivered for a U.S.-based real estate and construction business.
+- [About](https://razzobusiness.com/about.html): career story, communities and speaking.
+- [Contact](https://razzobusiness.com/contact.html): start a conversation about systems, websites and CRM, data, partnerships, speaking or advisory.
+- [Book a 20-minute intro](https://tidycal.com/jaquelinerazzo/20-minute-meeting)
+
+## Optional
+
+- [Privacy Notice](https://razzobusiness.com/privacy.html)
+- [LinkedIn](https://www.linkedin.com/in/jaquelinerazo/)

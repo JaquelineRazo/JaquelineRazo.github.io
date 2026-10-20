@@ -30,6 +30,9 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Six+Caps&display=swap" rel="stylesheet">
    
+    <!-- Umami Cloud: cookieless analytics (pageviews incl. AJAX pushState, UTM, data-umami-event clicks).
+         data-domains keeps local previews out of the stats. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6c3dd0af-b54d-4f12-9451-df9b2046e7c4" data-domains="razzobusiness.com,www.razzobusiness.com"></script>
 </head>
 
 
@@ -165,37 +168,37 @@
                                 <h2 class="big-title has-mask-fill primary-font-title">What Brings You Here?</h2>
 
                                 <div class="route-grid route-grid--three" role="list">
-                                    <button type="button" class="route-card has-animation" data-delay="0" data-intent="systems" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="0" data-intent="systems" data-umami-event="contact-route" data-umami-event-intent="systems" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">01</span>
                                         <span class="route-title">Operations &amp; Systems</span>
                                         <span class="route-text">Back-office software and connected workflows.</span>
                                         <span class="route-arrow" aria-hidden="true">&darr;</span>
                                     </button>
-                                    <button type="button" class="route-card has-animation" data-delay="80" data-intent="growth" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="80" data-intent="growth" data-umami-event="contact-route" data-umami-event-intent="growth" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">02</span>
                                         <span class="route-title">Websites &amp; CRM</span>
                                         <span class="route-text">A website and lead pipeline that work together.</span>
                                         <span class="route-arrow" aria-hidden="true">&darr;</span>
                                     </button>
-                                    <button type="button" class="route-card has-animation" data-delay="160" data-intent="data" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="160" data-intent="data" data-umami-event="contact-route" data-umami-event-intent="data" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">03</span>
                                         <span class="route-title">Data Projects</span>
                                         <span class="route-text">Research, structured data and market intelligence.</span>
                                         <span class="route-arrow" aria-hidden="true">&darr;</span>
                                     </button>
-                                    <button type="button" class="route-card has-animation" data-delay="240" data-intent="partner" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="240" data-intent="partner" data-umami-event="contact-route" data-umami-event-intent="partner" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">04</span>
                                         <span class="route-title">Partnerships</span>
                                         <span class="route-text">Complementary agencies, consultants and operators.</span>
                                         <span class="route-arrow" aria-hidden="true">&darr;</span>
                                     </button>
-                                    <button type="button" class="route-card has-animation" data-delay="320" data-intent="speaking" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="320" data-intent="speaking" data-umami-event="contact-route" data-umami-event-intent="speaking" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">05</span>
                                         <span class="route-title">Speaking, Training &amp; Collaborations</span>
                                         <span class="route-text">Talks, panels, team workshops and brand collaborations.</span>
                                         <span class="route-arrow" aria-hidden="true">&darr;</span>
                                     </button>
-                                    <button type="button" class="route-card has-animation" data-delay="400" data-intent="role" data-scroll-to="#contact-formular" role="listitem">
+                                    <button type="button" class="route-card has-animation" data-delay="400" data-intent="role" data-umami-event="contact-route" data-umami-event-intent="role" data-scroll-to="#contact-formular" role="listitem">
                                         <span class="route-index">06</span>
                                         <span class="route-title">Selective Roles &amp; Advisory</span>
                                         <span class="route-text">Senior product, strategy and transformation work.</span>
@@ -219,7 +222,7 @@
 
                                     <div id="message"></div>
 
-                                    <p class="form-booking">Prefer a call? <a class="link" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener"><span>Book a 20-min intro</span></a></p>
+                                    <p class="form-booking">Prefer a call? <a class="link" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener" data-umami-event="book-intro" data-umami-event-location="contact"><span>Book a 20-min intro</span></a></p>
 
                                     <form method="POST" action="https://formsubmit.co/jaqueline@razzobusiness.com" name="contactform" id="contactform" data-endpoint="https://razzo-forms.razzo-forms.workers.dev/">
                                         <input type="hidden" name="_subject" value="New inquiry from razzobusiness.com" />

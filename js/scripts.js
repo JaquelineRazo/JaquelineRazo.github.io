@@ -126,7 +126,15 @@ Function Razzo Contact
 			}).then(function(r) { return r.json(); }).then(function(res) {
 				clearTimeout(timer);
 				if (res && res.success === true) {
-					window.location.href = 'thanks.html';
+					// Record the lead in Umami (no personal data: topic, site and
+					// source only), but never hold the visitor more than 400 ms.
+					var go = function() { window.location.href = 'thanks.html'; };
+					if (window.umami && typeof window.umami.track === 'function') {
+						Promise.race([
+							window.umami.track('form-submit', { intent: data.intent, brand: data.brand, source: data.source }),
+							new Promise(function(resolve) { setTimeout(resolve, 400); })
+						]).then(go, go);
+					} else { go(); }
 				} else { fallback(); }
 			}).catch(function() { clearTimeout(timer); fallback(); });
 		});

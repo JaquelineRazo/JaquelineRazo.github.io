@@ -276,6 +276,9 @@
             .reveal { opacity: 1; transform: none; animation: none; }
         }
     </style>
+    <!-- Umami Cloud: cookieless analytics (pageviews incl. AJAX pushState, UTM, data-umami-event clicks).
+         data-domains keeps local previews out of the stats. -->
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="6c3dd0af-b54d-4f12-9451-df9b2046e7c4" data-domains="razzobusiness.com,www.razzobusiness.com"></script>
 </head>
 <body>
 
@@ -292,15 +295,15 @@
         <p class="line reveal">I build practical systems for growing businesses: websites and CRM, operational software and data products.</p>
 
         <div class="actions reveal">
-            <a class="btn btn--primary" href="jaqueline-razo.vcf" download="Jaqueline Razo.vcf">
+            <a class="btn btn--primary" href="jaqueline-razo.vcf" download="Jaqueline Razo.vcf" data-umami-event="save-contact">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 3v6M16 6h6"/></svg>
                 Save my contact
             </a>
-            <a class="btn" href="https://www.linkedin.com/in/jaquelinerazo/" target="_blank" rel="noopener">
+            <a class="btn" href="https://www.linkedin.com/in/jaquelinerazo/" target="_blank" rel="noopener" data-umami-event="linkedin-click" data-umami-event-location="connect">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75V21h-4z"/></svg>
                 Connect on LinkedIn
             </a>
-            <a class="btn" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener">
+            <a class="btn" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener" data-umami-event="book-intro" data-umami-event-location="connect">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
                 Book a 20-min intro
             </a>
@@ -309,9 +312,9 @@
         <div class="ventures reveal">
             <p class="ventures-label">Ventures</p>
             <div class="ventures-links">
-                <a class="chip" href="contact.html?intent=systems"><i style="background:#398CA0"></i>Industry Systems</a>
-                <a class="chip" href="contact.html?intent=growth"><i style="background:#EA8E64"></i>Digital Growth</a>
-                <a class="chip" href="contact.html?intent=data"><i style="background:#63A8A0"></i>Data Intelligence</a>
+                <a class="chip" href="contact.html?intent=systems" data-umami-event="venture-click" data-umami-event-venture="systems" data-umami-event-location="connect"><i style="background:#398CA0"></i>Industry Systems</a>
+                <a class="chip" href="contact.html?intent=growth" data-umami-event="venture-click" data-umami-event-venture="growth" data-umami-event-location="connect"><i style="background:#EA8E64"></i>Digital Growth</a>
+                <a class="chip" href="contact.html?intent=data" data-umami-event="venture-click" data-umami-event-venture="data" data-umami-event-location="connect"><i style="background:#63A8A0"></i>Data Intelligence</a>
             </div>
         </div>
 
