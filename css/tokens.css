@@ -3002,3 +3002,11 @@ button.route-card:hover .route-arrow { transform: translateY(5px); }
 .hero-subtitle {
 	opacity: 0.62;
 }
+
+/* First page of a visit: show the page (and so the full-screen black
+   preloader on top of it) from the first paint, instead of the theme's
+   body.hidden { opacity: 0 } until every script has run. Repeat pages
+   keep the theme behaviour, since they skip the preloader. */
+html:not(.razzo-repeat) body.hidden {
+	opacity: 1;
+}

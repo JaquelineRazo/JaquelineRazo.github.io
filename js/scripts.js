@@ -423,7 +423,11 @@ Function Page Load
 		
 		function initOnFirstLoad() {
 		
-			imagesLoaded('body', function() {
+			// Wait only for the hero's images before revealing the page, not
+			// every image below the fold (About alone is ~2.5 MB). Layout code
+			// that needs all images still waits on 'body' in common.js, which
+			// also refreshes ScrollTrigger once everything has loaded.
+			imagesLoaded(document.querySelector('#hero') || 'body', function() {
 				gsap.to('#ball', {duration: 0.2, borderWidth: '4px', scale:0.5, borderColor:'#999999', backgroundColor:'transparent'});
 				gsap.to('#ball-loader', {duration: 0.2, borderWidth: '4px', top: 0, left: 0});
 				$('#ball p').remove();

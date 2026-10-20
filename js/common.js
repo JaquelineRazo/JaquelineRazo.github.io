@@ -1431,7 +1431,9 @@ Function Scroll Effects
 					return !!(window.WebGLRenderingContext && (probe.getContext('webgl') || probe.getContext('experimental-webgl')));
 				} catch (e) { return false; }
 			})();
-			if (capField && typeof THREE !== 'undefined' && capHasWebGL) {
+			// three.js is loaded on demand (only this section uses it), so
+			// pages without Capabilities no longer download ~600 KB of it.
+			var initCap3d = function() {
 				var CAP3D_VERTEX_SHADER = [
 					'uniform float uTime;',
 					'uniform vec2 uMouse;',
@@ -1613,6 +1615,18 @@ Function Scroll Effects
 					cap3dMaterial.dispose();
 					cap3dRenderer.dispose();
 				};
+			};
+			if (capField && capHasWebGL) {
+				if (typeof THREE !== 'undefined') {
+					initCap3d();
+				} else {
+					var threeScript = document.createElement('script');
+					threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+					threeScript.onload = function() {
+						if (document.body.contains(capField)) { initCap3d(); }
+					};
+					document.head.appendChild(threeScript);
+				}
 			}
 		}
 
