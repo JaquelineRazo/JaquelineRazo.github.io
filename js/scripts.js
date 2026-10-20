@@ -20,7 +20,6 @@ jQuery(function ($) {
 		Lightbox();
 		ContactForm();	
 		PlayVideo();
-		ContactMap();
 		CustomFunction();
 	});
 	
@@ -2248,7 +2247,6 @@ Function Showcase Gallery
 		Lightbox();
 		PlayVideo();
 		ContactForm();
-		ContactMap();
 		CustomFunction();
 		
 	}//End Load Via Ajax
