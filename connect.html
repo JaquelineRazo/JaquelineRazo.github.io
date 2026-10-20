@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Jaqueline Razo, Founder of RAZZO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Jaqueline Razo, founder of RAZZO. Save my contact, connect on LinkedIn or book a 20-minute intro." />
+    <!-- Event card reached by QR: kept out of search results (the home page is the canonical entry). -->
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#0c0c0c" />
+    <meta property="og:title" content="Jaqueline Razo, Founder of RAZZO" />
+    <meta property="og:description" content="Save my contact, connect on LinkedIn or book a 20-minute intro." />
+    <meta property="og:image" content="https://razzobusiness.com/images/og/og-home.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Six+Caps&display=swap" rel="stylesheet" />
+    <!-- Standalone on purpose: no theme JS/preloader, so the page is
+         usable the moment someone scans the QR on event Wi-Fi. Visual
+         language mirrors css/tokens.css (black, champagne signal). -->
+    <style>
+        :root {
+            --bg: #0c0c0c;
+            --fg: #ffffff;
+            --muted: rgba(255, 255, 255, 0.62);
+            --line: rgba(255, 255, 255, 0.14);
+            --signal: #c6a77b;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; background: var(--bg); color: var(--fg); }
+
+        body {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 20px calc(28px + env(safe-area-inset-bottom));
+            font-family: 'Poppins', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            /* Faint blueprint grid + glow behind the card. */
+            background-image:
+                radial-gradient(60% 40% at 50% 20%, rgba(198, 167, 123, 0.12), transparent 70%),
+                linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 100% 100%, 32px 32px, 32px 32px;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            padding: 34px 24px 26px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015));
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            overflow: hidden;
+        }
+
+        /* One scan line passes over the card when it opens. */
+        .card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -30%;
+            height: 30%;
+            background: linear-gradient(180deg, transparent, rgba(198, 167, 123, 0.14), transparent);
+            animation: scan 1.6s 0.2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes scan { to { top: 110%; } }
+
+        .reveal { opacity: 0; transform: translateY(12px); animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+        .reveal:nth-child(2) { animation-delay: 0.08s; }
+        .reveal:nth-child(3) { animation-delay: 0.16s; }
+        .reveal:nth-child(4) { animation-delay: 0.24s; }
+        .reveal:nth-child(5) { animation-delay: 0.32s; }
+        .reveal:nth-child(6) { animation-delay: 0.40s; }
+        .reveal:nth-child(7) { animation-delay: 0.48s; }
+
+        @keyframes rise { to { opacity: 1; transform: none; } }
+
+        .portrait {
+            position: relative;
+            width: 112px;
+            height: 112px;
+            margin: 0 auto 20px;
+        }
+
+        .portrait img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: 50% 35%;
+            display: block;
+        }
+
+        /* Rotating champagne arc around the portrait. */
+        .portrait::after {
+            content: "";
+            position: absolute;
+            inset: -7px;
+            border-radius: 50%;
+            border: 1px solid transparent;
+            border-top-color: var(--signal);
+            border-right-color: rgba(198, 167, 123, 0.35);
+            animation: orbit 6s linear infinite;
+        }
+
+        @keyframes orbit { to { transform: rotate(360deg); } }
+
+        h1 {
+            margin: 0;
+            font-family: 'Six Caps', sans-serif;
+            font-weight: 400;
+            font-size: 64px;
+            line-height: 1;
+            letter-spacing: 0.01em;
+        }
+
+        .role {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 0;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .signal {
+            position: relative;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--signal);
+            box-shadow: 0 0 10px rgba(198, 167, 123, 0.8);
+        }
+
+        .signal::after {
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 1px solid var(--signal);
+            animation: pulse 2.6s ease-out infinite;
+        }
+
+        @keyframes pulse { 0% { transform: scale(0.5); opacity: 0.9; } 70%, 100% { transform: scale(1.8); opacity: 0; } }
+
+        .line {
+            margin: 18px auto 26px;
+            max-width: 320px;
+            font-size: 14px;
+            line-height: 22px;
+            color: var(--muted);
+        }
+
+        .actions { display: grid; gap: 10px; }
+
+        .btn {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 52px;
+            padding: 14px 20px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn:hover, .btn:focus-visible { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.08); }
+
+        .btn--primary { background: #fff; border-color: #fff; color: #0c0c0c; }
+        .btn--primary:hover, .btn--primary:focus-visible { background: #f2f1ee; border-color: #f2f1ee; }
+
+        .btn svg { width: 18px; height: 18px; flex: none; }
+
+        a:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+
+        .ventures {
+            margin-top: 26px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+        }
+
+        .ventures-label {
+            margin: 0 0 12px;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .ventures-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+        .chip {
+            padding: 8px 13px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .chip:hover, .chip:focus-visible { border-color: var(--signal); }
+
+        .chip i {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            margin-right: 7px;
+            border-radius: 50%;
+            vertical-align: 1px;
+        }
+
+        .site {
+            display: inline-block;
+            margin-top: 22px;
+            font-size: 13px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 2px;
+        }
+
+        .bye {
+            margin: 22px 0 0;
+            font-family: 'Six Caps', sans-serif;
+            font-size: 28px;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Fit one phone screen: tighten rhythm on shorter viewports. */
+        @media (max-height: 900px) {
+            body { padding-top: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+            .card { padding: 26px 22px 20px; }
+            .portrait { width: 96px; height: 96px; margin-bottom: 16px; }
+            h1 { font-size: 56px; }
+            .line { margin: 14px auto 20px; font-size: 13.5px; line-height: 21px; }
+            .actions { gap: 8px; }
+            .btn { min-height: 48px; padding: 12px 18px; }
+            .ventures { margin-top: 20px; padding-top: 16px; }
+            .site { margin-top: 16px; }
+            .bye { margin-top: 12px; font-size: 24px; }
+        }
+
+        @media (max-height: 700px) {
+            .portrait { width: 80px; height: 80px; margin-bottom: 12px; }
+            h1 { font-size: 48px; }
+            .line { margin: 10px auto 16px; }
+            .btn { min-height: 44px; }
+            .ventures-label { display: none; }
+            .bye { display: none; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .card::before, .portrait::after, .signal::after { animation: none; }
+            .card::before { display: none; }
+            .reveal { opacity: 1; transform: none; animation: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="card">
+        <div class="portrait reveal">
+            <img src="images/jaqueline-signature.webp" width="112" height="112" alt="Jaqueline Razo" />
+        </div>
+
+        <div class="reveal">
+            <h1>Jaqueline Razo</h1>
+            <p class="role"><span class="signal" aria-hidden="true"></span>Founder, RAZZO</p>
+        </div>
+
+        <p class="line reveal">I build practical systems for growing businesses: websites and CRM, operational software and data products.</p>
+
+        <div class="actions reveal">
+            <a class="btn btn--primary" href="jaqueline-razo.vcf" download="Jaqueline Razo.vcf">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/><path d="M19 3v6M16 6h6"/></svg>
+                Save my contact
+            </a>
+            <a class="btn" href="https://www.linkedin.com/in/jaquelinerazo/" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.5h4V21H3zM9.5 9.5h3.8v1.6h.06c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.75V21h-4z"/></svg>
+                Connect on LinkedIn
+            </a>
+            <a class="btn" href="https://tidycal.com/jaquelinerazzo/20-minute-meeting" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+                Book a 20-min intro
+            </a>
+        </div>
+
+        <div class="ventures reveal">
+            <p class="ventures-label">Ventures</p>
+            <div class="ventures-links">
+                <a class="chip" href="contact.html?intent=systems"><i style="background:#398CA0"></i>Industry Systems</a>
+                <a class="chip" href="contact.html?intent=growth"><i style="background:#EA8E64"></i>Digital Growth</a>
+                <a class="chip" href="contact.html?intent=data"><i style="background:#63A8A0"></i>Data Intelligence</a>
+            </div>
+        </div>
+
+        <div class="reveal">
+            <a class="site" href="index.html">Visit razzobusiness.com</a>
+            <p class="bye">Nice to meet you.</p>
+        </div>
+    </main>
+
+    <script>
+        // Keep the event source (e.g. ?utm_source=event_techweek) for the
+        // session, so a message sent later from contact.html is attributed
+        // to the event. Same key as js/scripts.js RazzoContact.
+        (function () {
+            var p = new URLSearchParams(location.search);
+            var source = p.get('utm_source') || p.get('ref');
+            try {
+                if (source && !sessionStorage.getItem('razzo_source')) {
+                    sessionStorage.setItem('razzo_source', source);
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+</body>
+</html>
