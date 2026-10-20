@@ -1421,7 +1421,17 @@ Function Scroll Effects
 			// waves. Skipped (renders one static frame, no RAF loop) under
 			// reduced-motion.
 			var capField = capShell.querySelector('.cap2-field');
-			if (capField && typeof THREE !== 'undefined') {
+			// Probe WebGL on a throwaway canvas first: without it,
+			// THREE.WebGLRenderer throws, aborting the rest of
+			// ScrollEffects and leaving the page blank. The 3D field is
+			// decorative, so devices without WebGL just skip it.
+			var capHasWebGL = (function() {
+				try {
+					var probe = document.createElement('canvas');
+					return !!(window.WebGLRenderingContext && (probe.getContext('webgl') || probe.getContext('experimental-webgl')));
+				} catch (e) { return false; }
+			})();
+			if (capField && typeof THREE !== 'undefined' && capHasWebGL) {
 				var CAP3D_VERTEX_SHADER = [
 					'uniform float uTime;',
 					'uniform vec2 uMouse;',

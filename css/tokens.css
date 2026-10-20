@@ -2527,3 +2527,59 @@ textarea:focus-visible,
 	.venture-card--data .vw-line { stroke-dashoffset: 0; }
 	.venture-card--growth .vw-lead { opacity: 1; }
 }
+
+
+/* ==================================================================
+   RAZZO 2.0 — Point of View pull line (step 3)
+   "Strategy means very little without execution." set apart with a
+   champagne rail and a slow light pulse travelling down it.
+   ================================================================== */
+
+.pov-detail .pov-pull {
+	position: relative;
+	margin: 0 0 32px;
+	padding-left: 26px;
+	font-size: 26px;
+	line-height: 36px;
+	font-weight: 500;
+	color: #fff;
+}
+
+.pov-pull::before,
+.pov-pull::after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 4px;
+	bottom: 4px;
+	width: 2px;
+	border-radius: 2px;
+}
+
+.pov-pull::before {
+	background: rgba(198, 167, 123, 0.35);
+}
+
+.pov-pull::after {
+	background: linear-gradient(180deg, transparent, var(--razzo-signal), transparent);
+	background-size: 100% 40%;
+	background-repeat: no-repeat;
+	animation: razzo-rail 3.2s ease-in-out infinite;
+}
+
+@keyframes razzo-rail {
+	0%   { background-position: 0 -60%; }
+	100% { background-position: 0 160%; }
+}
+
+@media only screen and (max-width: 767px) {
+	.pov-detail .pov-pull {
+		font-size: 21px;
+		line-height: 30px;
+		padding-left: 20px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pov-pull::after { animation: none; background: none; }
+}
