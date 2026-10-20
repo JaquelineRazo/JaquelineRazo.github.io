@@ -70,12 +70,15 @@
     <link href="style.css" rel="stylesheet" />
     <link href="css/all.min.css" rel="stylesheet" />
     <link href="css/tokens.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Six+Caps&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Six+Caps&display=swap" rel="stylesheet">
    
     <!-- Umami Cloud: cookieless analytics (pageviews incl. AJAX pushState, UTM, data-umami-event clicks).
          data-domains keeps local previews out of the stats. -->
     <script defer src="https://cloud.umami.is/script.js" data-website-id="6c3dd0af-b54d-4f12-9451-df9b2046e7c4" data-domains="razzobusiness.com,www.razzobusiness.com"></script>
+    <!-- Repeat page in the same visit: hide the preloader before first paint (js/scripts.js PageLoad). -->
+    <script>try{if(sessionStorage.getItem('razzo_seen')==='1')document.documentElement.className+=' razzo-repeat'}catch(e){}</script>
 </head>
 
 
@@ -127,6 +130,7 @@
                         <div class="outer">
                             <div class="inner">           
                                 <ul data-breakpoint="10025" class="flexnav">
+                                    <li class="link menu-timeline"><a href="index.html#ventures" data-scroll-to="#ventures"><div class="before-span"><span data-hover="Ventures">Ventures</span></div></a></li>
                                     <li class="link menu-timeline"><a class="ajax-link" data-type="page-transition" href="work.html"><div class="before-span"><span data-hover="Work">Work</span></div></a></li>
                                     <li class="link menu-timeline"><a class="ajax-link" data-type="page-transition" href="about.html"><div class="before-span"><span data-hover="About">About</span></div></a></li>
                                     <li class="link menu-timeline"><a class="ajax-link" data-type="page-transition" href="contact.html"><div class="before-span"><span data-hover="Contact">Contact</span></div></a></li>
@@ -247,9 +251,9 @@
                                      venture's own palette and visual language inside the RAZZO
                                      frame. Until each landing is live, cards route to Contact
                                      with the intent preselected (never a dead link). -->
-                                <div class="venture-grid" role="list">
+                                <div class="venture-grid">
 
-                                    <a class="venture-card venture-card--systems has-animation ajax-link" data-type="page-transition" data-delay="0" href="contact.html?intent=systems" role="listitem" data-umami-event="venture-click" data-umami-event-venture="systems" data-umami-event-location="home">
+                                    <a class="venture-card venture-card--systems has-animation ajax-link" data-type="page-transition" data-delay="0" href="contact.html?intent=systems" data-umami-event="venture-click" data-umami-event-venture="systems" data-umami-event-location="home">
                                         <div class="venture-window" aria-hidden="true">
                                             <svg class="venture-svg" viewBox="0 0 320 200" focusable="false">
                                                 <g class="vw-grid">
@@ -284,7 +288,7 @@
                                         </div>
                                     </a>
 
-                                    <a class="venture-card venture-card--growth has-animation ajax-link" data-type="page-transition" data-delay="120" href="contact.html?intent=growth" role="listitem" data-umami-event="venture-click" data-umami-event-venture="growth" data-umami-event-location="home">
+                                    <a class="venture-card venture-card--growth has-animation ajax-link" data-type="page-transition" data-delay="120" href="contact.html?intent=growth" data-umami-event="venture-click" data-umami-event-venture="growth" data-umami-event-location="home">
                                         <div class="venture-window" aria-hidden="true">
                                             <svg class="venture-svg" viewBox="0 0 320 200" focusable="false">
                                                 <g class="vw-browser">
@@ -322,7 +326,7 @@
                                         </div>
                                     </a>
 
-                                    <a class="venture-card venture-card--data has-animation ajax-link" data-type="page-transition" data-delay="240" href="contact.html?intent=data" role="listitem" data-umami-event="venture-click" data-umami-event-venture="data" data-umami-event-location="home">
+                                    <a class="venture-card venture-card--data has-animation ajax-link" data-type="page-transition" data-delay="240" href="contact.html?intent=data" data-umami-event="venture-click" data-umami-event-venture="data" data-umami-event-location="home">
                                         <div class="venture-window" aria-hidden="true">
                                             <svg class="venture-svg" viewBox="0 0 320 200" focusable="false">
                                                 <g class="vw-grid">
@@ -597,26 +601,26 @@
                                 <h2 class="big-title has-mask-fill primary-font-title">Let's Find the Right Conversation</h2>
                                 <p class="final-cta-intro">Tell me what you're working on and I'll point you to the right place, even if it isn't me.</p>
 
-                                <div class="route-grid" role="list">
-                                    <a class="route-card has-animation" data-delay="0" href="#ventures" data-scroll-to="#ventures" role="listitem" data-umami-event="route-click" data-umami-event-route="system-or-website">
+                                <div class="route-grid">
+                                    <a class="route-card has-animation" data-delay="0" href="#ventures" data-scroll-to="#ventures" data-umami-event="route-click" data-umami-event-route="system-or-website">
                                         <span class="route-index">01</span>
                                         <h3 class="route-title">I need a system or a website</h3>
                                         <p class="route-text">Operations software, websites, CRM.</p>
                                         <span class="route-arrow" aria-hidden="true">&uarr;</span>
                                     </a>
-                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="100" href="contact.html?intent=partner" role="listitem" data-umami-event="route-click" data-umami-event-route="partner">
+                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="100" href="contact.html?intent=partner" data-umami-event="route-click" data-umami-event-route="partner">
                                         <span class="route-index">02</span>
                                         <h3 class="route-title">I want to partner</h3>
                                         <p class="route-text">Agencies, consultants and operators with complementary work.</p>
                                         <span class="route-arrow" aria-hidden="true">&rarr;</span>
                                     </a>
-                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="200" href="contact.html?intent=speaking" role="listitem" data-umami-event="route-click" data-umami-event-route="speaking">
+                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="200" href="contact.html?intent=speaking" data-umami-event="route-click" data-umami-event-route="speaking">
                                         <span class="route-index">03</span>
                                         <h3 class="route-title">Speaking &amp; workshops</h3>
                                         <p class="route-text">Talks and workshops on technology, AI and building businesses.</p>
                                         <span class="route-arrow" aria-hidden="true">&rarr;</span>
                                     </a>
-                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="300" href="contact.html?intent=other" role="listitem" data-umami-event="route-click" data-umami-event-route="other">
+                                    <a class="route-card has-animation ajax-link" data-type="page-transition" data-delay="300" href="contact.html?intent=other" data-umami-event="route-click" data-umami-event-route="other">
                                         <span class="route-index">04</span>
                                         <h3 class="route-title">Something else</h3>
                                         <p class="route-text">Ideas, introductions, questions.</p>

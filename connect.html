@@ -13,13 +13,19 @@
     <meta property="og:image" content="https://razzobusiness.com/images/og/og-home.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Six+Caps&display=swap" rel="stylesheet" />
+    <!-- Fonts served from this site and preloaded (OFL licensed), so the
+         card renders in its final typography without a layout shift. -->
+    <link rel="preload" href="webfonts/six-caps-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="webfonts/poppins-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="webfonts/poppins-500-latin.woff2" as="font" type="font/woff2" crossorigin />
     <!-- Standalone on purpose: no theme JS/preloader, so the page is
          usable the moment someone scans the QR on event Wi-Fi. Visual
          language mirrors css/tokens.css (black, champagne signal). -->
     <style>
+        @font-face { font-family: 'Six Caps'; font-style: normal; font-weight: 400; font-display: swap; src: url('webfonts/six-caps-400-latin.woff2') format('woff2'); }
+        @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 400; font-display: swap; src: url('webfonts/poppins-400-latin.woff2') format('woff2'); }
+        @font-face { font-family: 'Poppins'; font-style: normal; font-weight: 500; font-display: swap; src: url('webfonts/poppins-500-latin.woff2') format('woff2'); }
+
         :root {
             --bg: #0c0c0c;
             --fg: #ffffff;

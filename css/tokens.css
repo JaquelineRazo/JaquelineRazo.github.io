@@ -1390,7 +1390,7 @@ textarea:focus-visible,
    it) stay clear of it. */
 .speaking-row {
 	background-color: #fff;
-	background-image: url("../images/ideas that move people to act.png");
+	background-image: url("../images/speaking-bg.jpg");
 	background-repeat: no-repeat;
 	background-position: center right;
 	background-size: cover;
@@ -2984,4 +2984,21 @@ button.route-card:hover .route-arrow { transform: translateY(5px); }
 @keyframes razzo-sending {
 	0%   { background-position: -40% 0; }
 	100% { background-position: 140% 0; }
+}
+
+
+/* ==================================================================
+   QA fixes (step 9)
+   ================================================================== */
+
+/* Repeat pages in a visit skip the preloader (js/scripts.js PageLoad). */
+.razzo-repeat .preloader-wrap {
+	opacity: 0 !important;
+	visibility: hidden !important;
+}
+
+/* Hero subtitles: the theme dims them to 0.4 (about 3.9:1 on black,
+   below WCAG AA). 0.62 keeps the quiet tone at about 7:1. */
+.hero-subtitle {
+	opacity: 0.62;
 }

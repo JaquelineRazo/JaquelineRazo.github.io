@@ -33,6 +33,7 @@ Function CustomFunction
 		RazzoDecode();
 		RazzoSpotlight();
 		RazzoContact();
+		RazzoNav();
 		
 	}// End CustomFunction
 	
@@ -140,6 +141,45 @@ Function Razzo Contact
 		});
 		
 	}// End RazzoContact
+	
+	
+/*--------------------------------------------------
+Function Razzo Nav
+- "Ventures" menu item: on Home it scrolls to #ventures (common.js
+  data-scroll-to) and closes the fullscreen menu; elsewhere it opens
+  index.html#ventures, and this scrolls there once the hero has revealed.
+---------------------------------------------------*/
+	
+	function RazzoNav() {
+		
+		document.querySelectorAll('nav [data-scroll-to]').forEach(function(link) {
+			link.addEventListener('click', function() {
+				if (document.querySelector(link.getAttribute('data-scroll-to')) && $('nav').hasClass('open')) {
+					$('#burger-wrapper').trigger('click');
+				}
+			});
+		});
+		
+		var hash = window.location.hash;
+		var target = hash && hash.length > 1 ? document.getElementById(hash.slice(1)) : null;
+		if (!target) { return; }
+		var content = document.getElementById('main-page-content');
+		var started = performance.now();
+		(function waitForReveal() {
+			var visible = !content || parseFloat(getComputedStyle(content).opacity) > 0.9;
+			if (!visible && performance.now() - started < 8000) {
+				requestAnimationFrame(waitForReveal);
+				return;
+			}
+			var scroller = window.Scrollbar && Scrollbar.get(document.querySelector('#content-scroll'));
+			if (scroller) {
+				gsap.to(scroller, {duration: 1.5, scrollTop: scroller.scrollTop + target.getBoundingClientRect().top, ease: Power4.easeInOut});
+			} else {
+				$('html,body').animate({scrollTop: $(window).scrollTop() + target.getBoundingClientRect().top}, 800);
+			}
+		})();
+		
+	}// End RazzoNav
 
 
 /*--------------------------------------------------
@@ -371,6 +411,16 @@ Function Page Load
 		gsap.to($("#header-container"), {duration: 0.5, opacity:1, delay:0.2, ease:Power2.easeOut}); 
 		
 		
+		// Preloader only on the first page of a visit, and shorter: later
+		// pages in the same session skip it (an inline <head> script adds
+		// .razzo-repeat so it never even paints) and reveal the hero sooner.
+		var razzoRepeat = false;
+		try {
+			razzoRepeat = sessionStorage.getItem('razzo_seen') === '1';
+			sessionStorage.setItem('razzo_seen', '1');
+		} catch (e) {}
+		var razzoRevealDelay = razzoRepeat ? 150 : 500;
+		
 		function initOnFirstLoad() {
 		
 			imagesLoaded('body', function() {
@@ -528,19 +578,24 @@ Function Page Load
 					
 					$('body').addClass("header-visible");
 					
-				} , 800 );
+				} , razzoRevealDelay );
 			});
 				
 		}
 		
 		
-		if (!$('body').hasClass("disable-ajaxload")) {
+		if (razzoRepeat) {
+			
+			gsap.set($(".preloader-wrap"), {opacity:0, visibility:'hidden', yPercent: -101});
+			initOnFirstLoad();
+			
+		} else if (!$('body').hasClass("disable-ajaxload")) {
 			
 			
 			var width = 100,
 				perfData = window.performance.timing, 
 				EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart),
-				time = 1000
+				time = 700
 				
 			// Loadbar Animation
 			$(".loadbar").animate({
