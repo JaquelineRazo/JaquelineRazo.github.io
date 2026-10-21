@@ -1,6 +1,6 @@
 # RAZZO
 
-> RAZZO is a business studio founded by Jaqueline Razo that builds practical systems for growing businesses through three ventures: VARKORA (operations software for construction, logistics and real estate), ORNIVA (digital growth: websites, CRM, data and creative content) and CYRANTA (data intelligence: research and data).
+> RAZZO is a business studio founded by Jaqueline Razo that builds practical systems for growing businesses through three ventures: VARKORA (operations software for construction, logistics and real estate), ORNIVA (digital growth: websites, CRM, data and creative content) and CYRANTA (data intelligence: exclusive industry datasets, pipelines and data clean rooms).
 
 Jaqueline Razo is a software engineer by training with 9+ years across data, product and business transformation, working with teams in Mexico, the U.S., Europe and Türkiye. She also speaks and runs corporate training on technology, AI and building businesses. RAZZO works with teams worldwide.
 
@@ -8,7 +8,7 @@ Jaqueline Razo is a software engineer by training with 9+ years across data, pro
 
 - VARKORA (Industry Systems): operations software for construction, logistics and real estate companies, bringing projects, shipments, documents and finances into one configurable platform. Site: https://varkora.razzobusiness.com/
 - ORNIVA (Digital Growth): a digital growth studio building websites, CRM, first-party customer data and creative content (images, video and voice, including AI-generated media). Websites from $2,500, live in one week. Site: https://orniva.razzobusiness.com/
-- CYRANTA (Data Intelligence): research, structured data and market intelligence for market and operational decisions. Contact: https://razzobusiness.com/contact.html?intent=data
+- CYRANTA (Data Intelligence): exclusive industry datasets, data curation, pipelines and data clean rooms on AWS for AI training teams, researchers and industry analysts. Starts with a free Industry Opportunity Snapshot. Site: https://cyranta.razzobusiness.com/
 
 ## Pages
 

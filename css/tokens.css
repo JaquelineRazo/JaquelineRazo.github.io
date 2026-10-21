@@ -2267,17 +2267,17 @@ textarea:focus-visible,
 }
 
 .venture-card--growth {
-	--v-bg: #F4F2EA;
-	--v-surface: #283C32;
-	--v-muted: #B9CE96;
-	--v-accent: #EA8E64;
+	--v-bg: #F2E6DE;
+	--v-surface: #2E2140;
+	--v-muted: #805CD9;
+	--v-accent: #FE7730;
 }
 
 .venture-card--data {
-	--v-bg: #181B2D;
-	--v-surface: #F4F3F8;
-	--v-muted: #8E79BA;
-	--v-accent: #63A8A0;
+	--v-bg: #E9EBEE;
+	--v-surface: #121317;
+	--v-muted: #565D67;
+	--v-accent: #1F7F00;
 }
 
 .venture-grid {
@@ -2427,78 +2427,88 @@ textarea:focus-visible,
 	transform: translateX(6px);
 }
 
-/* --- Industry Systems window: lead-to-payment flow ---------------- */
-.venture-card--systems .vw-grid path { stroke: rgba(236, 241, 244, 0.06); stroke-width: 1; fill: none; }
-.venture-card--systems .vw-track { stroke: rgba(236, 241, 244, 0.18); stroke-width: 1.5; fill: none; }
-.venture-card--systems .vw-flow {
-	stroke: var(--v-accent);
-	stroke-width: 1.5;
-	fill: none;
-	stroke-dasharray: 4 8;
-	animation: vw-dash 1.4s linear infinite;
-}
-.venture-card--systems .vw-nodes rect { fill: var(--v-bg); stroke: rgba(236, 241, 244, 0.5); stroke-width: 1.2; }
-.venture-card--systems .vw-nodes .vw-node-done { fill: var(--v-accent); stroke: var(--v-accent); }
-.venture-card--systems .vw-labels text { fill: var(--v-muted); text-anchor: middle; }
-.venture-card--systems .vw-status circle { fill: var(--v-accent); animation: vw-blink 2.4s ease-in-out infinite; }
-.venture-card--systems .vw-status text { fill: rgba(236, 241, 244, 0.6); }
-.venture-card--systems .vw-runner {
-	fill: var(--v-surface);
-	offset-path: path("M38 100H282");
-	animation: vw-run 3.2s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+/* Each window mirrors the hero of its venture's own site, in that
+   venture's palette, as a small looping animation. */
+
+/* --- VARKORA window: the product console (tabs rotate, the job flow
+   lights up step by step, an invoice toast lands) ------------------ */
+.venture-card--systems .vw-grid path { stroke: rgba(236, 241, 244, 0.05); stroke-width: 1; fill: none; }
+.venture-card--systems .vw-console { fill: rgba(236, 241, 244, 0.04); stroke: rgba(236, 241, 244, 0.16); stroke-width: 1; }
+.venture-card--systems .vw-console-line { stroke: rgba(236, 241, 244, 0.12); stroke-width: 1; }
+.venture-card--systems .vw-tabs text { fill: rgba(236, 241, 244, 0.55); font-size: 6.5px; }
+.venture-card--systems .vw-tabline { fill: var(--v-accent); animation: vw-tabs 9s cubic-bezier(0.7, 0, 0.3, 1) infinite; }
+.venture-card--systems .vw-status circle { fill: #4FB38A; animation: vw-blink 2.4s ease-in-out infinite; }
+.venture-card--systems .vw-status text { fill: rgba(236, 241, 244, 0.6); font-size: 6.5px; }
+.venture-card--systems .vw-id { fill: var(--v-muted); font-size: 6.5px; }
+.venture-card--systems .vw-title { fill: rgba(236, 241, 244, 0.75); }
+.venture-card--systems .vw-track { stroke: rgba(236, 241, 244, 0.18); stroke-width: 1.2; stroke-dasharray: 3 5; fill: none; animation: vw-dash 1.4s linear infinite; }
+.venture-card--systems .vw-steps rect { fill: #0E2132; stroke: rgba(236, 241, 244, 0.35); stroke-width: 1; animation: vw-step 3s ease-in-out infinite; animation-delay: var(--d); }
+.venture-card--systems .vw-steps text { fill: var(--v-surface); font-size: 5.6px; text-anchor: middle; letter-spacing: 0.08em; }
+.venture-card--systems .vw-kpis rect { fill: rgba(236, 241, 244, 0.05); stroke: rgba(236, 241, 244, 0.12); stroke-width: 1; }
+.venture-card--systems .vw-kpis .vw-kpi-label { fill: rgba(236, 241, 244, 0.3); stroke: none; }
+.venture-card--systems .vw-kpis .vw-kpi-bar { fill: var(--v-accent); stroke: none; transform-box: fill-box; transform-origin: left; animation: vw-fill 3s ease-in-out infinite; }
+.venture-card--systems .vw-toast { transform-box: fill-box; animation: vw-toast 3s cubic-bezier(0.2, 0.7, 0.2, 1) infinite; }
+.venture-card--systems .vw-toast rect { fill: var(--v-surface); }
+.venture-card--systems .vw-toast circle { fill: #4FB38A; }
+.venture-card--systems .vw-toast path { fill: none; stroke: #fff; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.venture-card--systems .vw-toast text { fill: var(--v-bg); font-size: 6px; font-weight: 600; }
+
+/* --- ORNIVA window: NOVI assembles a website piece by piece --------- */
+.venture-card--growth .vw-browser rect { fill: #fff; stroke: rgba(46, 33, 64, 0.12); stroke-width: 1; }
+.venture-card--growth .vw-browser path { stroke: rgba(46, 33, 64, 0.1); stroke-width: 1; }
+.venture-card--growth .vw-browser circle { fill: rgba(46, 33, 64, 0.2); }
+.venture-card--growth .vw-ink { fill: var(--v-surface); }
+.venture-card--growth .vw-violet { fill: var(--v-muted); }
+.venture-card--growth .vw-lilac { fill: rgba(128, 92, 217, 0.18); }
+.venture-card--growth .vw-aqua { fill: #5BDED8; }
+.venture-card--growth .vw-orange { fill: var(--v-accent); }
+.venture-card--growth .vw-soft { fill: rgba(46, 33, 64, 0.18); }
+.venture-card--growth .vw-card { fill: #F1DFCF; }
+.venture-card--growth .vw-piece { animation: vw-piece 7s cubic-bezier(0.2, 0.8, 0.2, 1.15) infinite; animation-delay: var(--d); animation-fill-mode: backwards; }
+.venture-card--growth .vw-chip { transform-box: fill-box; transform-origin: center; animation: vw-bounce 2.2s ease-in-out infinite; }
+.venture-card--growth .vw-chip rect { fill: var(--v-accent); }
+.venture-card--growth .vw-chip text { fill: var(--v-surface); font-size: 6.5px; font-weight: 700; text-anchor: middle; }
+.vw-novi {
+	position: absolute;
+	right: -2%;
+	bottom: -6%;
+	width: 50%;
+	height: auto;
+	animation: vw-bob 3.2s ease-in-out infinite;
+	pointer-events: none;
 }
 
-/* --- Digital Growth window: site + incoming lead ------------------ */
-.venture-card--growth .vw-browser rect { fill: #fff; stroke: var(--v-surface); stroke-width: 1.2; }
-.venture-card--growth .vw-browser path { stroke: rgba(40, 60, 50, 0.2); stroke-width: 1; }
-.venture-card--growth .vw-dots circle { fill: rgba(40, 60, 50, 0.25); }
-.venture-card--growth .vw-copy rect { fill: var(--v-surface); }
-.venture-card--growth .vw-copy .vw-copy-soft { fill: rgba(40, 60, 50, 0.18); }
-.venture-card--growth .vw-button { fill: var(--v-accent); }
-.venture-card--growth .vw-lead {
-	animation: vw-lead 4.8s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
-	transform-box: fill-box;
-}
-.venture-card--growth .vw-lead > rect:first-child { fill: var(--v-surface); }
-.venture-card--growth .vw-lead circle { fill: var(--v-muted); }
-.venture-card--growth .vw-lead .vw-lead-line { fill: rgba(244, 242, 234, 0.85); }
-.venture-card--growth .vw-lead .vw-lead-soft { fill: rgba(244, 242, 234, 0.35); }
-.venture-card--growth .vw-bars rect {
-	fill: var(--v-muted);
-	transform-box: fill-box;
-	transform-origin: bottom;
-	animation: vw-grow 4.8s ease-in-out infinite;
-}
-.venture-card--growth .vw-bars rect:nth-child(2) { animation-delay: 0.15s; }
-.venture-card--growth .vw-bars rect:nth-child(3) { animation-delay: 0.3s; fill: var(--v-accent); }
+/* --- CYRANTA window: glass cubes assemble; "anything." types itself -- */
+.venture-card--data .venture-window { background: linear-gradient(180deg, #F3F4F6, #DFE2E7); }
+.venture-card--data .venture-window::after { background: radial-gradient(90% 70% at 15% 0%, rgba(255, 255, 255, 0.7), transparent 60%); }
+.venture-card--data .vw-grid path { stroke: rgba(18, 19, 23, 0.06); stroke-width: 1; fill: none; }
+.venture-card--data .vw-headline text { fill: var(--v-surface); font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
+.venture-card--data .vw-headline .vw-typed { fill: var(--v-accent); }
+.venture-card--data .vw-typed tspan { animation: vw-type 7s steps(1) infinite; animation-delay: var(--d); animation-fill-mode: backwards; }
+.venture-card--data .vw-caret { fill: var(--v-accent); animation: vw-caret 1s steps(1) infinite; }
+.venture-card--data .vw-hud { fill: var(--v-muted); font-size: 6.5px; }
+.venture-card--data .vw-cubes use { animation: vw-build 7s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; animation-delay: var(--d); animation-fill-mode: backwards; }
 
-/* --- Data Intelligence window: chart that draws on reveal --------- */
-.venture-card--data .vw-grid path { stroke: rgba(244, 243, 248, 0.07); stroke-width: 1; fill: none; }
-.venture-card--data .vw-area { fill: rgba(99, 168, 160, 0.12); }
-.venture-card--data .vw-line {
-	fill: none;
-	stroke: var(--v-accent);
-	stroke-width: 2;
-	stroke-linejoin: round;
-	stroke-dasharray: 1;
-	stroke-dashoffset: 1;
+@keyframes vw-dash   { to { stroke-dashoffset: -24; } }
+@keyframes vw-blink  { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes vw-tabs   { 0%, 30% { transform: translateX(0); } 33.3%, 63% { transform: translateX(80px); } 66.6%, 97% { transform: translateX(142px); } 100% { transform: translateX(0); } }
+@keyframes vw-step   { 0%, 100% { fill: #0E2132; stroke: rgba(236, 241, 244, 0.35); } 20%, 70% { fill: #398CA0; stroke: #5FB3C6; } }
+@keyframes vw-fill   { 0%, 10% { transform: scaleX(0.2); } 60%, 85% { transform: scaleX(1); } 100% { transform: scaleX(0.2); } }
+@keyframes vw-toast  { 0%, 55% { opacity: 0; transform: translateY(10px); } 65%, 92% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-4px); } }
+@keyframes vw-piece  {
+	0%        { opacity: 0; transform: translate(var(--dx), var(--dy)); }
+	12%, 80%  { opacity: 1; transform: none; }
+	92%, 100% { opacity: 0; transform: none; }
 }
-.venture-card--data.animated .vw-line { animation: vw-draw 2.2s 0.4s cubic-bezier(0.6, 0, 0.2, 1) forwards; }
-.venture-card--data .vw-points circle { fill: var(--v-bg); stroke: var(--v-accent); stroke-width: 1.5; }
-.venture-card--data .vw-points .vw-point-hot { fill: var(--v-accent); animation: vw-blink 2.4s ease-in-out infinite; }
-.venture-card--data .vw-scatter circle { fill: var(--v-muted); opacity: 0.8; }
-.venture-card--data .vw-sample { fill: rgba(244, 243, 248, 0.45); text-anchor: end; }
-
-@keyframes vw-dash  { to { stroke-dashoffset: -24; } }
-@keyframes vw-run   { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
-@keyframes vw-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-@keyframes vw-draw  { to { stroke-dashoffset: 0; } }
-@keyframes vw-lead  {
-	0%, 12%   { opacity: 0; transform: translateY(14px); }
-	22%, 78%  { opacity: 1; transform: translateY(0); }
-	90%, 100% { opacity: 0; transform: translateY(-6px); }
+@keyframes vw-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px) rotate(-2deg); } }
+@keyframes vw-bob    { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-6px) rotate(-2deg); } }
+@keyframes vw-build  {
+	0%        { opacity: 0; transform: translate(var(--dx), var(--dy)); }
+	22%, 78%  { opacity: 1; transform: none; }
+	100%      { opacity: 0; transform: translate(var(--dx), var(--dy)); }
 }
-@keyframes vw-grow  { 0%, 15% { transform: scaleY(0.35); } 45%, 80% { transform: scaleY(1); } 100% { transform: scaleY(0.35); } }
+@keyframes vw-type   { 0% { opacity: 0; } 4%, 86% { opacity: 1; } 87%, 100% { opacity: 0; } }
+@keyframes vw-caret  { 50% { opacity: 0; } }
 
 @media only screen and (max-width: 1024px) {
 	.venture-grid {
@@ -2523,9 +2533,7 @@ textarea:focus-visible,
 	.venture-svg { transition: none; }
 	.venture-card:hover::before { animation: none; }
 	.venture-svg *,
-	.venture-card--data.animated .vw-line { animation: none !important; }
-	.venture-card--data .vw-line { stroke-dashoffset: 0; }
-	.venture-card--growth .vw-lead { opacity: 1; }
+	.vw-novi { animation: none !important; }
 }
 
 
